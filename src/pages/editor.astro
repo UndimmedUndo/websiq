@@ -1,0 +1,2527 @@
+---
+const sidTitel = "Webbsida redigerare - WesbiqAI";
+---
+
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{sidTitel}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="editor-shell">
+      <header class="editor-topbar">
+        <div class="wrap topbar-row">
+          <a href="/" class="logo" aria-label="Websiq AI hem">
+            <span class="logo-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="logo-text">Web<span class="accent">siq</span> AI</span>
+          </a>
+          <span class="topbar-title">Webbsida redigerare</span>
+          <a href="/" class="back-link">← Till startsidan</a>
+        </div>
+      </header>
+
+      <div class="editor-main">
+        <section class="preview-wrap">
+          <div class="preview-toolbar">
+            <span class="preview-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <div class="url-oval" id="url-oval">
+              <span class="url-oval-lock" aria-hidden="true">🔒</span>
+              <span class="url-oval-text" id="url-oval-text">dittforetag.websiq.se</span>
+              <button class="url-oval-cog" id="url-oval-cog" type="button" aria-label="Ändra domän" title="Ändra domän">⚙</button>
+            </div>
+            <div class="spara-omrade">
+              <button id="spara-knapp" class="spara-knapp" type="button">
+                <span id="spara-status-text">Spara</span>
+              </button>
+            </div>
+          </div>
+          <div class="preview-frame-holder">
+            <iframe
+              id="preview-frame"
+              class="preview-frame"
+              title="Renderad Astro-sida"
+              loading="eager"
+            ></iframe>
+          </div>
+        </section>
+
+        <div class="chat-dock">
+          <aside class="verktygspanel-yta">
+            <div class="verktygsfalt">
+              <button class="verktygsknapp aktiv" type="button" data-verktyg="ai" title="AI-assistent">
+                <span class="ikon">✦</span>AI
+              </button>
+              <button class="verktygsknapp" type="button" data-verktyg="element" title="Element">
+                <span class="ikon">▭</span>Element
+              </button>
+              <button class="verktygsknapp" type="button" data-verktyg="egenskaper" title="Egenskaper">
+                <span class="ikon">⚙</span>Egensk.
+              </button>
+              <button class="verktygsknapp" type="button" data-verktyg="sidor" title="Sidor">
+                <span class="ikon">▤</span>Sidor
+              </button>
+              <button class="verktygsknapp" type="button" data-verktyg="workspace" title="Workspace">
+                <span class="ikon">▦</span>Workspace
+              </button>
+              <button class="verktygsknapp" type="button" data-verktyg="services" title="Services">
+                <span class="ikon">◈</span>Services
+              </button>
+              <button class="verktygsknapp" type="button" data-verktyg="positionera" title="Positionera">
+                <span class="ikon">⌖</span>Position
+              </button>
+              <button class="verktygsknapp" type="button" data-verktyg="molnbackuper" title="Molnbackuper">
+                <span class="ikon">☁</span>Backup
+              </button>
+              <button class="verktygsknapp" type="button" data-verktyg="installningar" title="Inställningar">
+                <span class="ikon">⚙</span>Inställn.
+              </button>
+            </div>
+
+            <div class="verktygsinnehall">
+              <div class="verktygshuvud">
+                <span class="ai-dot" aria-hidden="true"></span>
+                <span id="verktyg-titel">AI-assistent</span>
+              </div>
+
+              <div id="panel-ai" class="panel-vy aktiv">
+                <div class="ai-token-rad">
+                  <span id="ai-token-status"></span>
+                  <button id="chat-rensa-knapp" class="chat-ny-knapp" type="button">Rensa konversation</button>
+                </div>
+                <div id="chat-messages" class="chat-messages"></div>
+                <div class="chat-input-row">
+                  <textarea
+                    id="ai-prompt"
+                    placeholder="Beskriv sidan du vill se, t.ex. 'gör en prissektion'..."
+                    rows="3"
+                  ></textarea>
+                  <button id="ai-send" class="btn btn-primary" type="button">Skicka</button>
+                </div>
+              </div>
+
+              <div id="panel-element" class="panel-vy">
+                <p class="panel-info">Lägg till ett element på den aktiva sidan.</p>
+                <div class="element-knapprad">
+                  <button id="lagg-till-box" class="element-knapp" type="button">
+                    <span class="ikon">▭</span>Box
+                  </button>
+                  <button id="lagg-till-text" class="element-knapp" type="button">
+                    <span class="ikon">T</span>Text
+                  </button>
+                  <button id="lagg-till-bild" class="element-knapp" type="button">
+                    <span class="ikon">🖼</span>Bild
+                  </button>
+                  <button id="lagg-till-knapp-el" class="element-knapp" type="button">
+                    <span class="ikon">▢</span>Knapp
+                  </button>
+                  <button id="lagg-till-scroll" class="element-knapp" type="button">
+                    <span class="ikon">⇕</span>Scrollbar yta
+                  </button>
+                  <button id="lagg-till-grid" class="element-knapp" type="button">
+                    <span class="ikon">▦</span>Gridsystem
+                  </button>
+                  <button id="lagg-till-input" class="element-knapp" type="button">
+                    <span class="ikon">⌤</span>Inmatningsfält
+                  </button>
+                </div>
+              </div>
+
+              <div id="panel-egenskaper" class="panel-vy">
+                <div id="egenskaper-innehall"></div>
+              </div>
+
+              <div id="panel-sidor" class="panel-vy">
+                <p class="panel-info">Hantera sidorna i projektet. Klicka på en sida för att göra den aktiv.</p>
+                <div class="sidor-lista-vertikal" id="sidor-lista-vertikal"></div>
+                <div class="element-knapprad sidor-lagg-till-rad">
+                  <button id="sidor-lagg-till-knapp" class="element-knapp" type="button">
+                    <span class="ikon">+</span>Lägg till sida
+                  </button>
+                </div>
+              </div>
+
+              <div id="panel-workspace" class="panel-vy">
+                <div class="ws-element-header">Element på sidan</div>
+                <div id="workspace-lista"></div>
+              </div>
+
+              <div id="panel-services" class="panel-vy">
+                <p class="panel-info">Extra funktioner för din sida.</p>
+                <div class="element-knapprad" id="services-knapprad">
+                  <button class="element-knapp tjanst-knapp" type="button" data-tjanst="Bokningssystem">
+                    <span class="ikon">▭</span>Bokningssystem
+                  </button>
+                  <button class="element-knapp tjanst-knapp" type="button" data-tjanst="Inlogg för personal">
+                    <span class="ikon">▭</span>Inlogg för personal
+                  </button>
+                  <button class="element-knapp tjanst-knapp" type="button" data-tjanst="Inlogg för kunder">
+                    <span class="ikon">▭</span>Inlogg för kunder
+                  </button>
+                  <button class="element-knapp tjanst-knapp" type="button" data-tjanst="Kundhistorik">
+                    <span class="ikon">▭</span>Kundhistorik
+                  </button>
+                  <button class="element-knapp tjanst-knapp" type="button" data-tjanst="Automatiska mail">
+                    <span class="ikon">▭</span>Automatiska mail
+                  </button>
+                  <button class="element-knapp tjanst-knapp" type="button" data-tjanst="Push notiser">
+                    <span class="ikon">▭</span>Push notiser
+                  </button>
+                  <button class="element-knapp tjanst-knapp" type="button" data-tjanst="Gör till app">
+                    <span class="ikon">▭</span>Gör till app
+                  </button>
+                  <button class="element-knapp tjanst-knapp" type="button" data-tjanst="Statistik">
+                    <span class="ikon">▭</span>Statistik
+                  </button>
+                </div>
+                <div id="services-detalj" class="services-detalj"></div>
+              </div>
+
+              <div id="panel-positionera" class="panel-vy">
+                <p class="panel-info">Positionera det valda elementet på sidan.</p>
+                <div id="positionera-innehall"></div>
+              </div>
+
+              <div id="panel-molnbackuper" class="panel-vy">
+                <p class="panel-info">Molnbackuper — kommer snart.</p>
+              </div>
+
+              <div id="panel-installningar" class="panel-vy">
+                <p class="panel-info">Projektinställningar.</p>
+                <div id="installningar-innehall"></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      interface ManuellElement {
+        id: string;
+        typ: "box" | "text" | "bild" | "knapp" | "scroll" | "grid" | "input";
+        namn: string;
+        x: number;
+        y: number;
+        bredd: number;
+        hojd: number;
+        text?: string;
+        bakgrund?: string;
+        rotation?: number;
+        radie?: number;
+        opacitet?: number;
+        zIndex?: number;
+        textFarg?: string;
+        fontStorlek?: number;
+        fontVikt?: string;
+        textAlign?: "left" | "center" | "right";
+        kantfarg?: string;
+        kantbredd?: number;
+        kantstil?: "solid" | "dashed" | "dotted";
+        skugga?: boolean;
+        skuggaFarg?: string;
+        skuggaX?: number;
+        skuggaY?: number;
+        skuggaBlur?: number;
+        skuggaSpridning?: number;
+        skuggaOpacitet?: number;
+        bildUrl?: string;
+        bildFit?: "cover" | "contain";
+        lank?: string;
+        bokstavsMellanrum?: number;
+        radavstand?: number;
+        blandningslage?: string;
+        cursor?: string;
+        overflowDold?: boolean;
+        laast?: boolean;
+        glasEffekt?: boolean;
+        glasStyrka?: number;
+        gradient?: boolean;
+        gradientFarg2?: string;
+        gradientVinkel?: number;
+        textskugga?: boolean;
+        understruken?: boolean;
+        hoverSkala?: number;
+        hoverBakgrund?: string;
+        gridKolumner?: number;
+        gridRader?: number;
+        gridMellanrum?: number;
+        gridCellFarg?: string;
+        gridCellHojd?: number;
+        platshallareText?: string;
+        skaladText?: boolean;
+      }
+
+      enum Plan {
+        None = "none",
+        Start = "start",
+        Pro = "pro",
+        Premium = "premium",
+      }
+
+      const PLAN_MAX_SIDOR: Record<Plan, number> = {
+        [Plan.None]: 5,
+        [Plan.Start]: 5,
+        [Plan.Pro]: 15,
+        [Plan.Premium]: 25,
+      };
+
+      let aktivPlan: Plan = Plan.None;
+
+      function maxTillatnaSidor(): number {
+        return PLAN_MAX_SIDOR[aktivPlan];
+      }
+
+      function skapaId(): string {
+        return "s" + Math.random().toString(36).slice(2, 9);
+      }
+
+      function skapaTextEl(namn: string, x: number, y: number, bredd: number, hojd: number, text: string): ManuellElement {
+        return {
+          id: skapaId(),
+          typ: "text",
+          namn,
+          x,
+          y,
+          bredd,
+          hojd,
+          text,
+          textAlign: "center",
+          bakgrund: "transparent",
+        };
+      }
+
+      function skapaBoxEl(namn: string, x: number, y: number, bredd: number, hojd: number, bakgrund: string): ManuellElement {
+        return { id: skapaId(), typ: "box", namn, x, y, bredd, hojd, bakgrund };
+      }
+
+      function mallHero(): ManuellElement[] {
+        const el: ManuellElement[] = [];
+        el.push(skapaTextEl("Etikett", 48, 40, 300, 22, "Ny sida"));
+        el.push(skapaTextEl("Rubrik", 48, 68, 520, 50, "Bygg snabbare med Astro"));
+        const punkter = ["Blixtsnabbt", "Noll onödig JS", "Enkelt att lära"];
+        punkter.forEach((p, i) => {
+          const x = 48 + i * 168;
+          el.push(skapaBoxEl(`Pill ${i + 1}`, x, 136, 152, 36, "#ffffff"));
+          el.push(skapaTextEl(`Pill ${i + 1} text`, x, 136, 152, 36, p));
+        });
+        el.push(skapaBoxEl("Knapp", 48, 192, 150, 46, "#ffb238"));
+        el.push(skapaTextEl("Knapp text", 48, 192, 150, 46, "Kom igång"));
+        return el;
+      }
+
+      function mallFunktioner(): ManuellElement[] {
+        const el: ManuellElement[] = [];
+        el.push(skapaTextEl("Rubrik", 48, 24, 400, 32, "Vad du får"));
+        const data: [string, string][] = [
+          ["Snabb rendering", "Sidor byggs statiskt och laddas direkt."],
+          ["Komponenter", "Återanvänd byggblock över hela sajten."],
+          ["Noll konfiguration", "Kom igång utan komplicerad uppsättning."],
+        ];
+        data.forEach(([titel, text], i) => {
+          const x = 48 + i * 272;
+          el.push(skapaBoxEl(`Kort ${i + 1}`, x, 72, 252, 150, "#ffffff"));
+          el.push(skapaTextEl(`Kort ${i + 1} titel`, x + 16, 88, 220, 26, titel));
+          el.push(skapaTextEl(`Kort ${i + 1} text`, x + 16, 118, 220, 90, text));
+        });
+        return el;
+      }
+
+      function mallPriser(): ManuellElement[] {
+        const el: ManuellElement[] = [];
+        el.push(skapaTextEl("Rubrik", 48, 24, 300, 32, "Priser"));
+        const data: [string, string, string][] = [
+          ["Start", "0 kr", "För hobbyprojekt"],
+          ["Pro", "199 kr", "För växande team"],
+          ["Enterprise", "Kontakta oss", "Skräddarsytt"],
+        ];
+        data.forEach(([namn, pris, detalj], i) => {
+          const x = 48 + i * 240;
+          el.push(skapaBoxEl(`Plan ${i + 1}`, x, 72, 220, 180, "#ffffff"));
+          el.push(skapaTextEl(`Plan ${i + 1} namn`, x + 16, 88, 188, 26, namn));
+          el.push(skapaTextEl(`Plan ${i + 1} pris`, x + 16, 118, 188, 32, pris));
+          el.push(skapaTextEl(`Plan ${i + 1} detalj`, x + 16, 156, 188, 60, detalj));
+        });
+        return el;
+      }
+
+      function mallKontakt(): ManuellElement[] {
+        const el: ManuellElement[] = [];
+        el.push(skapaTextEl("Rubrik", 48, 24, 300, 32, "Hör av dig"));
+        const falt = ["Namn", "E-post", "Meddelande"];
+        falt.forEach((f, i) => {
+          const y = 76 + i * 64;
+          el.push(skapaTextEl(`${f} etikett`, 48, y, 200, 22, f));
+          el.push(skapaBoxEl(`${f} fält`, 48, y + 24, 360, 34, "#ffffff"));
+        });
+        const yBtn = 76 + falt.length * 64 + 10;
+        el.push(skapaBoxEl("Skicka-knapp", 48, yBtn, 140, 44, "#ffb238"));
+        el.push(skapaTextEl("Skicka text", 48, yBtn, 140, 44, "Skicka"));
+        return el;
+      }
+
+      interface AiMall {
+        nyckelord: string[];
+        titel: string;
+        skapaElement: () => ManuellElement[];
+      }
+
+      const aiMallar: AiMall[] = [
+        { nyckelord: ["hero", "landning", "landing", "start", "hem"], titel: "landningssektion", skapaElement: mallHero },
+        { nyckelord: ["funktion", "features", "feature", "kort"], titel: "funktionssektion", skapaElement: mallFunktioner },
+        { nyckelord: ["pris", "priser", "pricing", "plan", "abonnemang"], titel: "prissektion", skapaElement: mallPriser },
+        { nyckelord: ["kontakt", "contact", "formulär", "form"], titel: "kontaktsektion", skapaElement: mallKontakt },
+      ];
+
+      function valjMall(prompt: string): AiMall {
+        const p = prompt.toLowerCase();
+        return aiMallar.find((m) => m.nyckelord.some((n) => p.includes(n))) || aiMallar[0];
+      }
+
+      function escapeHtml(text: string): string {
+        return text.replace(/[&<>"']/g, (ch) =>
+          (({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }) as Record<string, string>)[ch]
+        );
+      }
+
+      function normaliseraSidnamn(namn: string): string {
+        return namn.trim().toLowerCase().replace(/\.astro$/, "");
+      }
+
+      function hittaSidaViaNamn(namn: string): Sida | undefined {
+        const mal = normaliseraSidnamn(namn);
+        return sidor.find((s) => normaliseraSidnamn(s.namn) === mal);
+      }
+
+      function renderaScrollInnehall(el: ManuellElement): string {
+        const poster = (el.text || "Post ett\nPost två\nPost tre").split("\n").filter((p) => p.trim().length);
+        const farg = el.textFarg || "#10141c";
+        const storlek = el.fontStorlek ?? 15;
+        return poster
+          .map(
+            (p) =>
+              `<div style="background:#ffffff;border:1px solid #e4e0d4;border-radius:10px;padding:12px 14px;margin-bottom:10px;font-family:'Inter',sans-serif;font-size:${storlek}px;color:${farg};box-shadow:0 4px 14px -8px rgba(15,20,32,0.25);">${escapeHtml(p)}</div>`
+          )
+          .join("");
+      }
+
+      function renderaGridCeller(el: ManuellElement): string {
+        const kolumner = Math.max(1, el.gridKolumner ?? 3);
+        const rader = Math.max(1, el.gridRader ?? 2);
+        const antal = kolumner * rader;
+        const farg = el.gridCellFarg || "#ffffff";
+        let celler = "";
+        for (let i = 0; i < antal; i++) {
+          celler += `<div style="background:${farg};border-radius:8px;min-height:0;"></div>`;
+        }
+        return celler;
+      }
+
+      function renderaElementHtml(el: ManuellElement): string {
+        const rotation = el.rotation ?? 0;
+        const radie = el.radie ?? 0;
+        const opacitet = (el.opacitet ?? 100) / 100;
+        const zIndex = el.zIndex ?? 1;
+        const blandning = el.blandningslage || "normal";
+        const cursorVarde = el.cursor || "default";
+        const overflow = el.overflowDold ? "hidden" : "visible";
+        const skuggaCss = el.skugga
+          ? `box-shadow:${el.skuggaX ?? 0}px ${el.skuggaY ?? 14}px ${el.skuggaBlur ?? 24}px ${el.skuggaSpridning ?? -6}px ${el.skuggaFarg || "rgba(0,0,0,0.55)"};`
+          : "";
+        const glasCss = el.glasEffekt ? `backdrop-filter:blur(${el.glasStyrka ?? 10}px);-webkit-backdrop-filter:blur(${el.glasStyrka ?? 10}px);` : "";
+        const kantstil = el.kantstil || "solid";
+        const bas = `position:absolute;left:${el.x}px;top:${el.y}px;width:${el.bredd}px;height:${el.hojd}px;transform:rotate(${rotation}deg);border-radius:${radie}px;opacity:${opacitet};z-index:${zIndex};mix-blend-mode:${blandning};overflow:${overflow};${glasCss}`;
+
+        function bakgrundCss(farg: string | undefined, fallback: string): string {
+          if (el.gradient) {
+            return `background:linear-gradient(${el.gradientVinkel ?? 135}deg, ${farg || fallback}, ${el.gradientFarg2 || "#7c93ff"});`;
+          }
+          return `background:${farg || fallback};`;
+        }
+
+        if (el.typ === "text") {
+          const farg = el.textFarg || "#10141c";
+          const storlek = el.fontStorlek ?? 16;
+          const vikt = el.fontVikt || "400";
+          const justering = el.textAlign || "center";
+          const justeringFlex = justering === "center" ? "center" : justering === "right" ? "flex-end" : "flex-start";
+          const bakgrund = el.bakgrund && el.bakgrund !== "transparent" ? el.bakgrund : "transparent";
+          const bokstavsMellanrum = el.bokstavsMellanrum ?? 0;
+          const radavstand = el.radavstand ?? 1.3;
+          const understruken = el.understruken ? "underline" : "none";
+          const textskuggaCss = el.textskugga ? "text-shadow:0 3px 10px rgba(0,0,0,0.4);" : "";
+          const skaladTextAttr = el.skaladText ? ` data-skalad-text="1"` : "";
+          return `<div data-el-id="${el.id}"${skaladTextAttr} style="${bas}background:${bakgrund};font-family:'Inter',sans-serif;font-size:${storlek}px;font-weight:${vikt};color:${farg};text-align:${justering};letter-spacing:${bokstavsMellanrum}px;line-height:${radavstand};text-decoration:${understruken};${textskuggaCss}display:flex;align-items:center;justify-content:${justeringFlex};padding:0 6px;cursor:${cursorVarde};-webkit-user-select:none;user-select:none;">${escapeHtml(el.text || "")}</div>`;
+        }
+
+        if (el.typ === "bild") {
+          const bildUrl = el.bildUrl || "https://placehold.co/400x300/f3f1ea/9aa2b6?text=Bild";
+          const fit = el.bildFit || "cover";
+          const kantbredd = el.kantbredd ?? 0;
+          const kantfarg = el.kantfarg || "transparent";
+          return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}border:${kantbredd}px ${kantstil} ${kantfarg};cursor:${cursorVarde};-webkit-user-select:none;user-select:none;"><img src="${escapeHtml(bildUrl)}" alt="" draggable="false" style="width:100%;height:100%;object-fit:${fit};display:block;pointer-events:none;" /></div>`;
+        }
+
+        if (el.typ === "knapp") {
+          const farg = el.textFarg || "#10141c";
+          const storlek = el.fontStorlek ?? 16;
+          const vikt = el.fontVikt || "600";
+          const bokstavsMellanrum = el.bokstavsMellanrum ?? 0;
+          const understruken = el.understruken ? "underline" : "none";
+          const lankAttr = el.lank ? ` data-lank-sida="${escapeHtml(el.lank)}"` : "";
+          return `<div data-el-id="${el.id}"${lankAttr} style="${bas}${skuggaCss}${bakgrundCss(el.bakgrund, "#ffb238")}font-family:'Inter',sans-serif;font-size:${storlek}px;font-weight:${vikt};color:${farg};letter-spacing:${bokstavsMellanrum}px;text-decoration:${understruken};display:flex;align-items:center;justify-content:center;cursor:${cursorVarde};-webkit-user-select:none;user-select:none;">${escapeHtml(el.text || "Knapp")}</div>`;
+        }
+
+        if (el.typ === "scroll") {
+          const bakgrund = el.bakgrund || "#f3f1ea";
+          const kantbredd = el.kantbredd ?? 1;
+          const kantfarg = el.kantfarg || "#e4e0d4";
+          return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}background:${bakgrund};border:${kantbredd}px ${kantstil} ${kantfarg};overflow-y:auto;scrollbar-width:thin;cursor:${cursorVarde};"><div style="padding:14px;">${renderaScrollInnehall(el)}</div></div>`;
+        }
+
+        if (el.typ === "grid") {
+          const kolumner = Math.max(1, el.gridKolumner ?? 3);
+          const rader = Math.max(1, el.gridRader ?? 2);
+          const mellanrum = el.gridMellanrum ?? 12;
+          const cellHojd = el.gridCellHojd ? `grid-auto-rows:${el.gridCellHojd}px;` : "";
+          return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}${bakgrundCss(el.bakgrund, "transparent")}display:grid;grid-template-columns:repeat(${kolumner}, 1fr);grid-template-rows:repeat(${rader}, 1fr);${cellHojd}gap:${mellanrum}px;cursor:${cursorVarde};">${renderaGridCeller(el)}</div>`;
+        }
+
+        if (el.typ === "input") {
+          const farg = el.textFarg || "#10141c";
+          const storlek = el.fontStorlek ?? 15;
+          const bakgrund = el.bakgrund || "#ffffff";
+          const kantbredd = el.kantbredd ?? 1;
+          const kantfarg = el.kantfarg || "#d8d4c8";
+          return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}">
+            <input type="text" placeholder="${escapeHtml(el.platshallareText || "Skriv något …")}" style="width:100%;height:100%;box-sizing:border-box;background:${bakgrund};color:${farg};font-family:'Inter',sans-serif;font-size:${storlek}px;border:${kantbredd}px ${kantstil} ${kantfarg};border-radius:${radie}px;padding:0 12px;outline:none;" />
+          </div>`;
+        }
+
+        const kantbredd = el.kantbredd ?? 0;
+        const kantfarg = el.kantfarg || "transparent";
+        return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}${bakgrundCss(el.bakgrund, "#f3f1ea")}border:${kantbredd}px ${kantstil} ${kantfarg};cursor:${cursorVarde};-webkit-user-select:none;user-select:none;"></div>`;
+      }
+
+      function byggHoverStilar(element: ManuellElement[]): string {
+        return element
+          .filter((el) => (el.hoverSkala && el.hoverSkala !== 100) || el.hoverBakgrund)
+          .map((el) => {
+            const delar: string[] = [];
+            if (el.hoverSkala && el.hoverSkala !== 100) delar.push(`transform:rotate(${el.rotation ?? 0}deg) scale(${el.hoverSkala / 100});`);
+            if (el.hoverBakgrund) delar.push(`background:${el.hoverBakgrund};`);
+            return `[data-el-id="${el.id}"]:hover{${delar.join("")}}`;
+          })
+          .join("\n");
+      }
+
+      function tomSidaHtml(): string {
+        return `<div class="tom-sida">
+  <span class="tom-sida-badge">Tom sida</span>
+  <div class="tom-sida-ikon" aria-hidden="true">✦</div>
+  <h2>Sidan är tom</h2>
+  <p>Beskriv sidan du vill se i AI-chatten till höger, eller lägg till ett element manuellt via Element-verktyget.</p>
+</div>`;
+      }
+
+      function byggForhandsvisningsDokument(element: ManuellElement[], valtElementId: string | null): string {
+        const innehall = element.length ? element.map(renderaElementHtml).join("") : tomSidaHtml();
+        const valtIdJson = valtElementId ? JSON.stringify(valtElementId) : "null";
+        const hoverStilar = byggHoverStilar(element);
+        return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Inter', system-ui, sans-serif; color: #10141c; background: #f3f1ea; }
+  .ws-yta { position: relative; min-height: 100vh; }
+  [data-el-id]:hover { outline: 1px dashed rgba(76, 111, 255, 0.45); outline-offset: 2px; }
+  .tom-sida {
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; text-align: center; padding: 64px 48px;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 178, 56, 0.10), transparent 60%), linear-gradient(180deg, #141a29, #0f1420);
+    color: #9aa2b6;
+  }
+  .tom-sida-badge {
+    font-family: 'JetBrains Mono', monospace; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase;
+    color: #7c93ff; border: 1px solid rgba(124, 147, 255, .35); border-radius: 999px; padding: 5px 14px;
+  }
+  .tom-sida-ikon {
+    width: 56px; height: 56px; border-radius: 18px; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #ffb238, #ff8a3d); color: #10141c; font-size: 24px; font-weight: 700;
+    box-shadow: 0 16px 32px -14px rgba(255, 178, 56, 0.55);
+  }
+  .tom-sida h2 { font-family: 'Sora', sans-serif; font-size: 1.35rem; color: #eef0f6; margin: 0; }
+  .tom-sida p { font-size: 0.92rem; max-width: 380px; line-height: 1.6; margin: 0; color: #9aa2b6; }
+</style>
+<style id="ws-hover-stilar">${hoverStilar}</style>
+</head>
+<body><div class="ws-yta">${innehall}</div>
+<script>
+(function(){
+  var valtId = ${valtIdJson};
+  var dragging = null;
+  var resizing = null;
+
+  function elementNode(id) { return document.querySelector('[data-el-id="' + id + '"]'); }
+
+  function elementRotation(node) {
+    var m = node.style.transform.match(/rotate\\(([-\\d.]+)deg\\)/);
+    return m ? parseFloat(m[1]) : 0;
+  }
+
+  function skalaTextTillBox(node) {
+    if (!node || node.getAttribute('data-skalad-text') !== '1') return;
+    var h = node.clientHeight;
+    var w = node.clientWidth;
+    if (!h || !w) return;
+    var storlek = Math.max(6, Math.floor(h * 0.72));
+    node.style.fontSize = storlek + 'px';
+    node.style.lineHeight = h + 'px';
+    while (node.scrollWidth > w && storlek > 6) {
+      storlek -= 1;
+      node.style.fontSize = storlek + 'px';
+    }
+  }
+
+  function skalaAllaTexter() {
+    document.querySelectorAll('[data-skalad-text="1"]').forEach(function (node) {
+      skalaTextTillBox(node);
+    });
+  }
+
+  function taBortMarkering() {
+    var m = document.getElementById('ws-markering');
+    if (m) m.remove();
+  }
+
+  function justeraMarkering(id) {
+    var m = document.getElementById('ws-markering');
+    var node = elementNode(id);
+    if (!m || !node) return;
+    var left = parseFloat(node.style.left);
+    var top = parseFloat(node.style.top);
+    var w = parseFloat(node.style.width);
+    var h = parseFloat(node.style.height);
+    var rot = elementRotation(node);
+    m.style.left = (left - 3) + 'px';
+    m.style.top = (top - 3) + 'px';
+    m.style.width = (w + 6) + 'px';
+    m.style.height = (h + 6) + 'px';
+    m.style.transformOrigin = 'center center';
+    m.style.transform = 'rotate(' + rot + 'deg)';
+  }
+
+  function skapaMarkering(id) {
+    taBortMarkering();
+    var node = elementNode(id);
+    if (!node) return;
+    var m = document.createElement('div');
+    m.id = 'ws-markering';
+    m.setAttribute('data-target', id);
+    m.style.cssText = 'position:absolute;pointer-events:none;border:2px solid #4c6fff;border-radius:6px;z-index:9999;box-shadow:0 0 0 3px rgba(76,111,255,0.12);';
+    ['tl', 'tr', 'bl', 'br'].forEach(function (pos) {
+      var h = document.createElement('span');
+      h.setAttribute('data-handle', pos);
+      h.style.cssText = 'position:absolute;width:13px;height:13px;border-radius:50%;background:#ffffff;border:2px solid #4c6fff;pointer-events:auto;box-shadow:0 2px 6px rgba(15,20,32,0.25);' +
+        (pos.indexOf('t') === 0 ? 'top:-7px;' : 'bottom:-7px;') +
+        (pos.indexOf('l') !== -1 ? 'left:-7px;cursor:nwse-resize;' : 'right:-7px;cursor:nesw-resize;');
+      m.appendChild(h);
+    });
+    document.body.appendChild(m);
+    justeraMarkering(id);
+  }
+
+  function valj(id) {
+    valtId = id;
+    skapaMarkering(id);
+    window.parent.postMessage({ type: 'select', id: id }, '*');
+  }
+
+  function avmarkera() {
+    valtId = null;
+    taBortMarkering();
+    window.parent.postMessage({ type: 'deselect' }, '*');
+  }
+
+  window.wsValj = valj;
+  window.wsAvmarkera = avmarkera;
+
+  document.addEventListener('mousedown', function (e) {
+    var lankEl = e.target.closest ? e.target.closest('[data-lank-sida]') : null;
+    var handleEl = e.target.closest ? e.target.closest('[data-handle]') : null;
+    if (handleEl && valtId) {
+      var hNode = elementNode(valtId);
+      if (!hNode) return;
+      e.preventDefault();
+      var hLeft = parseFloat(hNode.style.left), hTop = parseFloat(hNode.style.top);
+      var hW = parseFloat(hNode.style.width), hH = parseFloat(hNode.style.height);
+      resizing = {
+        handle: handleEl.getAttribute('data-handle'), startX: e.clientX, startY: e.clientY,
+        startLeft: hLeft, startTop: hTop,
+        startW: hW, startH: hH,
+        rot: elementRotation(hNode)
+      };
+      return;
+    }
+    var elNode = e.target.closest ? e.target.closest('[data-el-id]') : null;
+    if (elNode) {
+      var id = elNode.getAttribute('data-el-id');
+      var maInmatning = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+      if (maInmatning && valtId === id) {
+        return;
+      }
+      e.preventDefault();
+      if (valtId !== id) valj(id);
+      dragging = {
+        id: id, startX: e.clientX, startY: e.clientY,
+        startLeft: parseFloat(elNode.style.left), startTop: parseFloat(elNode.style.top),
+        moved: false, lankSida: lankEl ? lankEl.getAttribute('data-lank-sida') : null
+      };
+      return;
+    }
+    if (valtId) avmarkera();
+  });
+
+  document.addEventListener('mousemove', function (e) {
+    if (dragging) {
+      var dx = e.clientX - dragging.startX, dy = e.clientY - dragging.startY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) dragging.moved = true;
+      var nx = Math.max(0, Math.round(dragging.startLeft + dx));
+      var ny = Math.max(0, Math.round(dragging.startTop + dy));
+      var node = elementNode(dragging.id);
+      if (node) { node.style.left = nx + 'px'; node.style.top = ny + 'px'; }
+      justeraMarkering(dragging.id);
+      window.parent.postMessage({ type: 'move', id: dragging.id, x: nx, y: ny }, '*');
+    } else if (resizing) {
+      var rad = resizing.rot * Math.PI / 180;
+      var cosR = Math.cos(rad), sinR = Math.sin(rad);
+      var screenDx = e.clientX - resizing.startX, screenDy = e.clientY - resizing.startY;
+      var localDx = screenDx * cosR + screenDy * sinR;
+      var localDy = -screenDx * sinR + screenDy * cosR;
+
+      var w = resizing.startW, h = resizing.startH;
+      var signX = resizing.handle.indexOf('l') !== -1 ? -1 : 1;
+      var signY = resizing.handle.indexOf('t') === 0 ? -1 : 1;
+      var newW = Math.max(20, Math.round(w + signX * localDx));
+      var newH = Math.max(20, Math.round(h + signY * localDy));
+
+      var cx = resizing.startLeft + w / 2;
+      var cy = resizing.startTop + h / 2;
+      var deltaW = newW - w, deltaH = newH - h;
+      var localCenterDx = (signX * deltaW) / 2;
+      var localCenterDy = (signY * deltaH) / 2;
+      var screenCenterDx = localCenterDx * cosR - localCenterDy * sinR;
+      var screenCenterDy = localCenterDx * sinR + localCenterDy * cosR;
+      var newCx = cx + screenCenterDx;
+      var newCy = cy + screenCenterDy;
+      var left = Math.round(newCx - newW / 2);
+      var top = Math.round(newCy - newH / 2);
+
+      var rNode = elementNode(valtId);
+      if (rNode) {
+        rNode.style.left = left + 'px'; rNode.style.top = top + 'px';
+        rNode.style.width = newW + 'px'; rNode.style.height = newH + 'px';
+        skalaTextTillBox(rNode);
+      }
+      justeraMarkering(valtId);
+      window.parent.postMessage({ type: 'resize', id: valtId, x: left, y: top, bredd: newW, hojd: newH }, '*');
+    }
+  });
+
+  document.addEventListener('mouseup', function () {
+    if (dragging) {
+      var node = elementNode(dragging.id);
+      if (node) window.parent.postMessage({ type: 'moveend', id: dragging.id, x: parseFloat(node.style.left), y: parseFloat(node.style.top) }, '*');
+      if (!dragging.moved && dragging.lankSida) {
+        window.parent.postMessage({ type: 'navigate', sida: dragging.lankSida }, '*');
+      }
+      dragging = null;
+    }
+    if (resizing) {
+      var rNode = elementNode(valtId);
+      if (rNode) window.parent.postMessage({ type: 'resizeend', id: valtId, x: parseFloat(rNode.style.left), y: parseFloat(rNode.style.top), bredd: parseFloat(rNode.style.width), hojd: parseFloat(rNode.style.height) }, '*');
+      resizing = null;
+    }
+  });
+
+  document.addEventListener('touchstart', function (e) {
+    var t = e.touches[0];
+    var handleEl = t.target.closest ? t.target.closest('[data-handle]') : null;
+    var elNode = t.target.closest ? t.target.closest('[data-el-id]') : null;
+    var lankEl = t.target.closest ? t.target.closest('[data-lank-sida]') : null;
+    if (handleEl && valtId) {
+      var hNode = elementNode(valtId);
+      if (!hNode) return;
+      var hLeft = parseFloat(hNode.style.left), hTop = parseFloat(hNode.style.top);
+      var hW = parseFloat(hNode.style.width), hH = parseFloat(hNode.style.height);
+      resizing = { handle: handleEl.getAttribute('data-handle'), startX: t.clientX, startY: t.clientY, startLeft: hLeft, startTop: hTop, startW: hW, startH: hH, rot: elementRotation(hNode) };
+      e.preventDefault();
+    } else if (elNode) {
+      var id = elNode.getAttribute('data-el-id');
+      if (valtId !== id) valj(id);
+      dragging = { id: id, startX: t.clientX, startY: t.clientY, startLeft: parseFloat(elNode.style.left), startTop: parseFloat(elNode.style.top), moved: false, lankSida: lankEl ? lankEl.getAttribute('data-lank-sida') : null };
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  document.addEventListener('touchmove', function (e) {
+    if (!dragging && !resizing) return;
+    e.preventDefault();
+    var t = e.touches[0];
+    var fake = { clientX: t.clientX, clientY: t.clientY };
+    var evt = new MouseEvent('mousemove', { clientX: fake.clientX, clientY: fake.clientY });
+    document.dispatchEvent(evt);
+  }, { passive: false });
+
+  document.addEventListener('touchend', function () {
+    document.dispatchEvent(new MouseEvent('mouseup'));
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!valtId) return;
+    var aktivtElement = document.activeElement;
+    if (aktivtElement && (aktivtElement.tagName === 'INPUT' || aktivtElement.tagName === 'TEXTAREA')) return;
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault();
+      window.parent.postMessage({ type: 'delete', id: valtId }, '*');
+      avmarkera();
+    } else if (e.key.indexOf('Arrow') === 0) {
+      e.preventDefault();
+      var node = elementNode(valtId);
+      if (!node) return;
+      var steg = e.shiftKey ? 10 : 1;
+      var left = parseFloat(node.style.left), top = parseFloat(node.style.top);
+      if (e.key === 'ArrowLeft') left -= steg;
+      if (e.key === 'ArrowRight') left += steg;
+      if (e.key === 'ArrowUp') top -= steg;
+      if (e.key === 'ArrowDown') top += steg;
+      left = Math.max(0, left); top = Math.max(0, top);
+      node.style.left = left + 'px'; node.style.top = top + 'px';
+      justeraMarkering(valtId);
+      window.parent.postMessage({ type: 'moveend', id: valtId, x: left, y: top }, '*');
+    }
+  });
+
+  if (valtId && elementNode(valtId)) skapaMarkering(valtId);
+  skalaAllaTexter();
+  window.addEventListener('resize', skalaAllaTexter);
+})();
+<\/script>
+</body>
+</html>`;
+      }
+
+      interface Sida {
+        id: string;
+        namn: string;
+        element: ManuellElement[];
+        laast?: boolean;
+      }
+
+      let sidor: Sida[] = [{ id: skapaId(), namn: "index.astro", element: [], laast: true }];
+      let aktivSidaId = sidor[0].id;
+      let aktivtVerktyg: "ai" | "element" | "egenskaper" | "sidor" | "workspace" | "services" | "positionera" | "molnbackuper" | "installningar" = "ai";
+      let valtElementId: string | null = null;
+      let harOsparadeAndringar = false;
+      const AI_TOKENS_TOTALT = 800000;
+
+      function hittaAktivSida(): Sida {
+        return sidor.find((s) => s.id === aktivSidaId) || sidor[0];
+      }
+
+      const promptFalt = document.getElementById("ai-prompt") as HTMLTextAreaElement;
+      const skickaBtn = document.getElementById("ai-send") as HTMLButtonElement;
+      const meddelandeLista = document.getElementById("chat-messages") as HTMLElement;
+      const previewIframe = document.getElementById("preview-frame") as HTMLIFrameElement;
+      const sidorLaggTillBtn = document.getElementById("sidor-lagg-till-knapp") as HTMLButtonElement;
+      const sparaBtn = document.getElementById("spara-knapp") as HTMLButtonElement;
+      const sparaStatus = document.getElementById("spara-status-text") as HTMLElement;
+      const verktygTitel = document.getElementById("verktyg-titel") as HTMLElement;
+      const urlOvalCog = document.getElementById("url-oval-cog") as HTMLButtonElement;
+      const chatRensaBtn = document.getElementById("chat-rensa-knapp") as HTMLButtonElement;
+
+      function scrollaNer() {
+        meddelandeLista.scrollTop = meddelandeLista.scrollHeight;
+      }
+
+      function skapaBubbla(text: string, roll: "user" | "ai"): HTMLElement {
+        const bubbla = document.createElement("div");
+        bubbla.className = `bubbla bubbla-${roll}`;
+        const rad = document.createElement("p");
+        rad.className = "bubbla-text";
+        rad.textContent = text;
+        bubbla.appendChild(rad);
+        return bubbla;
+      }
+
+      function renderaForhandsvisning() {
+        const sida = hittaAktivSida();
+        previewIframe.srcdoc = byggForhandsvisningsDokument(sida.element, valtElementId);
+      }
+
+      function hittaLiveDokument(): Document | null {
+        try {
+          return previewIframe.contentDocument || previewIframe.contentWindow?.document || null;
+        } catch {
+          return null;
+        }
+      }
+
+      function hittaLiveFonster(): (Window & { wsValj?: (id: string) => void; wsAvmarkera?: () => void }) | null {
+        try {
+          return (previewIframe.contentWindow as any) || null;
+        } catch {
+          return null;
+        }
+      }
+
+      let liveElementCache: { id: string; node: HTMLElement } | null = null;
+
+      function uppdateraHoverStilarLive() {
+        const doc = hittaLiveDokument();
+        const stilTag = doc?.getElementById("ws-hover-stilar");
+        if (!stilTag) return;
+        const sida = hittaAktivSida();
+        stilTag.textContent = byggHoverStilar(sida.element);
+      }
+
+      function paivitaElementLive(el: ManuellElement) {
+        let node = liveElementCache?.id === el.id ? liveElementCache.node : null;
+        if (!node || !node.isConnected) {
+          const doc = hittaLiveDokument();
+          node = (doc?.querySelector(`[data-el-id="${el.id}"]`) as HTMLElement) || null;
+          if (node) liveElementCache = { id: el.id, node };
+        }
+        if (!node) { renderaForhandsvisning(); return; }
+
+        const rotation = el.rotation ?? 0;
+        const radie = el.radie ?? 0;
+        const opacitet = (el.opacitet ?? 100) / 100;
+        const zIndex = el.zIndex ?? 1;
+        const skuggaCss = el.skugga
+          ? `${el.skuggaX ?? 0}px ${el.skuggaY ?? 14}px ${el.skuggaBlur ?? 24}px ${el.skuggaSpridning ?? -6}px ${el.skuggaFarg || "rgba(0,0,0,0.55)"}`
+          : "none";
+        const kantstil = el.kantstil || "solid";
+        const bakgrundVarde = (farg: string | undefined, fallback: string) =>
+          el.gradient ? `linear-gradient(${el.gradientVinkel ?? 135}deg, ${farg || fallback}, ${el.gradientFarg2 || "#7c93ff"})` : (farg || fallback);
+
+        node.style.left = `${el.x}px`;
+        node.style.top = `${el.y}px`;
+        node.style.width = `${el.bredd}px`;
+        node.style.height = `${el.hojd}px`;
+        node.style.transform = `rotate(${rotation}deg)`;
+        node.style.borderRadius = `${radie}px`;
+        node.style.opacity = String(opacitet);
+        node.style.zIndex = String(zIndex);
+        node.style.mixBlendMode = el.blandningslage || "normal";
+        node.style.overflow = el.typ === "scroll" ? "auto" : (el.overflowDold ? "hidden" : "visible");
+        node.style.cursor = el.cursor || "default";
+        node.style.boxShadow = skuggaCss;
+        (node.style as any).backdropFilter = el.glasEffekt ? `blur(${el.glasStyrka ?? 10}px)` : "none";
+        (node.style as any).webkitBackdropFilter = el.glasEffekt ? `blur(${el.glasStyrka ?? 10}px)` : "none";
+        if (el.lank) node.setAttribute("data-lank-sida", el.lank);
+        else node.removeAttribute("data-lank-sida");
+
+        if (el.typ === "text") {
+          node.textContent = el.text || "";
+          node.style.color = el.textFarg || "#10141c";
+          node.style.fontWeight = el.fontVikt || "400";
+          node.style.textAlign = el.textAlign || "center";
+          node.style.justifyContent = el.textAlign === "left" ? "flex-start" : el.textAlign === "right" ? "flex-end" : "center";
+          node.style.background = el.bakgrund && el.bakgrund !== "transparent" ? el.bakgrund : "transparent";
+          node.style.letterSpacing = `${el.bokstavsMellanrum ?? 0}px`;
+          node.style.textDecoration = el.understruken ? "underline" : "none";
+          node.style.textShadow = el.textskugga ? "0 3px 10px rgba(0,0,0,0.4)" : "none";
+          if (el.skaladText) {
+            node.setAttribute("data-skalad-text", "1");
+            const fonster = hittaLiveFonster();
+            (fonster as any)?.skalaTextTillBox?.(node);
+            node.style.lineHeight = node.style.lineHeight || `${el.hojd}px`;
+          } else {
+            node.removeAttribute("data-skalad-text");
+            node.style.fontSize = `${el.fontStorlek ?? 16}px`;
+            node.style.lineHeight = String(el.radavstand ?? 1.3);
+          }
+        } else if (el.typ === "knapp") {
+          node.textContent = el.text || "Knapp";
+          node.style.background = bakgrundVarde(el.bakgrund, "#ffb238");
+          node.style.color = el.textFarg || "#10141c";
+          node.style.fontSize = `${el.fontStorlek ?? 16}px`;
+          node.style.fontWeight = el.fontVikt || "600";
+          node.style.letterSpacing = `${el.bokstavsMellanrum ?? 0}px`;
+          node.style.textDecoration = el.understruken ? "underline" : "none";
+        } else if (el.typ === "bild") {
+          const img = node.querySelector("img") as HTMLImageElement | null;
+          if (img) {
+            img.src = el.bildUrl || "https://placehold.co/400x300/f3f1ea/9aa2b6?text=Bild";
+            img.style.objectFit = el.bildFit || "cover";
+          }
+          node.style.border = `${el.kantbredd ?? 0}px ${kantstil} ${el.kantfarg || "transparent"}`;
+        } else if (el.typ === "scroll") {
+          const inreDiv = node.firstElementChild as HTMLElement | null;
+          if (inreDiv) inreDiv.innerHTML = renderaScrollInnehall(el);
+          node.style.background = el.bakgrund || "#f3f1ea";
+          node.style.border = `${el.kantbredd ?? 1}px ${kantstil} ${el.kantfarg || "#e4e0d4"}`;
+        } else if (el.typ === "grid") {
+          node.style.display = "grid";
+          node.style.gridTemplateColumns = `repeat(${Math.max(1, el.gridKolumner ?? 3)}, 1fr)`;
+          node.style.gridTemplateRows = `repeat(${Math.max(1, el.gridRader ?? 2)}, 1fr)`;
+          (node.style as any).gridAutoRows = el.gridCellHojd ? `${el.gridCellHojd}px` : "";
+          node.style.gap = `${el.gridMellanrum ?? 12}px`;
+          node.style.background = bakgrundVarde(el.bakgrund, "transparent");
+          node.innerHTML = renderaGridCeller(el);
+        } else if (el.typ === "input") {
+          const input = node.querySelector("input") as HTMLInputElement | null;
+          if (input) {
+            input.placeholder = el.platshallareText || "Skriv något …";
+            input.style.background = el.bakgrund || "#ffffff";
+            input.style.color = el.textFarg || "#10141c";
+            input.style.fontSize = `${el.fontStorlek ?? 15}px`;
+            input.style.border = `${el.kantbredd ?? 1}px ${kantstil} ${el.kantfarg || "#d8d4c8"}`;
+            input.style.borderRadius = `${radie}px`;
+          }
+        } else {
+          node.style.background = bakgrundVarde(el.bakgrund, "#f3f1ea");
+          node.style.border = `${el.kantbredd ?? 0}px ${kantstil} ${el.kantfarg || "transparent"}`;
+        }
+
+        uppdateraHoverStilarLive();
+        reposMarkeringOmVald(el);
+      }
+
+      function reposMarkeringOmVald(el: ManuellElement) {
+        if (valtElementId !== el.id) return;
+        const doc = hittaLiveDokument();
+        const markering = doc?.getElementById("ws-markering") as HTMLElement | null;
+        if (!markering) return;
+        markering.style.left = `${el.x - 3}px`;
+        markering.style.top = `${el.y - 3}px`;
+        markering.style.width = `${el.bredd + 6}px`;
+        markering.style.height = `${el.hojd + 6}px`;
+        markering.style.transformOrigin = "center center";
+        markering.style.transform = `rotate(${el.rotation ?? 0}deg)`;
+      }
+
+      function uppdateraGeometriFalt() {
+        if (aktivtVerktyg !== "egenskaper") return;
+        const sida = hittaAktivSida();
+        const el = sida.element.find((e) => e.id === valtElementId);
+        if (!el) return;
+        const satt = (id: string, varde: number) => {
+          const falt = document.getElementById(id) as HTMLInputElement | null;
+          if (falt && document.activeElement !== falt) falt.value = String(varde);
+        };
+        satt("egenskap-x", el.x);
+        satt("egenskap-y", el.y);
+        satt("egenskap-bredd", el.bredd);
+        satt("egenskap-hojd", el.hojd);
+      }
+
+      function hanteraIframeMeddelande(e: MessageEvent) {
+        if (e.source !== previewIframe.contentWindow) return;
+        const data = e.data;
+        if (!data || typeof data !== "object" || !("type" in data)) return;
+        const sida = hittaAktivSida();
+
+        if (data.type === "select") {
+          if (valtElementId !== data.id) {
+            valtElementId = data.id;
+            bytVerktyg("egenskaper");
+            renderaWorkspace();
+          }
+        } else if (data.type === "deselect") {
+          if (valtElementId !== null) {
+            valtElementId = null;
+            if (aktivtVerktyg === "egenskaper") renderaEgenskaper();
+            renderaWorkspace();
+          }
+        } else if (data.type === "navigate") {
+          const malSida = hittaSidaViaNamn(String(data.sida || ""));
+          if (malSida) bytAktivSida(malSida.id);
+        } else if (data.type === "move" || data.type === "resize") {
+          const el = sida.element.find((x) => x.id === data.id);
+          if (!el) return;
+          el.x = data.x;
+          el.y = data.y;
+          if (typeof data.bredd === "number") el.bredd = data.bredd;
+          if (typeof data.hojd === "number") el.hojd = data.hojd;
+          uppdateraGeometriFalt();
+        } else if (data.type === "moveend" || data.type === "resizeend") {
+          const el = sida.element.find((x) => x.id === data.id);
+          if (!el) return;
+          el.x = data.x;
+          el.y = data.y;
+          if (typeof data.bredd === "number") el.bredd = data.bredd;
+          if (typeof data.hojd === "number") el.hojd = data.hojd;
+          uppdateraGeometriFalt();
+          markeraOsparat();
+        } else if (data.type === "delete") {
+          const idx = sida.element.findIndex((x) => x.id === data.id);
+          if (idx === -1) return;
+          sida.element.splice(idx, 1);
+          if (valtElementId === data.id) valtElementId = null;
+          renderaForhandsvisning();
+          if (aktivtVerktyg === "egenskaper") renderaEgenskaper();
+          renderaWorkspace();
+          markeraOsparat();
+        }
+      }
+
+      window.addEventListener("message", hanteraIframeMeddelande);
+
+      function bytAktivSida(id: string) {
+        aktivSidaId = id;
+        valtElementId = null;
+        renderaSidor();
+        renderaForhandsvisning();
+        if (aktivtVerktyg === "egenskaper") renderaEgenskaper();
+        if (aktivtVerktyg === "workspace") renderaWorkspace();
+      }
+
+      function raderaSida(id: string) {
+        const sida = sidor.find((s) => s.id === id);
+        if (!sida || sidor.length <= 1 || sida.laast) return;
+        if (!window.confirm(`Ta bort "${sida.namn}"? Detta går inte att ångra.`)) return;
+
+        const index = sidor.findIndex((s) => s.id === id);
+        sidor = sidor.filter((s) => s.id !== id);
+        if (aktivSidaId === id) {
+          aktivSidaId = sidor[Math.max(0, index - 1)].id;
+          valtElementId = null;
+        }
+        renderaSidor();
+        renderaForhandsvisning();
+        if (aktivtVerktyg === "egenskaper") renderaEgenskaper();
+        if (aktivtVerktyg === "workspace") renderaWorkspace();
+        markeraOsparat();
+      }
+
+      function startaOmdopning(wrap: HTMLElement, sida: Sida) {
+        if (sida.laast) return;
+        const bas = sida.namn.replace(/\.astro$/, "");
+        wrap.innerHTML = "";
+        wrap.classList.add("redigerar");
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "sida-input";
+        input.value = bas;
+
+        const suffix = document.createElement("span");
+        suffix.className = "sida-suffix";
+        suffix.textContent = ".astro";
+
+        const commit = () => {
+          const nyBas = input.value.trim().replace(/\.astro$/, "");
+          if (nyBas && normaliseraSidnamn(nyBas) !== "index") sida.namn = nyBas + ".astro";
+          renderaSidor();
+          markeraOsparat();
+        };
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") { e.preventDefault(); input.blur(); }
+          if (e.key === "Escape") { e.preventDefault(); renderaSidor(); }
+        });
+        input.addEventListener("blur", commit);
+
+        wrap.appendChild(input);
+        wrap.appendChild(suffix);
+        input.focus();
+        input.select();
+      }
+
+      function renderaSidor() {
+        const container = document.getElementById("sidor-lista-vertikal") as HTMLElement | null;
+        if (!container) return;
+        container.innerHTML = "";
+        sidor.forEach((sida) => {
+          const rad = document.createElement("div");
+          rad.className = "sida-rad" + (sida.id === aktivSidaId ? " aktiv" : "");
+
+          const namnKnapp = document.createElement("button");
+          namnKnapp.type = "button";
+          namnKnapp.className = "sida-rad-namn";
+          namnKnapp.textContent = sida.namn;
+          namnKnapp.addEventListener("click", () => bytAktivSida(sida.id));
+          rad.appendChild(namnKnapp);
+
+          const atgarder = document.createElement("div");
+          atgarder.className = "sida-rad-atgarder";
+
+          if (sida.laast) {
+            const laasIkon = document.createElement("span");
+            laasIkon.className = "ikon-knapp sida-laast-ikon";
+            laasIkon.textContent = "🔒";
+            laasIkon.title = "Denna sida kan inte döpas om eller tas bort";
+            atgarder.appendChild(laasIkon);
+          } else {
+            const pennaKnapp = document.createElement("button");
+            pennaKnapp.type = "button";
+            pennaKnapp.className = "ikon-knapp";
+            pennaKnapp.innerHTML = "✎";
+            pennaKnapp.setAttribute("aria-label", "Byt namn på " + sida.namn);
+            pennaKnapp.addEventListener("click", (e) => {
+              e.stopPropagation();
+              startaOmdopning(rad, sida);
+            });
+            atgarder.appendChild(pennaKnapp);
+
+            if (sidor.length > 1) {
+              const soptunnaKnapp = document.createElement("button");
+              soptunnaKnapp.type = "button";
+              soptunnaKnapp.className = "ikon-knapp fara";
+              soptunnaKnapp.innerHTML = "🗑";
+              soptunnaKnapp.setAttribute("aria-label", "Ta bort " + sida.namn);
+              soptunnaKnapp.addEventListener("click", (e) => {
+                e.stopPropagation();
+                raderaSida(sida.id);
+              });
+              atgarder.appendChild(soptunnaKnapp);
+            }
+          }
+
+          rad.appendChild(atgarder);
+          container.appendChild(rad);
+        });
+
+        const laggTillBtn = document.getElementById("sidor-lagg-till-knapp") as HTMLButtonElement | null;
+        if (laggTillBtn) laggTillBtn.disabled = sidor.length >= maxTillatnaSidor();
+      }
+
+      sidorLaggTillBtn.addEventListener("click", () => {
+        if (sidor.length >= maxTillatnaSidor()) {
+          window.alert(`Din plan tillåter max ${maxTillatnaSidor()} sidor. Uppgradera för att lägga till fler.`);
+          return;
+        }
+        const nySida: Sida = { id: skapaId(), namn: `sida-${sidor.length + 1}.astro`, element: [] };
+        sidor.push(nySida);
+        aktivSidaId = nySida.id;
+        valtElementId = null;
+        renderaSidor();
+        renderaForhandsvisning();
+        window.requestAnimationFrame(() => {
+          const scroll = document.getElementById("sidor-lista-vertikal") as HTMLElement;
+          scroll.scrollTo({ top: scroll.scrollHeight, behavior: "smooth" });
+        });
+        markeraOsparat();
+      });
+
+      function uppdateraTokenVisning() {
+        const falt = document.getElementById("ai-token-status") as HTMLElement | null;
+        if (!falt) return;
+        falt.textContent = `AI tokens: ${AI_TOKENS_TOTALT.toLocaleString("sv-SE")}`;
+        falt.classList.remove("tokens-slut");
+      }
+
+      function skickaPrompt() {
+        const text = promptFalt.value.trim();
+        if (!text) return;
+
+        meddelandeLista.appendChild(skapaBubbla(text, "user"));
+        promptFalt.value = "";
+        scrollaNer();
+
+        const tankBubbla = skapaBubbla("Bygger sidan …", "ai");
+        tankBubbla.classList.add("bubbla-tankande");
+        meddelandeLista.appendChild(tankBubbla);
+        scrollaNer();
+        skickaBtn.disabled = true;
+
+        window.setTimeout(() => {
+          tankBubbla.remove();
+          const mall = valjMall(text);
+          const sida = hittaAktivSida();
+          const nyaElement = mall.skapaElement();
+          sida.element.push(...nyaElement);
+          renderaForhandsvisning();
+          const svar = `Klart! Jag har lagt till en ${mall.titel} som element på ${sida.namn} — du hittar och redigerar dem under Workspace.`;
+          meddelandeLista.appendChild(skapaBubbla(svar, "ai"));
+          scrollaNer();
+          skickaBtn.disabled = false;
+          if (aktivtVerktyg === "workspace") renderaWorkspace();
+          markeraOsparat();
+        }, 700);
+      }
+
+      skickaBtn.addEventListener("click", skickaPrompt);
+      promptFalt.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          skickaPrompt();
+        }
+      });
+
+      function rensaKonversation() {
+        if (!meddelandeLista.children.length) return;
+        if (!window.confirm("Rensa hela konversationen? Detta går inte att ångra.")) return;
+        meddelandeLista.innerHTML = "";
+        visaTomChattMeddelande();
+      }
+
+      function visaTomChattMeddelande() {
+        meddelandeLista.appendChild(
+          skapaBubbla(
+            "Hej! Beskriv sidan du vill se, t.ex. \"gör en prissektion\" eller \"kontaktformulär\". Tryck Skicka för att generera elementen till höger. Du kan sedan dra elementen direkt i arbetsytan och ändra storlek genom att dra i hörnen.",
+            "ai"
+          )
+        );
+        scrollaNer();
+      }
+
+      chatRensaBtn.addEventListener("click", rensaKonversation);
+
+      const verktygTitlar: Record<string, string> = {
+        ai: "Websiq AI byggare",
+        element: "Element",
+        egenskaper: "Egenskaper",
+        sidor: "Sidor",
+        workspace: "Workspace",
+        services: "Services",
+        positionera: "Positionera",
+        molnbackuper: "Molnbackuper",
+        installningar: "Inställningar",
+      };
+
+      function bytVerktyg(v: "ai" | "element" | "egenskaper" | "sidor" | "workspace" | "services" | "positionera" | "molnbackuper" | "installningar") {
+        aktivtVerktyg = v;
+        document.querySelectorAll(".verktygsknapp").forEach((b) => {
+          (b as HTMLElement).classList.toggle("aktiv", (b as HTMLElement).dataset.verktyg === v);
+        });
+        document.querySelectorAll(".panel-vy").forEach((p) => {
+          p.classList.toggle("aktiv", p.id === `panel-${v}`);
+        });
+        verktygTitel.textContent = verktygTitlar[v];
+        if (v === "egenskaper") renderaEgenskaper();
+        if (v === "sidor") renderaSidor();
+        if (v === "workspace") renderaWorkspace();
+        if (v === "positionera") renderaPositioneringPanel();
+        if (v === "installningar") renderaInstallningarPanel();
+      }
+
+      document.querySelectorAll(".verktygsknapp").forEach((b) => {
+        b.addEventListener("click", () => bytVerktyg((b as HTMLElement).dataset.verktyg as any));
+      });
+
+      function nastaZIndex(): number {
+        const sida = hittaAktivSida();
+        const max = sida.element.reduce((m, e) => Math.max(m, e.zIndex ?? 1), 0);
+        return max + 1;
+      }
+
+      function skapaNyttElement(typ: "box" | "text" | "bild" | "knapp" | "scroll" | "grid" | "input") {
+        const sida = hittaAktivSida();
+        const antal = sida.element.filter((e) => e.typ === typ).length + 1;
+        const z = nastaZIndex();
+        let nytt: ManuellElement;
+        if (typ === "box") {
+          nytt = { id: skapaId(), typ, namn: `Box ${antal}`, x: 40, y: 40, bredd: 160, hojd: 100, bakgrund: "#f3f1ea", zIndex: z, cursor: "default" };
+        } else if (typ === "text") {
+          nytt = { ...skapaTextEl(`Text ${antal}`, 40, 40, 200, 40, "Ny text"), zIndex: z, cursor: "default" };
+        } else if (typ === "bild") {
+          nytt = { id: skapaId(), typ, namn: `Bild ${antal}`, x: 40, y: 40, bredd: 220, hojd: 160, bildUrl: "https://placehold.co/400x300/f3f1ea/9aa2b6?text=Bild", bildFit: "cover", zIndex: z, cursor: "default" };
+        } else if (typ === "knapp") {
+          nytt = { id: skapaId(), typ, namn: `Knapp ${antal}`, x: 40, y: 40, bredd: 150, hojd: 46, text: "Knapp", bakgrund: "#ffb238", textFarg: "#10141c", zIndex: z, cursor: "pointer" };
+        } else if (typ === "scroll") {
+          nytt = { id: skapaId(), typ, namn: `Scrollbar yta ${antal}`, x: 40, y: 40, bredd: 280, hojd: 200, bakgrund: "#f3f1ea", kantbredd: 1, kantfarg: "#e4e0d4", text: "Post ett\nPost två\nPost tre\nPost fyra", zIndex: z, cursor: "default" };
+        } else if (typ === "grid") {
+          nytt = { id: skapaId(), typ, namn: `Gridsystem ${antal}`, x: 40, y: 40, bredd: 360, hojd: 220, gridKolumner: 3, gridRader: 2, gridMellanrum: 12, gridCellFarg: "#ffffff", zIndex: z, cursor: "default" };
+        } else {
+          nytt = { id: skapaId(), typ, namn: `Inmatningsfält ${antal}`, x: 40, y: 40, bredd: 240, hojd: 44, platshallareText: "Skriv något …", bakgrund: "#ffffff", kantbredd: 1, kantfarg: "#d8d4c8", zIndex: z, cursor: "text" };
+        }
+
+        sida.element.unshift(nytt);
+        valtElementId = nytt.id;
+        renderaForhandsvisning();
+        bytVerktyg("egenskaper");
+        markeraOsparat();
+      }
+
+      document.getElementById("lagg-till-box")!.addEventListener("click", () => skapaNyttElement("box"));
+      document.getElementById("lagg-till-text")!.addEventListener("click", () => skapaNyttElement("text"));
+      document.getElementById("lagg-till-bild")!.addEventListener("click", () => skapaNyttElement("bild"));
+      document.getElementById("lagg-till-knapp-el")!.addEventListener("click", () => skapaNyttElement("knapp"));
+      document.getElementById("lagg-till-scroll")!.addEventListener("click", () => skapaNyttElement("scroll"));
+      document.getElementById("lagg-till-grid")!.addEventListener("click", () => skapaNyttElement("grid"));
+      document.getElementById("lagg-till-input")!.addEventListener("click", () => skapaNyttElement("input"));
+
+      function skapaSektionsrubrik(container: HTMLElement, text: string, oppenStandard = true) {
+        const sektion = document.createElement("div");
+        sektion.className = "insp-sektion" + (oppenStandard ? " oppen" : "");
+
+        const rubrik = document.createElement("button");
+        rubrik.type = "button";
+        rubrik.className = "insp-sektion-rubrik";
+        rubrik.innerHTML = `<span class="insp-sektion-pil">▸</span><span>${text}</span>`;
+
+        const kropp = document.createElement("div");
+        kropp.className = "insp-sektion-kropp";
+
+        rubrik.addEventListener("click", () => {
+          sektion.classList.toggle("oppen");
+        });
+
+        sektion.appendChild(rubrik);
+        sektion.appendChild(kropp);
+        container.appendChild(sektion);
+        return kropp;
+      }
+
+      function skapaRadGrupp(container: HTMLElement, ...rader: HTMLElement[]) {
+        const grupp = document.createElement("div");
+        grupp.className = "insp-radgrupp";
+        rader.forEach((r) => grupp.appendChild(r));
+        container.appendChild(grupp);
+      }
+
+      function skapaFalt(
+        container: HTMLElement,
+        etikett: string,
+        initialt: string,
+        uppdatera: (varde: string) => void,
+        liveUppdatera: () => void,
+        installningar?: { typ?: "text" | "number" | "color" | "textarea" | "range"; id?: string; min?: number; max?: number; steg?: number; kompakt?: boolean; platshallare?: string }
+      ): HTMLElement {
+        const typ = installningar?.typ || "text";
+        const rad = document.createElement("label");
+        rad.className = "insp-falt" + (installningar?.kompakt ? " insp-falt-kompakt" : "");
+        rad.dataset.etikett = etikett.toLowerCase();
+
+        const huvud = document.createElement("div");
+        huvud.className = "insp-falt-huvud";
+        const span = document.createElement("span");
+        span.textContent = etikett;
+        huvud.appendChild(span);
+
+        let vardeVisning: HTMLElement | null = null;
+        if (typ === "range") {
+          vardeVisning = document.createElement("span");
+          vardeVisning.className = "insp-vardevisning";
+          vardeVisning.textContent = initialt;
+          vardeVisning.title = "Klicka för att skriva in ett exakt värde";
+          huvud.appendChild(vardeVisning);
+        }
+        rad.appendChild(huvud);
+
+        const arText = typ === "textarea";
+        const faltEl: HTMLInputElement | HTMLTextAreaElement = arText
+          ? document.createElement("textarea")
+          : document.createElement("input");
+        if (!arText) {
+          (faltEl as HTMLInputElement).type = typ === "range" ? "range" : typ;
+          if (typ === "range") {
+            if (installningar?.min !== undefined) (faltEl as HTMLInputElement).min = String(installningar.min);
+            if (installningar?.max !== undefined) (faltEl as HTMLInputElement).max = String(installningar.max);
+            if (installningar?.steg !== undefined) (faltEl as HTMLInputElement).step = String(installningar.steg);
+          }
+        }
+        if (installningar?.id) faltEl.id = installningar.id;
+        if (installningar?.platshallare) faltEl.setAttribute("placeholder", installningar.platshallare);
+        faltEl.value = initialt;
+        faltEl.addEventListener("input", () => {
+          uppdatera(faltEl.value);
+          if (vardeVisning) vardeVisning.textContent = faltEl.value;
+          liveUppdatera();
+          markeraOsparat();
+        });
+
+        if (typ === "range" && vardeVisning) {
+          vardeVisning.addEventListener("click", () => {
+            const nuvarandeVarde = faltEl.value;
+            const input = document.createElement("input");
+            input.type = "number";
+            input.className = "insp-vardevisning-input";
+            if (installningar?.min !== undefined) input.min = String(installningar.min);
+            if (installningar?.max !== undefined) input.max = String(installningar.max);
+            if (installningar?.steg !== undefined) input.step = String(installningar.steg);
+            input.value = nuvarandeVarde;
+            vardeVisning!.replaceWith(input);
+            input.focus();
+            input.select();
+
+            const commit = () => {
+              let nytt = Number(input.value);
+              if (Number.isNaN(nytt)) nytt = Number(nuvarandeVarde) || 0;
+              if (installningar?.min !== undefined) nytt = Math.max(installningar.min, nytt);
+              if (installningar?.max !== undefined) nytt = Math.min(installningar.max, nytt);
+              (faltEl as HTMLInputElement).value = String(nytt);
+              uppdatera(String(nytt));
+              liveUppdatera();
+              markeraOsparat();
+              const nyttSpan = document.createElement("span");
+              nyttSpan.className = "insp-vardevisning";
+              nyttSpan.title = "Klicka för att skriva in ett exakt värde";
+              nyttSpan.textContent = String(nytt);
+              input.replaceWith(nyttSpan);
+              vardeVisning = nyttSpan;
+              vardeVisning.addEventListener("click", () => vardeVisning!.dispatchEvent(new Event("__oppna")));
+            };
+            input.addEventListener("keydown", (e) => {
+              if (e.key === "Enter") { e.preventDefault(); input.blur(); }
+              if (e.key === "Escape") { e.preventDefault(); input.value = nuvarandeVarde; input.blur(); }
+            });
+            input.addEventListener("blur", commit);
+          });
+        }
+
+        rad.appendChild(faltEl);
+        container.appendChild(rad);
+        return rad;
+      }
+
+      function skapaVal(
+        container: HTMLElement,
+        etikett: string,
+        initialt: string,
+        alternativ: [string, string][],
+        uppdatera: (varde: string) => void,
+        liveUppdatera: () => void
+      ): HTMLElement {
+        const rad = document.createElement("label");
+        rad.className = "insp-falt insp-falt-kompakt";
+        rad.dataset.etikett = etikett.toLowerCase();
+        const span = document.createElement("span");
+        span.textContent = etikett;
+        const select = document.createElement("select");
+        alternativ.forEach(([varde, text]) => {
+          const opt = document.createElement("option");
+          opt.value = varde;
+          opt.textContent = text;
+          if (varde === initialt) opt.selected = true;
+          select.appendChild(opt);
+        });
+        select.addEventListener("change", () => {
+          uppdatera(select.value);
+          liveUppdatera();
+          markeraOsparat();
+        });
+        rad.appendChild(span);
+        rad.appendChild(select);
+        container.appendChild(rad);
+        return rad;
+      }
+
+      function skapaSegmentVal(
+        container: HTMLElement,
+        etikett: string,
+        initialt: string,
+        alternativ: [string, string][],
+        uppdatera: (varde: string) => void,
+        liveUppdatera: () => void
+      ): HTMLElement {
+        const rad = document.createElement("div");
+        rad.className = "insp-falt insp-falt-kompakt";
+        rad.dataset.etikett = etikett.toLowerCase();
+        const span = document.createElement("span");
+        span.textContent = etikett;
+        const segment = document.createElement("div");
+        segment.className = "insp-segment";
+        alternativ.forEach(([varde, label]) => {
+          const knapp = document.createElement("button");
+          knapp.type = "button";
+          knapp.textContent = label;
+          knapp.className = "insp-segment-knapp" + (varde === initialt ? " aktiv" : "");
+          knapp.addEventListener("click", () => {
+            segment.querySelectorAll(".insp-segment-knapp").forEach((b) => b.classList.remove("aktiv"));
+            knapp.classList.add("aktiv");
+            uppdatera(varde);
+            liveUppdatera();
+            markeraOsparat();
+          });
+          segment.appendChild(knapp);
+        });
+        rad.appendChild(span);
+        rad.appendChild(segment);
+        container.appendChild(rad);
+        return rad;
+      }
+
+      function skapaKryssruta(
+        container: HTMLElement,
+        etikett: string,
+        initialt: boolean,
+        uppdatera: (varde: boolean) => void,
+        liveUppdatera: () => void
+      ): HTMLElement {
+        const rad = document.createElement("label");
+        rad.className = "insp-falt insp-falt-kompakt insp-falt-kryss";
+        rad.dataset.etikett = etikett.toLowerCase();
+        const span = document.createElement("span");
+        span.textContent = etikett;
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.checked = initialt;
+        input.addEventListener("change", () => {
+          uppdatera(input.checked);
+          liveUppdatera();
+          markeraOsparat();
+        });
+        rad.appendChild(span);
+        rad.appendChild(input);
+        container.appendChild(rad);
+        return rad;
+      }
+
+      const elementTypNamn: Record<ManuellElement["typ"], string> = {
+        box: "Box", text: "Text", bild: "Bild", knapp: "Knapp", scroll: "Scrollbar yta", grid: "Gridsystem", input: "Inmatningsfält",
+      };
+
+      function filtreraEgenskaper(sokterm: string) {
+        const container = document.getElementById("egenskaper-innehall") as HTMLElement;
+        const term = sokterm.trim().toLowerCase();
+        const sektioner = container.querySelectorAll(".insp-sektion");
+        sektioner.forEach((sektion) => {
+          const falt = sektion.querySelectorAll<HTMLElement>("[data-etikett]");
+          let nagonSynlig = false;
+          falt.forEach((f) => {
+            const traff = !term || (f.dataset.etikett || "").includes(term);
+            f.style.display = traff ? "" : "none";
+            const grupp = f.closest(".insp-radgrupp") as HTMLElement | null;
+            if (grupp) grupp.style.display = "";
+            if (traff) nagonSynlig = true;
+          });
+          container.querySelectorAll(".insp-radgrupp").forEach((grupp) => {
+            const g = grupp as HTMLElement;
+            const synligaBarn = Array.from(g.querySelectorAll<HTMLElement>("[data-etikett]")).some((f) => f.style.display !== "none");
+            g.style.display = synligaBarn ? "" : "none";
+          });
+          (sektion as HTMLElement).style.display = nagonSynlig || !term ? "" : "none";
+          if (term && nagonSynlig) sektion.classList.add("oppen");
+        });
+      }
+
+      function renderaEgenskaper() {
+        const container = document.getElementById("egenskaper-innehall") as HTMLElement;
+        container.innerHTML = "";
+        const sida = hittaAktivSida();
+
+        const el = sida.element.find((e) => e.id === valtElementId);
+        if (!el) {
+          const info = document.createElement("p");
+          info.className = "panel-info";
+          info.textContent = "Välj ett element i arbetsytan eller i Workspace, eller lägg till ett nytt via Element-verktyget.";
+          container.appendChild(info);
+          return;
+        }
+
+        const live = () => paivitaElementLive(el);
+
+        const sokRad = document.createElement("div");
+        sokRad.className = "insp-sok-rad";
+        const sokInput = document.createElement("input");
+        sokInput.type = "text";
+        sokInput.className = "insp-sok-input";
+        sokInput.placeholder = "Sök efter en egenskap …";
+        sokInput.addEventListener("input", () => filtreraEgenskaper(sokInput.value));
+        sokRad.appendChild(sokInput);
+        container.appendChild(sokRad);
+
+        const insp = document.createElement("div");
+        insp.className = "insp-huvudkort";
+        insp.innerHTML = `<span class="insp-huvud-typ">${elementTypNamn[el.typ]}</span>`;
+        container.appendChild(insp);
+
+        if (el.typ === "text") {
+          const textKropp = skapaSektionsrubrik(container, "Text");
+          skapaFalt(textKropp, "Innehåll", el.text || "", (v) => { el.text = v; }, live, { typ: "textarea" });
+          skapaFalt(textKropp, "Textfärg", el.textFarg || "#10141c", (v) => { el.textFarg = v; }, live, { typ: "color", kompakt: true });
+          skapaKryssruta(textKropp, "Skalad text (fyller boxen)", !!el.skaladText, (v) => { el.skaladText = v; }, live);
+          skapaRadGrupp(
+            textKropp,
+            skapaFalt(textKropp, "Storlek", String(el.fontStorlek ?? 16), (v) => { el.fontStorlek = Number(v) || 16; }, live, { typ: "number", kompakt: true }),
+            skapaVal(textKropp, "Tjocklek", el.fontVikt || "400", [["400", "Normal"], ["500", "Medium"], ["600", "Halvfet"], ["700", "Fet"]], (v) => { el.fontVikt = v; }, live)
+          );
+          skapaSegmentVal(textKropp, "Justering", el.textAlign || "center", [["left", "⟵"], ["center", "≡"], ["right", "⟶"]], (v) => { el.textAlign = v as "left" | "center" | "right"; }, live);
+          skapaFalt(textKropp, "Bakgrund", el.bakgrund && el.bakgrund !== "transparent" ? el.bakgrund : "#f3f1ea", (v) => { el.bakgrund = v; }, live, { typ: "color", kompakt: true });
+          skapaRadGrupp(
+            textKropp,
+            skapaFalt(textKropp, "Avstånd mellan bokstäver", String(el.bokstavsMellanrum ?? 0), (v) => { el.bokstavsMellanrum = Number(v) || 0; }, live, { typ: "number", kompakt: true }),
+            skapaFalt(textKropp, "Radavstånd", String(el.radavstand ?? 1.3), (v) => { el.radavstand = Number(v) || 1.3; }, live, { typ: "number", kompakt: true })
+          );
+          skapaKryssruta(textKropp, "Understruken", !!el.understruken, (v) => { el.understruken = v; }, live);
+          skapaKryssruta(textKropp, "Djupare textskugga", !!el.textskugga, (v) => { el.textskugga = v; }, live);
+        } else if (el.typ === "knapp") {
+          const knappKropp = skapaSektionsrubrik(container, "Knapp");
+          skapaFalt(knappKropp, "Text", el.text || "", (v) => { el.text = v; }, live, { kompakt: true });
+          skapaFalt(knappKropp, "Länka till sida", el.lank || "", (v) => { el.lank = v; }, live, { kompakt: true, platshallare: "t.ex. sida1 eller sida1.astro" });
+          skapaRadGrupp(
+            knappKropp,
+            skapaFalt(knappKropp, "Bakgrund", el.bakgrund || "#ffb238", (v) => { el.bakgrund = v; }, live, { typ: "color", kompakt: true }),
+            skapaFalt(knappKropp, "Textfärg", el.textFarg || "#10141c", (v) => { el.textFarg = v; }, live, { typ: "color", kompakt: true })
+          );
+          skapaRadGrupp(
+            knappKropp,
+            skapaFalt(knappKropp, "Storlek", String(el.fontStorlek ?? 16), (v) => { el.fontStorlek = Number(v) || 16; }, live, { typ: "number", kompakt: true }),
+            skapaFalt(knappKropp, "Avstånd mellan bokstäver", String(el.bokstavsMellanrum ?? 0), (v) => { el.bokstavsMellanrum = Number(v) || 0; }, live, { typ: "number", kompakt: true })
+          );
+          skapaKryssruta(knappKropp, "Understruken", !!el.understruken, (v) => { el.understruken = v; }, live);
+          skapaKryssruta(knappKropp, "Färgtoning (gradient)", !!el.gradient, (v) => { el.gradient = v; }, live);
+          skapaFalt(knappKropp, "Färgtoning – andra färgen", el.gradientFarg2 || "#7c93ff", (v) => { el.gradientFarg2 = v; }, live, { typ: "color", kompakt: true });
+          const hoverKropp = skapaSektionsrubrik(container, "Hovereffekt", false);
+          skapaFalt(hoverKropp, "Bakgrund vid hovring", el.hoverBakgrund || "", (v) => { el.hoverBakgrund = v; }, live, { typ: "color", kompakt: true });
+          skapaFalt(hoverKropp, "Förstoring vid hovring (%)", String(el.hoverSkala ?? 100), (v) => { el.hoverSkala = Number(v) || 100; }, live, { typ: "range", min: 90, max: 130, steg: 1 });
+        } else if (el.typ === "bild") {
+          const bildKropp = skapaSektionsrubrik(container, "Bild");
+          skapaFalt(bildKropp, "Bild-URL", el.bildUrl || "", (v) => { el.bildUrl = v; }, live, { kompakt: true });
+          skapaSegmentVal(bildKropp, "Anpassning", el.bildFit || "cover", [["cover", "Fyll"], ["contain", "Rymd"]], (v) => { el.bildFit = v as "cover" | "contain"; }, live);
+          const kantKropp = skapaSektionsrubrik(container, "Ram", false);
+          skapaFalt(kantKropp, "Ramfärg", el.kantfarg || "#d8d4c8", (v) => { el.kantfarg = v; }, live, { typ: "color", kompakt: true });
+          skapaFalt(kantKropp, "Ramtjocklek (px)", String(el.kantbredd ?? 0), (v) => { el.kantbredd = Number(v) || 0; }, live, { typ: "number", kompakt: true });
+          skapaSegmentVal(kantKropp, "Ramstil", el.kantstil || "solid", [["solid", "Heldragen"], ["dashed", "Streckad"], ["dotted", "Prickad"]], (v) => { el.kantstil = v as any; }, live);
+        } else if (el.typ === "scroll") {
+          const scrollKropp = skapaSektionsrubrik(container, "Scrollbar yta");
+          skapaFalt(scrollKropp, "Poster (en per rad)", el.text || "", (v) => { el.text = v; }, live, { typ: "textarea" });
+          skapaFalt(scrollKropp, "Textfärg", el.textFarg || "#10141c", (v) => { el.textFarg = v; }, live, { typ: "color", kompakt: true });
+          skapaFalt(scrollKropp, "Textstorlek", String(el.fontStorlek ?? 15), (v) => { el.fontStorlek = Number(v) || 15; }, live, { typ: "number", kompakt: true });
+          skapaFalt(scrollKropp, "Bakgrund", el.bakgrund || "#f3f1ea", (v) => { el.bakgrund = v; }, live, { typ: "color", kompakt: true });
+          const scrollKantKropp = skapaSektionsrubrik(container, "Ram", false);
+          skapaFalt(scrollKantKropp, "Ramfärg", el.kantfarg || "#e4e0d4", (v) => { el.kantfarg = v; }, live, { typ: "color", kompakt: true });
+          skapaFalt(scrollKantKropp, "Ramtjocklek (px)", String(el.kantbredd ?? 1), (v) => { el.kantbredd = Number(v) || 0; }, live, { typ: "number", kompakt: true });
+        } else if (el.typ === "grid") {
+          const gridKropp = skapaSektionsrubrik(container, "Gridsystem");
+          skapaRadGrupp(
+            gridKropp,
+            skapaFalt(gridKropp, "Kolumner", String(el.gridKolumner ?? 3), (v) => { el.gridKolumner = Math.max(1, Number(v) || 1); }, live, { typ: "number", kompakt: true, min: 1, max: 12 }),
+            skapaFalt(gridKropp, "Rader", String(el.gridRader ?? 2), (v) => { el.gridRader = Math.max(1, Number(v) || 1); }, live, { typ: "number", kompakt: true, min: 1, max: 12 })
+          );
+          skapaFalt(gridKropp, "Mellanrum (px)", String(el.gridMellanrum ?? 12), (v) => { el.gridMellanrum = Number(v) || 0; }, live, { typ: "range", min: 0, max: 60, steg: 1 });
+          skapaFalt(gridKropp, "Cellstorlek – höjd (px)", String(el.gridCellHojd ?? 0), (v) => { el.gridCellHojd = Number(v) || 0; }, live, { typ: "range", min: 0, max: 240, steg: 4 });
+          skapaFalt(gridKropp, "Cellfärg", el.gridCellFarg || "#ffffff", (v) => { el.gridCellFarg = v; }, live, { typ: "color", kompakt: true });
+        } else if (el.typ === "input") {
+          const inputKropp = skapaSektionsrubrik(container, "Inmatningsfält");
+          skapaFalt(inputKropp, "Platshållartext", el.platshallareText || "", (v) => { el.platshallareText = v; }, live, { kompakt: true });
+          skapaRadGrupp(
+            inputKropp,
+            skapaFalt(inputKropp, "Bakgrund", el.bakgrund || "#ffffff", (v) => { el.bakgrund = v; }, live, { typ: "color", kompakt: true }),
+            skapaFalt(inputKropp, "Textfärg", el.textFarg || "#10141c", (v) => { el.textFarg = v; }, live, { typ: "color", kompakt: true })
+          );
+          skapaFalt(inputKropp, "Textstorlek", String(el.fontStorlek ?? 15), (v) => { el.fontStorlek = Number(v) || 15; }, live, { typ: "number", kompakt: true });
+          const inputKantKropp = skapaSektionsrubrik(container, "Ram", false);
+          skapaFalt(inputKantKropp, "Ramfärg", el.kantfarg || "#d8d4c8", (v) => { el.kantfarg = v; }, live, { typ: "color", kompakt: true });
+          skapaFalt(inputKantKropp, "Ramtjocklek (px)", String(el.kantbredd ?? 1), (v) => { el.kantbredd = Number(v) || 0; }, live, { typ: "number", kompakt: true });
+        } else {
+          const fyllKropp = skapaSektionsrubrik(container, "Fyllning");
+          skapaFalt(fyllKropp, "Bakgrundsfärg", el.bakgrund || "#f3f1ea", (v) => { el.bakgrund = v; }, live, { typ: "color", kompakt: true });
+          skapaKryssruta(fyllKropp, "Färgtoning (gradient)", !!el.gradient, (v) => { el.gradient = v; }, live);
+          skapaFalt(fyllKropp, "Färgtoning – andra färgen", el.gradientFarg2 || "#7c93ff", (v) => { el.gradientFarg2 = v; }, live, { typ: "color", kompakt: true });
+          skapaFalt(fyllKropp, "Färgtoningens vinkel", String(el.gradientVinkel ?? 135), (v) => { el.gradientVinkel = Number(v) || 0; }, live, { typ: "range", min: 0, max: 360, steg: 1 });
+          const kantKropp = skapaSektionsrubrik(container, "Ram", false);
+          skapaFalt(kantKropp, "Ramfärg", el.kantfarg || "#d8d4c8", (v) => { el.kantfarg = v; }, live, { typ: "color", kompakt: true });
+          skapaFalt(kantKropp, "Ramtjocklek (px)", String(el.kantbredd ?? 0), (v) => { el.kantbredd = Number(v) || 0; }, live, { typ: "number", kompakt: true });
+          skapaSegmentVal(kantKropp, "Ramstil", el.kantstil || "solid", [["solid", "Heldragen"], ["dashed", "Streckad"], ["dotted", "Prickad"]], (v) => { el.kantstil = v as any; }, live);
+          const hoverKropp = skapaSektionsrubrik(container, "Hovereffekt", false);
+          skapaFalt(hoverKropp, "Bakgrund vid hovring", el.hoverBakgrund || "", (v) => { el.hoverBakgrund = v; }, live, { typ: "color", kompakt: true });
+          skapaFalt(hoverKropp, "Förstoring vid hovring (%)", String(el.hoverSkala ?? 100), (v) => { el.hoverSkala = Number(v) || 100; }, live, { typ: "range", min: 90, max: 130, steg: 1 });
+        }
+
+        const namnKropp = skapaSektionsrubrik(container, "Namn");
+        skapaFalt(namnKropp, "Namn", el.namn, (v) => { el.namn = v; }, () => renderaWorkspace(), { kompakt: true });
+
+        const transformKropp = skapaSektionsrubrik(container, "Storlek & läge");
+        skapaRadGrupp(
+          transformKropp,
+          skapaFalt(transformKropp, "X", String(el.x), (v) => { el.x = Number(v) || 0; }, live, { typ: "number", id: "egenskap-x", kompakt: true }),
+          skapaFalt(transformKropp, "Y", String(el.y), (v) => { el.y = Number(v) || 0; }, live, { typ: "number", id: "egenskap-y", kompakt: true })
+        );
+        skapaRadGrupp(
+          transformKropp,
+          skapaFalt(transformKropp, "Bredd", String(el.bredd), (v) => { el.bredd = Number(v) || 0; }, live, { typ: "number", id: "egenskap-bredd", kompakt: true }),
+          skapaFalt(transformKropp, "Höjd", String(el.hojd), (v) => { el.hojd = Number(v) || 0; }, live, { typ: "number", id: "egenskap-hojd", kompakt: true })
+        );
+        skapaFalt(transformKropp, "Snurra (grader)", String(el.rotation ?? 0), (v) => { el.rotation = Number(v) || 0; }, live, { typ: "range", min: -180, max: 180, steg: 1 });
+        skapaFalt(transformKropp, "Ordning (fram/bak)", String(el.zIndex ?? 1), (v) => { el.zIndex = Number(v) || 1; }, live, { typ: "number", kompakt: true });
+        skapaKryssruta(transformKropp, "Lås element", !!el.laast, (v) => { el.laast = v; }, () => {});
+        skapaVal(transformKropp, "Muspekare vid hovring", el.cursor || "default", [["default", "Standardpil"], ["pointer", "Pekfinger"], ["move", "Flytta-kors"], ["grab", "Öppen hand"], ["not-allowed", "Förbjuden"]], (v) => { el.cursor = v; }, live);
+
+        const utseendeKropp = skapaSektionsrubrik(container, "Utseende");
+        skapaFalt(utseendeKropp, "Genomskinlighet (%)", String(el.opacitet ?? 100), (v) => { el.opacitet = Number(v); }, live, { typ: "range", min: 0, max: 100, steg: 1 });
+        skapaFalt(utseendeKropp, "Rundade hörn (px)", String(el.radie ?? 0), (v) => { el.radie = Number(v) || 0; }, live, { typ: "range", min: 0, max: 100, steg: 1 });
+        skapaVal(utseendeKropp, "Specialeffekt", el.blandningslage || "normal", [["normal", "Ingen"], ["multiply", "Mörkare"], ["screen", "Ljusare"], ["overlay", "Kontrastrik"], ["darken", "Mörka toner"], ["lighten", "Ljusa toner"]], (v) => { el.blandningslage = v; }, live);
+        skapaKryssruta(utseendeKropp, "Dölj det som sticker ut", !!el.overflowDold, (v) => { el.overflowDold = v; }, live);
+        if (el.typ === "box" || el.typ === "knapp") {
+          skapaKryssruta(utseendeKropp, "Frostat glas-effekt", !!el.glasEffekt, (v) => { el.glasEffekt = v; }, live);
+          skapaFalt(utseendeKropp, "Glaseffektens styrka", String(el.glasStyrka ?? 10), (v) => { el.glasStyrka = Number(v) || 0; }, live, { typ: "range", min: 0, max: 30, steg: 1 });
+        }
+
+        const skuggaKropp = skapaSektionsrubrik(container, "Skugga", false);
+        skapaKryssruta(skuggaKropp, "Aktivera skugga", !!el.skugga, (v) => { el.skugga = v; }, live);
+        skapaRadGrupp(
+          skuggaKropp,
+          skapaFalt(skuggaKropp, "Sidled", String(el.skuggaX ?? 0), (v) => { el.skuggaX = Number(v) || 0; }, live, { typ: "number", kompakt: true }),
+          skapaFalt(skuggaKropp, "Höjdled", String(el.skuggaY ?? 14), (v) => { el.skuggaY = Number(v) || 0; }, live, { typ: "number", kompakt: true })
+        );
+        skapaRadGrupp(
+          skuggaKropp,
+          skapaFalt(skuggaKropp, "Mjukhet", String(el.skuggaBlur ?? 24), (v) => { el.skuggaBlur = Number(v) || 0; }, live, { typ: "number", kompakt: true }),
+          skapaFalt(skuggaKropp, "Spridning", String(el.skuggaSpridning ?? -6), (v) => { el.skuggaSpridning = Number(v) || 0; }, live, { typ: "number", kompakt: true })
+        );
+        skapaFalt(skuggaKropp, "Skuggans mörkhet", String(Math.round((el.skuggaOpacitet ?? 0.55) * 100)), (v) => {
+          const andel = Math.max(0, Math.min(100, Number(v) || 0)) / 100;
+          el.skuggaOpacitet = andel;
+          el.skuggaFarg = `rgba(0,0,0,${andel})`;
+        }, live, { typ: "range", min: 0, max: 90, steg: 1 });
+
+        const taBortBtn = document.createElement("button");
+        taBortBtn.type = "button";
+        taBortBtn.className = "ta-bort-knapp";
+        taBortBtn.textContent = "Ta bort element";
+        taBortBtn.addEventListener("click", () => {
+          sida.element = sida.element.filter((e) => e.id !== el.id);
+          valtElementId = null;
+          renderaForhandsvisning();
+          renderaEgenskaper();
+          renderaWorkspace();
+          markeraOsparat();
+        });
+        container.appendChild(taBortBtn);
+      }
+
+      function skapaWorkspaceRad(
+        namn: string,
+        ikon: string,
+        vald: boolean,
+        valjFn: () => void,
+        taBortFn: () => void
+      ): HTMLElement {
+        const rad = document.createElement("div");
+        rad.className = "workspace-rad" + (vald ? " vald" : "");
+
+        const knapp = document.createElement("button");
+        knapp.type = "button";
+        knapp.className = "workspace-rad-knapp";
+        knapp.innerHTML = `<span class="ws-ikon">${ikon}</span><span class="ws-namn">${namn}</span>`;
+        knapp.addEventListener("click", valjFn);
+
+        const taBort = document.createElement("button");
+        taBort.type = "button";
+        taBort.className = "ikon-knapp fara workspace-ta-bort";
+        taBort.textContent = "×";
+        taBort.setAttribute("aria-label", "Ta bort " + namn);
+        taBort.addEventListener("click", (e) => {
+          e.stopPropagation();
+          taBortFn();
+        });
+
+        rad.appendChild(knapp);
+        rad.appendChild(taBort);
+        return rad;
+      }
+
+      const elementIkoner: Record<ManuellElement["typ"], string> = {
+        box: "▭", text: "T", bild: "🖼", knapp: "▢", scroll: "⇕", grid: "▦", input: "⌤",
+      };
+
+      function renderaWorkspace() {
+        const container = document.getElementById("workspace-lista") as HTMLElement;
+        container.innerHTML = "";
+        const sida = hittaAktivSida();
+
+        sida.element.forEach((el) => {
+          container.appendChild(
+            skapaWorkspaceRad(
+              el.namn,
+              elementIkoner[el.typ],
+              valtElementId === el.id,
+              () => {
+                valtElementId = el.id;
+                bytVerktyg("egenskaper");
+                renderaWorkspace();
+                const fonster = hittaLiveFonster();
+                fonster?.wsValj?.(el.id);
+              },
+              () => {
+                sida.element = sida.element.filter((x) => x.id !== el.id);
+                if (valtElementId === el.id) valtElementId = null;
+                renderaForhandsvisning();
+                renderaWorkspace();
+                renderaEgenskaper();
+                markeraOsparat();
+              }
+            )
+          );
+        });
+
+        if (!container.children.length) {
+          const tom = document.createElement("p");
+          tom.className = "panel-info";
+          tom.textContent = "Inga element än. Lägg till via Element-verktyget eller be AI:n bygga en sida.";
+          container.appendChild(tom);
+        }
+      }
+
+      function startaDomanRedigering() {
+        const nuvarande = document.getElementById("url-oval-text") as HTMLElement;
+        if (!nuvarande) return;
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "url-oval-input";
+        input.value = nuvarande.textContent || "";
+        nuvarande.replaceWith(input);
+        input.focus();
+        input.select();
+
+        const commit = () => {
+          const span = document.createElement("span");
+          span.className = "url-oval-text";
+          span.id = "url-oval-text";
+          span.textContent = input.value.trim() || "dittforetag.websiq.se";
+          input.replaceWith(span);
+        };
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") { e.preventDefault(); input.blur(); }
+          if (e.key === "Escape") { e.preventDefault(); commit(); }
+        });
+        input.addEventListener("blur", commit);
+      }
+
+      urlOvalCog.addEventListener("click", startaDomanRedigering);
+
+      function byggAstroExport(): string {
+        const rader: string[] = [];
+        rader.push("---");
+        rader.push(`const sidTitel = ${JSON.stringify(hittaAktivSida().namn)};`);
+        rader.push("---");
+        rader.push("");
+        rader.push("<html lang=\"sv\">");
+        rader.push("  <head><meta charset=\"UTF-8\" /><title>{sidTitel}</title></head>");
+        rader.push("  <body>");
+        hittaAktivSida().element.forEach((el) => {
+          rader.push("    " + renderaElementHtml(el));
+        });
+        rader.push("  </body>");
+        rader.push("</html>");
+        return rader.join("\n");
+      }
+
+      function exporteraAktivSida() {
+        const kod = byggAstroExport();
+        console.log(kod);
+      }
+
+      function tillamparPositionering(atgard: string) {
+        const sida = hittaAktivSida();
+        const el = sida.element.find((e) => e.id === valtElementId);
+        if (!el) return;
+        const doc = hittaLiveDokument();
+        const bredd = doc?.documentElement?.clientWidth || 1200;
+        const hojd = doc?.documentElement?.clientHeight || 800;
+
+        if (atgard === "centrera-horisontellt") el.x = Math.max(0, Math.round((bredd - el.bredd) / 2));
+        else if (atgard === "centrera-vertikalt") el.y = Math.max(0, Math.round((hojd - el.hojd) / 2));
+        else if (atgard === "vanster") el.x = 0;
+        else if (atgard === "hoger") el.x = Math.max(0, bredd - el.bredd);
+        else if (atgard === "topp") el.y = 0;
+        else if (atgard === "botten") el.y = Math.max(0, hojd - el.hojd);
+
+        paivitaElementLive(el);
+        uppdateraGeometriFalt();
+        markeraOsparat();
+      }
+
+      function renderaPositioneringPanel() {
+        const container = document.getElementById("positionera-innehall") as HTMLElement;
+        container.innerHTML = "";
+        const sida = hittaAktivSida();
+        const el = sida.element.find((e) => e.id === valtElementId);
+        if (!el) {
+          const info = document.createElement("p");
+          info.className = "panel-info";
+          info.textContent = "Välj ett element i arbetsytan eller i Workspace för att kunna positionera det.";
+          container.appendChild(info);
+          return;
+        }
+        const alternativ: [string, string][] = [
+          ["centrera-horisontellt", "Centrera horisontellt"],
+          ["centrera-vertikalt", "Centrera vertikalt"],
+          ["vanster", "Vänsterjustera"],
+          ["hoger", "Högerjustera"],
+          ["topp", "Toppjustera"],
+          ["botten", "Bottenjustera"],
+        ];
+        alternativ.forEach(([varde, etikett]) => {
+          const knapp = document.createElement("button");
+          knapp.type = "button";
+          knapp.className = "element-knapp";
+          knapp.innerHTML = `<span class="ikon">⌖</span>${etikett}`;
+          knapp.addEventListener("click", () => tillamparPositionering(varde));
+          container.appendChild(knapp);
+        });
+      }
+
+      function renderaInstallningarPanel() {
+        const container = document.getElementById("installningar-innehall") as HTMLElement;
+        container.innerHTML = "";
+
+        const namnFalt = document.createElement("label");
+        namnFalt.className = "insp-falt";
+        namnFalt.innerHTML = `<span>Webbplatsnamn</span>`;
+        const namnInput = document.createElement("input");
+        namnInput.type = "text";
+        namnInput.placeholder = "t.ex. Mitt Företag AB";
+        namnFalt.appendChild(namnInput);
+        container.appendChild(namnFalt);
+
+        const beskrivningFalt = document.createElement("label");
+        beskrivningFalt.className = "insp-falt";
+        beskrivningFalt.innerHTML = `<span>SEO-beskrivning</span>`;
+        const beskrivningInput = document.createElement("textarea");
+        beskrivningInput.placeholder = "Kort beskrivning som visas i sökmotorer";
+        beskrivningFalt.appendChild(beskrivningInput);
+        container.appendChild(beskrivningFalt);
+
+        skapaVal(
+          container,
+          "Plan",
+          aktivPlan,
+          [
+            [Plan.None, "Ingen plan"],
+            [Plan.Start, "Start (max 5 sidor)"],
+            [Plan.Pro, "Pro (max 15 sidor)"],
+            [Plan.Premium, "Premium (max 25 sidor)"],
+          ],
+          (v) => { aktivPlan = v as Plan; renderaSidor(); },
+          () => {}
+        );
+
+        const exportBtn = document.createElement("button");
+        exportBtn.type = "button";
+        exportBtn.className = "element-knapp";
+        exportBtn.innerHTML = `<span class="ikon">⇩</span>Exportera sidan (till konsolen)`;
+        exportBtn.addEventListener("click", exporteraAktivSida);
+        container.appendChild(exportBtn);
+      }
+
+      const tjanstKnappar = document.querySelectorAll<HTMLButtonElement>(".tjanst-knapp");
+      const servicesDetalj = document.getElementById("services-detalj") as HTMLElement;
+      tjanstKnappar.forEach((knapp) => {
+        knapp.addEventListener("click", () => {
+          tjanstKnappar.forEach((b) => b.classList.remove("aktiv"));
+          knapp.classList.add("aktiv");
+          const namn = knapp.dataset.tjanst || "";
+          servicesDetalj.innerHTML = "";
+          const info = document.createElement("p");
+          info.className = "panel-info";
+          info.textContent = `${namn} — kommer snart.`;
+          servicesDetalj.appendChild(info);
+        });
+      });
+
+      const DB_NAMN = "websiq-astro-db";
+      const STORE_NAMN = "projekt";
+
+      function oppnaDb(): Promise<IDBDatabase> {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(DB_NAMN, 2);
+          request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(STORE_NAMN)) db.createObjectStore(STORE_NAMN);
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      interface SparatProjekt {
+        sidor: Sida[];
+        aktivSidaId: string;
+      }
+
+      function uppdateraSparaKnappStatus() {
+        if (harOsparadeAndringar) {
+          sparaBtn.disabled = false;
+          sparaStatus.textContent = "Spara";
+        } else {
+          sparaBtn.disabled = true;
+          sparaStatus.textContent = "Sparat";
+        }
+      }
+
+      function markeraOsparat() {
+        harOsparadeAndringar = true;
+        uppdateraSparaKnappStatus();
+      }
+
+      async function sparaOchVisa(automatiskt: boolean) {
+        if (!harOsparadeAndringar) return;
+        sparaBtn.classList.add("sparar");
+        sparaBtn.disabled = true;
+        sparaStatus.textContent = "Sparar…";
+        try {
+          await sparaProjekt();
+          harOsparadeAndringar = false;
+          sparaStatus.textContent = "Sparat ✓";
+        } catch {
+          harOsparadeAndringar = true;
+          sparaStatus.textContent = "Kunde inte spara";
+        }
+        sparaBtn.classList.remove("sparar");
+        window.setTimeout(() => {
+          uppdateraSparaKnappStatus();
+        }, 1600);
+      }
+
+      function sparaProjekt(): Promise<void> {
+        return oppnaDb().then(
+          (db) =>
+            new Promise<void>((resolve, reject) => {
+              const tx = db.transaction(STORE_NAMN, "readwrite");
+              tx.objectStore(STORE_NAMN).put({ sidor, aktivSidaId }, "projekt");
+              tx.oncomplete = () => resolve();
+              tx.onerror = () => reject(tx.error);
+            })
+        );
+      }
+
+      function laddaProjekt(): Promise<SparatProjekt | null> {
+        return oppnaDb().then(
+          (db) =>
+            new Promise<SparatProjekt | null>((resolve, reject) => {
+              const tx = db.transaction(STORE_NAMN, "readonly");
+              const req = tx.objectStore(STORE_NAMN).get("projekt");
+              req.onsuccess = () => resolve((req.result as SparatProjekt) ?? null);
+              req.onerror = () => reject(req.error);
+            })
+        );
+      }
+
+      sparaBtn.addEventListener("click", () => sparaOchVisa(false));
+      window.setInterval(() => sparaOchVisa(true), 60 * 1000);
+
+      async function initiera() {
+        let sparat: SparatProjekt | null = null;
+        try {
+          sparat = await laddaProjekt();
+        } catch {
+          sparat = null;
+        }
+
+        if (sparat && sparat.sidor && sparat.sidor.length) {
+          sidor = sparat.sidor;
+          sidor.forEach((s) => {
+            if (!s.element) s.element = [];
+          });
+          const indexSida = sidor.find((s) => s.namn === "index.astro");
+          if (indexSida) indexSida.laast = true;
+          aktivSidaId = sparat.aktivSidaId;
+        }
+
+        renderaSidor();
+        renderaForhandsvisning();
+        visaTomChattMeddelande();
+        uppdateraTokenVisning();
+        uppdateraSparaKnappStatus();
+      }
+
+      initiera();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  :root {
+    --ink: #0f1420; --ink-2: #161d2c; --ink-3: #1f273a;
+    --paper: #f3f1ea; --paper-2: #ffffff;
+    --text: #eef0f6; --ink-text: #10141c;
+    --muted: #9aa2b6; --muted-on-paper: #5c6273;
+    --blue: #4c6fff; --blue-soft: #7c93ff; --amber: #ffb238; --green: #3ecf7f;
+    --line: rgba(255, 255, 255, 0.09); --line-on-paper: rgba(15, 20, 32, 0.12);
+    --radius: 14px;
+    --font-display: "Sora", system-ui, sans-serif;
+    --font-body: "Inter", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0; background: var(--ink); color: var(--text);
+    font-family: var(--font-body); line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  p { margin: 0; }
+  :focus-visible { outline: 2px solid var(--blue-soft); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+  .accent { color: var(--amber); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 12px 22px; border-radius: 999px; font-family: var(--font-body);
+    font-weight: 600; font-size: 0.95rem; border: 1px solid transparent; cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn-primary { background: var(--amber); color: var(--ink-text); }
+  .btn-primary:hover { background: #ffbf5a; }
+
+  .editor-shell { height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+
+  .editor-topbar {
+    position: sticky; top: 0; z-index: 20; background: rgba(15, 20, 32, 0.9);
+    backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); flex: none;
+  }
+  .topbar-row { display: flex; align-items: center; gap: 20px; height: 64px; }
+  .logo { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+  .logo-dots { display: inline-flex; gap: 4px; }
+  .logo-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); display: inline-block; }
+  .logo-dots i:nth-child(3) { background: var(--amber); }
+  .topbar-title {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px;
+  }
+  .back-link { margin-left: auto; font-size: 0.9rem; color: var(--muted); }
+  .back-link:hover { color: var(--text); }
+
+  .editor-main { flex: 1; min-height: 0; display: flex; }
+
+  .preview-wrap {
+    flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column;
+    padding: 24px; gap: 12px;
+  }
+  .preview-toolbar {
+    flex: none; display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px; border-radius: 10px 10px 0 0;
+    background: var(--ink-3); border: 1px solid var(--line); border-bottom: none;
+  }
+  .preview-dots { display: inline-flex; gap: 6px; flex: none; }
+  .preview-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line-on-paper); display: inline-block; }
+  .preview-dots i:nth-child(1) { background: #ff6a5f; }
+  .preview-dots i:nth-child(2) { background: var(--amber); }
+  .preview-dots i:nth-child(3) { background: var(--green); }
+
+  .url-oval {
+    flex: 1 1 auto; display: flex; align-items: center; gap: 7px;
+    background: var(--ink); border: 1px solid var(--line); border-radius: 999px;
+    padding: 7px 8px 7px 18px; max-width: 340px; min-width: 0; margin: 0 auto;
+  }
+  .url-oval-lock { flex: none; font-size: 0.7rem; opacity: 0.65; }
+  .url-oval-text {
+    flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted);
+    letter-spacing: 0.01em; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .url-oval-input {
+    flex: 1; min-width: 0; background: var(--ink-3); border: 1px solid var(--blue-soft);
+    border-radius: 999px; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text);
+    text-align: center; outline: none; padding: 3px 10px; -webkit-text-size-adjust: 100%;
+  }
+  .url-oval-cog {
+    flex: none; width: 22px; height: 22px; border-radius: 50%; padding: 0; font-size: 0.72rem; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .spara-omrade { display: flex; align-items: center; gap: 8px; flex: none; width: 148px; justify-content: flex-end; }
+  .spara-knapp {
+    font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted);
+    background: var(--ink); border: 1px solid var(--line); border-radius: 999px;
+    padding: 6px 14px; cursor: pointer; width: 100%; text-align: center;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+  .spara-knapp:hover { color: var(--text); border-color: var(--blue-soft); }
+  .spara-knapp.sparar { color: var(--amber); border-color: rgba(255, 178, 56, 0.4); }
+  .spara-knapp:disabled { cursor: default; opacity: 0.7; }
+
+  .preview-frame-holder {
+    flex: 1; min-height: 0; border-radius: 0 0 var(--radius) var(--radius); overflow: hidden;
+    box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.6);
+    outline: 1px solid var(--line-on-paper); background: var(--paper-2);
+  }
+  .preview-frame { width: 100%; height: 100%; border: none; display: block; background: var(--paper-2); }
+
+  .chat-dock { flex: none; min-height: 0; display: flex; align-items: stretch; overflow: hidden; }
+
+  .verktygspanel-yta {
+    width: 380px; flex: none; display: flex; flex-direction: row; min-height: 0; overflow: hidden;
+    background: var(--ink-2); border-left: 1px solid var(--line);
+  }
+
+  .verktygsfalt {
+    flex: none; width: 68px; display: flex; flex-direction: column; gap: 4px;
+    padding: 14px 8px; border-right: 1px solid var(--line); overflow-y: auto;
+  }
+  .verktygsknapp {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: transparent; border: 1px solid transparent; border-radius: 10px;
+    padding: 9px 4px; color: var(--muted); cursor: pointer;
+    font-family: var(--font-body); font-size: 0.62rem; line-height: 1.1;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .verktygsknapp:hover { background: var(--ink-3); color: var(--text); }
+  .verktygsknapp.aktiv { background: var(--ink); color: var(--amber); border-color: var(--line); }
+  .verktygsknapp .ikon { font-size: 1.15rem; line-height: 1; }
+
+  .verktygsinnehall { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+
+  .verktygshuvud {
+    flex: none; display: flex; align-items: center; gap: 8px; font-family: var(--font-mono);
+    font-size: 0.8rem; color: var(--muted); padding: 20px 20px 12px;
+  }
+  .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(62, 207, 127, 0.18); flex: none; }
+
+  .panel-vy { display: none; flex: 1; min-height: 0; flex-direction: column; }
+  .panel-vy.aktiv { display: flex; }
+
+  .panel-info { flex: none; padding: 4px 20px 16px; font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+
+  .ai-token-rad {
+    flex: none; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px 10px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted);
+  }
+  #ai-token-status.tokens-slut { color: #ff9a91; }
+  .chat-ny-knapp {
+    flex: none; background: transparent; border: 1px solid var(--line); color: var(--muted);
+    border-radius: 999px; padding: 3px 10px; font-family: var(--font-mono); font-size: 0.68rem; cursor: pointer;
+  }
+  .chat-ny-knapp:hover { color: var(--text); border-color: var(--blue-soft); }
+
+  .chat-messages {
+    flex: 1; min-height: 0; overflow-y: auto; padding: 4px 20px 16px;
+    display: flex; flex-direction: column; gap: 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .bubbla { max-width: 88%; border-radius: 12px; padding: 10px 14px; font-size: 0.88rem; }
+  .bubbla-text { white-space: pre-wrap; }
+  .bubbla-user { align-self: flex-end; background: rgba(255, 178, 56, 0.14); border: 1px solid rgba(255, 178, 56, 0.3); }
+  .bubbla-ai { align-self: flex-start; background: var(--ink-3); border: 1px solid var(--line); }
+  .bubbla-tankande .bubbla-text { color: var(--muted); font-style: italic; }
+
+  .chat-input-row {
+    flex: none; border-top: 1px solid var(--line); padding: 14px 20px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  #ai-prompt {
+    background: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+    color: var(--text); font-family: var(--font-body); font-size: 0.88rem; resize: vertical; min-height: 64px;
+    -webkit-text-size-adjust: 100%;
+  }
+  #ai-prompt:focus { border-color: var(--blue-soft); }
+
+  .element-knapprad { flex: none; display: flex; flex-direction: column; gap: 10px; padding: 0 20px 20px; }
+  .element-knapp {
+    display: flex; align-items: center; gap: 10px; background: var(--ink-3);
+    border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+    color: var(--text); font-family: var(--font-body); font-size: 0.9rem; cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .element-knapp:hover { background: var(--ink); border-color: var(--blue-soft); }
+  .element-knapp .ikon { font-size: 1.1rem; color: var(--blue-soft); }
+  .element-knapp.tjanst-knapp.aktiv { background: var(--ink); border-color: var(--amber); color: var(--amber); }
+  .element-knapp.tjanst-knapp.aktiv .ikon { color: var(--amber); }
+  .element-knapp:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  #services-knapprad { flex: 1; min-height: 0; overflow-y: auto; }
+  .services-detalj { flex: none; padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+
+  #egenskaper-innehall { flex: 1; min-height: 0; padding: 10px 14px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+
+  .insp-sok-rad { flex: none; margin-bottom: 2px; }
+  .insp-sok-input {
+    width: 100%; background: var(--ink); border: 1px solid var(--line); border-radius: 8px;
+    padding: 9px 12px; color: var(--text); font-family: var(--font-body); font-size: 0.85rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  .insp-sok-input:focus { border-color: var(--blue-soft); }
+  .insp-sok-input::placeholder { color: var(--muted); }
+
+  .insp-huvudkort {
+    flex: none; display: flex; align-items: center; gap: 8px;
+    background: var(--ink-3); border: 1px solid var(--line); border-radius: 8px;
+    padding: 8px 12px; margin-bottom: 4px;
+  }
+  .insp-huvud-typ {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--amber); background: rgba(255, 178, 56, 0.12); border: 1px solid rgba(255, 178, 56, 0.3);
+    border-radius: 999px; padding: 3px 10px;
+  }
+
+  .insp-sektion {
+    flex: none; background: var(--ink-3); border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+  }
+  .insp-sektion-rubrik {
+    width: 100%; display: flex; align-items: center; gap: 8px; background: transparent; border: none;
+    color: var(--text); font-family: var(--font-body); font-weight: 600; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: 0.04em; padding: 10px 12px; cursor: pointer; text-align: left;
+  }
+  .insp-sektion-rubrik:hover { background: rgba(124, 147, 255, 0.06); }
+  .insp-sektion-pil { display: inline-block; font-size: 0.65rem; color: var(--muted); transition: transform 0.15s ease; }
+  .insp-sektion.oppen .insp-sektion-pil { transform: rotate(90deg); }
+  .insp-sektion-kropp {
+    display: none; flex-direction: column; gap: 10px; padding: 4px 12px 12px; border-top: 1px solid var(--line);
+  }
+  .insp-sektion.oppen .insp-sektion-kropp { display: flex; }
+
+  .insp-radgrupp { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .insp-falt { display: flex; flex-direction: column; gap: 5px; font-size: 0.78rem; color: var(--muted); min-width: 0; }
+  .insp-falt-huvud { display: flex; align-items: center; justify-content: space-between; }
+  .insp-falt-kompakt { flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; }
+  .insp-falt-kompakt .insp-falt-huvud { flex: none; }
+  .insp-falt-kompakt input, .insp-falt-kompakt select { flex: 1; min-width: 0; max-width: 132px; }
+  .insp-vardevisning { font-family: var(--font-mono); font-size: 0.74rem; color: var(--text); cursor: pointer; border-bottom: 1px dashed rgba(124, 147, 255, 0.5); }
+  .insp-vardevisning:hover { color: var(--blue-soft); }
+  .insp-vardevisning-input {
+    width: 64px; font-family: var(--font-mono); font-size: 0.74rem; color: var(--text);
+    background: var(--ink); border: 1px solid var(--blue-soft); border-radius: 5px; padding: 1px 5px;
+  }
+  .insp-falt-kryss { flex-direction: row; align-items: center; justify-content: space-between; }
+  .insp-falt-kryss input { width: 18px; height: 18px; accent-color: var(--blue); flex: none; }
+
+  .insp-falt input, .insp-falt textarea, .insp-falt select {
+    background: var(--ink); border: 1px solid var(--line); border-radius: 7px;
+    padding: 7px 9px; color: var(--text); font-family: var(--font-body); font-size: 0.85rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  .insp-falt input[type="color"] { padding: 3px; height: 30px; width: 44px; flex: none; }
+  .insp-falt input[type="range"] { padding: 0; accent-color: var(--blue); width: 100%; }
+  .insp-falt textarea { resize: vertical; min-height: 56px; width: 100%; }
+  .insp-falt input:focus, .insp-falt textarea:focus, .insp-falt select:focus { border-color: var(--blue-soft); }
+
+  .insp-segment { display: flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; flex: none; }
+  .insp-segment-knapp {
+    background: var(--ink); border: none; color: var(--muted); font-size: 0.85rem;
+    padding: 6px 12px; cursor: pointer; border-right: 1px solid var(--line);
+  }
+  .insp-segment-knapp:last-child { border-right: none; }
+  .insp-segment-knapp.aktiv { background: var(--blue); color: #fff; }
+  .insp-segment-knapp:hover:not(.aktiv) { background: var(--ink-3); }
+
+  .ta-bort-knapp {
+    margin-top: 6px; background: rgba(255, 106, 95, 0.12); border: 1px solid rgba(255, 106, 95, 0.35);
+    color: #ff9a91; border-radius: 8px; padding: 10px 14px; font-family: var(--font-body);
+    font-size: 0.85rem; cursor: pointer;
+  }
+  .ta-bort-knapp:hover { background: rgba(255, 106, 95, 0.2); }
+
+  .ikon-knapp, .url-oval-cog {
+    flex: none;
+    background-color: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    line-height: 1;
+    transition: all 0.2s ease;
+  }
+  .ikon-knapp:hover, .url-oval-cog:hover {
+    background-color: #334155;
+    border-color: #475569;
+    color: #ffffff;
+  }
+  .ikon-knapp.fara:hover { border-color: #f87171; color: #fca5a5; background-color: #3f1d1d; }
+  .sida-laast-ikon { cursor: default; opacity: 0.75; }
+  .sida-laast-ikon:hover { background-color: #1e293b; border-color: #334155; color: #e2e8f0; }
+
+  .sidor-lista-vertikal {
+    flex: 1; min-height: 0; overflow-y: auto; padding: 4px 20px 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .sidor-lagg-till-rad { flex: none; padding-top: 4px; }
+
+  .sida-rad {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--ink-3); border: 1px solid var(--line); border-radius: 10px;
+    padding: 6px 6px 6px 14px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .sida-rad.aktiv { border-color: var(--blue-soft); background: var(--ink); }
+  .sida-rad.redigerar { padding: 6px; border-color: var(--blue-soft); background: var(--ink); }
+
+  .sida-rad-namn {
+    flex: 1; min-width: 0; background: transparent; border: none; text-align: left;
+    color: var(--text); font-family: var(--font-mono); font-size: 0.85rem; cursor: pointer;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 8px 0;
+  }
+  .sida-rad.aktiv .sida-rad-namn { color: var(--amber); }
+
+  .sida-rad-atgarder { display: flex; align-items: center; gap: 6px; flex: none; }
+
+  .sida-input {
+    font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-text);
+    background: var(--paper-2); border: 1px solid var(--blue-soft);
+    border-right: none; border-radius: 8px 0 0 8px; padding: 8px 10px; flex: 1; min-width: 0;
+    -webkit-text-size-adjust: 100%;
+  }
+  .sida-suffix {
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted);
+    background: var(--ink-3); border: 1px solid var(--blue-soft); border-left: none;
+    border-radius: 0 8px 8px 0; padding: 8px 12px 8px 2px; flex: none;
+  }
+
+  .ws-element-header {
+    flex: none; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); padding: 18px 20px 8px;
+  }
+
+  #workspace-lista { flex: 1; min-height: 0; padding: 4px 14px 20px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+  .workspace-rad {
+    display: flex; align-items: center; gap: 6px; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--ink-3); padding: 4px 6px 4px 4px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .workspace-rad.vald { border-color: var(--blue-soft); background: var(--ink); }
+  .workspace-rad-knapp {
+    flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; background: transparent;
+    border: none; padding: 8px 8px; color: var(--text); font-family: var(--font-body);
+    font-size: 0.85rem; cursor: pointer; text-align: left; border-radius: 8px;
+    transition: background 0.15s ease;
+  }
+  .workspace-rad-knapp:hover { background: rgba(124, 147, 255, 0.08); }
+  .ws-ikon {
+    flex: none; width: 26px; height: 26px; border-radius: 7px;
+    background: var(--ink); border: 1px solid var(--line);
+    color: var(--blue-soft); font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+  }
+  .ws-namn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  @media (max-width: 900px) {
+    .editor-main { flex-direction: column; }
+    .chat-dock { flex-direction: row-reverse; }
+    .verktygspanel-yta { width: 100%; flex-direction: column; border-left: none; border-top: 1px solid var(--line); max-height: 52vh; }
+    .verktygsfalt {
+      width: 100%; flex-direction: row; border-right: none; border-bottom: 1px solid var(--line); padding: 6px;
+      overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    }
+    .verktygsfalt::-webkit-scrollbar { display: none; }
+    .verktygsknapp { flex: none; flex-direction: row; gap: 6px; font-size: 0.72rem; padding: 8px 10px; }
+    .preview-wrap { padding: 12px; gap: 10px; }
+  }
+
+  @media (max-width: 480px) {
+    .topbar-row { gap: 12px; }
+    .topbar-title { display: none; }
+    .preview-toolbar { padding: 8px 10px; gap: 8px; }
+    .url-oval { max-width: none; padding: 6px 6px 6px 14px; }
+    .spara-omrade { width: auto; }
+    .spara-knapp { min-width: 0; padding: 6px 12px; font-size: 0.68rem; }
+    .verktygspanel-yta { max-height: 56vh; }
+    #egenskaper-innehall { padding: 8px 10px 16px; }
+    .insp-radgrupp { grid-template-columns: 1fr 1fr; gap: 6px; }
+    button, .element-knapp, .verktygsknapp, .ikon-knapp { touch-action: manipulation; }
+  }
+</style>

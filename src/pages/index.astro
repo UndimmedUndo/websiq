@@ -1,17 +1,836 @@
 ---
+const navigering = [
+  { label: "Tjänster", href: "#tjanster" },
+  { label: "Process", href: "#process" },
+  { label: "Arbete", href: "#arbete" },
+  { label: "Priser", href: "#priser" },
+  { label: "Frågor", href: "#vanliga-fragor" },
+  { label: "Kontakt", href: "#kontakt" },
+];
 
+const demolankar = [
+  { namn: "Demo 1", url: "https://lank1.se" },
+  { namn: "Demo 2", url: "https://lank2.se" },
+  { namn: "Demo 3", url: "https://lank3.se" },
+];
+
+const kompetenser = [
+  "AI-genererade sidor",
+  "Redigera utan kod",
+  "Bokning & beställning",
+  "Inlogg & personal",
+  "App & push",
+  "Statistik",
+];
+
+const tjanster = [
+  {
+    tagg: "<Build />",
+    titel: "Er webbsida, byggd åt er",
+    text: "Ni väljer paket och berättar om företaget, så sätter vi igång direkt. Ett första utkast tas fram utifrån er bransch, som ni sedan finslipar efter egna önskemål.",
+  },
+  {
+    tagg: "<Edit />",
+    titel: "Redigera utan kod",
+    text: "En interaktiv meny där ni själva justerar produkter, lägger till knappar, redigerar texter och mycket mer, helt utan att skriva kod.",
+  },
+  {
+    tagg: "<Cloud />",
+    titel: "Molninfrastruktur",
+    text: "Bokning, beställningar, inlogg för personal och kunder, hosting, domän och HTTPS/SSL, allt ingår och sköts åt er.",
+  },
+  {
+    tagg: "<Insight />",
+    titel: "App, statistik & push",
+    text: "Nedladdningsbar app, push-notiser och statistik över besökare och kundhistorik, så ni alltid vet hur det går.",
+  },
+];
+
+const steg = [
+  { nr: "01", kommando: "beställ", text: "Ni väljer det paket som passar er verksamhet och skickar in era uppgifter, så sätter vi igång direkt." },
+  { nr: "02", kommando: "generera", text: "Vi tar fram ett första utkast av er webbsida utifrån informationen ni gett oss." },
+  { nr: "03", kommando: "justera", text: "Finslipa sidan själva i den interaktiva menyn, produkter, texter och knappar, eller låt oss hjälpa till." },
+  { nr: "04", kommando: "kontrollcheck", text: "Sidan testas och kvalitetssäkras på riktiga enheter innan lansering." },
+  { nr: "05", kommando: "lansera", text: "Sidan går live på er domän, redo att ta emot kunder och bokningar direkt." },
+];
+
+const nischer = [
+  { titel: "Restauranger & caféer", accent: "amber", notering: "Uppdatera menyn själva på minuter, direkt i den interaktiva menyn, utan att koda." },
+  { titel: "Hantverkare & entreprenörer", accent: "blue", notering: "Offertförfrågningar som landar i inkorgen, inte i en fax." },
+  { titel: "Studios & salonger", accent: "amber", notering: "Bokning inbyggd, så kalendern fylls av sig själv." },
+  { titel: "Lokala tjänster", accent: "blue", notering: "Tydliga priser och en sida som syns när folk söker." },
+];
+
+const vardegrund = [
+  {
+    titel: "Ni kommer igång direkt, och styr resten själva",
+    text: "Ingen väntan på en utvecklare för varje liten ändring. Efter beställning sätter vi igång direkt, och sedan justerar ni produkter, texter och knappar själva i den interaktiva menyn, när ni vill.",
+  },
+  {
+    titel: "En hel digital värld, inte bara en webbsida",
+    text: "I WebsiqAI ingår flera tjänster som exempelvis olika system för bokning, inlogg och molninfrastruktur. Perfekt oavsett vad ditt företag behöver.",
+  },
+  {
+    titel: "Tydligt kring vad som ingår",
+    text: "Källkoden är er egen och tillhör er permanent. WebsiqAI sköter hosting och molntjänster åt er så länge abonnemanget är aktivt. Inga överraskningar, inga dolda kostnader, bara en sida som fungerar.",
+  },
+];
+
+const agandeText = "Källkoden är er egen och tillhör er permanent, även om abonnemanget skulle avslutas. Molntjänster som bokning, inlogg och hosting kräver däremot ett aktivt abonnemang för att fungera. AI-tokens och molnlagring följer det paket ni har vid var tid och adderas inte mellan paket.";
+
+const paket = [
+{
+namn: "Start",
+pris: "79",
+framhavd: false,
+badge: null,
+funktioner: [
+"Hosting online",
+"800 000 AI-tokens per månad för AI-generering och ändringar",
+"Max 10 olika sidor i webbsidan",
+"Professionell och personlig ai-genererad webbsida",
+"Visuell editor",
+"HTTPS/SSL-certifikat",
+"Mobilanpassning",
+"SEO-optimering",
+"Websiq-domän ingår (dittforetag.websiq.se), eller använd din egen domän",
+"Säker molnlagring av ditt projekt",
+"Mänsklig kundsupport vid problem eller frågor",
+],
+agande: agandeText,
+},
+{
+namn: "Business",
+pris: "149",
+framhavd: true,
+badge: "Mest populär",
+funktioner: [
+"Allt i start plus:",
+"1 500 000 AI-tokens per månad för AI-generering och ändringar",
+"Max 25 olika sidor i webbsidan",
+"5GB molnlagring för bilder och filer",
+"Bokningssystem",
+"Inloggningssystem för personal",
+"Upp till 20 personalanvändare",
+"Nedladdningsbar app för mobil, surfplatta och dator",
+"Push-notiser",
+"Egen custom domän ingår (dittforetag.se)",
+"Statistik",
+],
+agande: agandeText,
+},
+{
+namn: "Premium",
+pris: "229",
+framhavd: false,
+badge: "Mest komplett",
+funktioner: [
+"Allt i start och business plus:",
+"2 500 000 AI-tokens per månad för AI-generering och ändringar",
+"Max 50 olika sidor i webbsidan",
+"20 GB molnlagring för bilder och filer",
+"Extra lagring för 5 kr/månad per GB",
+"Automatiska bekräftelsemejl",
+"Automatiska kundkampanjer, exempelvis när en kund inte varit aktiv på 90 dagar",
+"Avancerad statistik",
+"Obegränsat antal personalanvändare enligt rimlig användning",
+"Kundkonton med inloggning",
+"Kundregister och kundhistorik",
+"5 senaste versionerna av din webbplats sparas automatiskt i molnet"
+],
+agande: agandeText,
+},
+];
+
+
+const vanligaFragor = [
+  {
+    fraga: "Hur bra blir en webbsida som är genererad med AI?",
+    svar: "Vår AI är tränad på professionell webbdesign och genererar en komplett sida utifrån information om ert företag, allt från struktur till text och bilder. Resultatet kvalitetssäkras innan lansering, och ni har full kontroll att själva justera produkter, texter och knappar i den interaktiva menyn efteråt. Ni är aldrig låsta till det AI:n föreslår från början.",
+  },
+  {
+    fraga: "Varför en månadsavgift?",
+    svar: "Att driva molninfrastraktur, hosting, domäner samt system för bokning och inlogg är inte gratis. Så länge abonnemanget gäller ingår att uppdatera sidan själva i menyn, och behöver ni hjälp med något är det bara att skicka ett mail så löser vi det.",
+  },
+  {
+    fraga: "Hur lång tid tar ett projekt?",
+    svar: "Efter beställning sätter vi igång direkt och tar fram ett första utkast av webbsidan. De flesta sidor är finslipade och live inom några dagar, beroende på hur mycket ni vill justera själva.",
+  },
+  {
+    fraga: "Äger jag webbsidan?",
+    svar: "Källkoden till er webbsida är er egen och tillhör er permanent, oavsett om abonnemanget skulle avslutas. Molntjänster som bokning, inlogg och hosting kräver däremot ett aktivt abonnemang för att fungera.",
+  },
+  {
+    fraga: "Vem äger domänen?",
+    svar: "Domänen registreras i regel i ert namn oavsett vilket paket ni väljer, eftersom de flesta företag redan har eller vill ha full kontroll över sin egen domän. Vill ni hellre att vi sköter registreringen åt er går det också bra, och ingår som en del av Start, Business och Premium.",
+  },
+  {
+    fraga: "Finns det någon bindningstid?",
+    svar: "Nej. Ni betalar månad för månad och kan byta paket eller avsluta helt när som helst, utan uppsägningstid eller dolda villkor.",
+  },
+  {
+    fraga: "Kan jag byta paket i efterhand?",
+    svar: "Ja, ni kan fritt byta mellan alla paket när som helst. Den nya månadsavgiften börjar gälla direkt.",
+  },
+  {
+    fraga: "Vad händer om jag säger upp mitt abonnemang?",
+    svar: "Källkoden behåller ni. Molntjänster som bokning, inlogg och hosting slutar däremot fungera när abonnemanget avslutas. Hör gärna av er i god tid innan så hjälper vi er att exportera det ni behöver.",
+  },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebsiqAI</title>
+    <meta
+      name="description"
+      content="WebsiqAI ger företag en professionell webbsida, bokningssystem, inloggningar och hosting i ett paket. Redigera själva, helt utan kod."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <div class="wrap header-row">
+        <a href="#top" class="logo" aria-label="WebsiqAI hem">
+          <span class="logo-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="logo-text">Web<span class="accent">siq</span> AI</span>
+        </a>
+        <nav class="site-nav" aria-label="Primär">
+          {navigering.map((item) => <a href={item.href}>{item.label}</a>)}
+        </nav>
+        <a href="/admin" class="admin-link" aria-label="Till adminpanelen">
+          <span class="admin-link-dot" aria-hidden="true"></span>
+          Admin
+        </a>
+        <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Öppna meny">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <nav id="mobile-nav" class="mobile-nav" aria-label="Mobil">
+        {navigering.map((item) => <a href={item.href}>{item.label}</a>)}
+        <a href="/admin">Admin</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div class="hero-copy reveal">
+            <p class="eyebrow">Webbsida, bokning & hosting i ett paket</p>
+            <h1>Er nya webbsida, redo att ta emot kunder</h1>
+            <p class="hero-sub">
+              WebsiqAI ger er en professionell webbsida, bokningssystem, inloggningar
+              och molnhosting i ett och samma paket. Ni väljer paket, vi sätter igång
+              direkt, och sedan styr ni allt själva i en enkel meny, helt utan kod.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#kontakt">Skaffa min webbsida</a>
+              <a class="btn btn-ghost" href="#process">Se hur det fungerar</a>
+            </div>
+            <p class="demo-note">
+              Demonstrationer:
+              <a href={demolankar[0].url} target="_blank" rel="noopener noreferrer">{demolankar[0].namn}</a> ·
+              <a href={demolankar[1].url} target="_blank" rel="noopener noreferrer">{demolankar[1].namn}</a> ·
+              <a href={demolankar[2].url} target="_blank" rel="noopener noreferrer">{demolankar[2].namn}</a>
+            </p>
+          </div>
+
+          <div class="hero-visual reveal" style="--delay: 120ms">
+            <div class="browser" role="img" aria-label="Förhandsvisning av en webbsida som genereras i ett webbläsarfönster">
+              <div class="browser-chrome">
+                <span class="dot dot-a"></span><span class="dot dot-b"></span><span class="dot dot-c"></span>
+                <div class="address-bar">
+                  <span class="lock" aria-hidden="true">🔒</span>
+                  <span id="typer" class="typer"></span><span class="caret" aria-hidden="true"></span>
+                </div>
+              </div>
+              <div class="browser-body">
+                <div class="skel skel-nav">
+                  <span class="skel-dot"></span>
+                  <span class="skel-line short"></span>
+                  <span class="skel-line short"></span>
+                  <span class="skel-pill"></span>
+                </div>
+                <div class="skel skel-hero">
+                  <span class="skel-line wide big"></span>
+                  <span class="skel-line mid big"></span>
+                  <span class="skel-line short"></span>
+                  <span class="skel-cta"></span>
+                </div>
+                <div class="skel skel-cards">
+                  <span class="skel-card"></span><span class="skel-card"></span><span class="skel-card"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="capabilities reveal" aria-label="Kompetenser">
+          <div class="capabilities-track">
+            {kompetenser.map((c) => <span class="tab">{c}</span>)}
+          </div>
+        </div>
+      </section>
+
+      <section id="tjanster" class="section">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <p class="eyebrow">Vad ni får</p>
+            <h2>En komplett digital lösning för er verksamhet</h2>
+          </div>
+          <div class="cards-grid">
+            {tjanster.map((s, i) => (
+              <div class="card reveal" style={`--delay: ${i * 80}ms`}>
+                <span class="card-tag">{s.tagg}</span>
+                <h3>{s.titel}</h3>
+                <p>{s.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="process" class="section section-alt">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <p class="eyebrow">Så går det till</p>
+            <h2>Från beställning till lanserad sida, utan krångel.</h2>
+          </div>
+          <div class="terminal reveal">
+            <div class="terminal-bar">
+              <span class="dot dot-a"></span><span class="dot dot-b"></span><span class="dot dot-c"></span>
+              <span class="terminal-title">projekt.log</span>
+            </div>
+            <ol class="terminal-body">
+              {steg.map((s) => (
+                <li class="term-line">
+                  <span class="line-no">{s.nr}</span>
+                  <span class="term-cmd">$ {s.kommando}</span>
+                  <span class="term-body">{s.text}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section id="arbete" class="section">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <p class="eyebrow">Vilka vi passar för</p>
+            <h2>Byggt för företag som lever i verkligheten men även vill synas digitalt.</h2>
+          </div>
+          <div class="niche-grid">
+            {nischer.map((n, i) => (
+              <div class={`niche reveal niche-${n.accent}`} style={`--delay: ${i * 70}ms`}>
+                <div class="niche-thumb" aria-hidden="true">
+                  <span class="dot dot-a"></span><span class="dot dot-b"></span><span class="dot dot-c"></span>
+                  <span class="niche-bar"></span>
+                  <span class="niche-block"></span>
+                </div>
+                <h3>{n.titel}</h3>
+                <p>{n.notering}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <p class="eyebrow">Varför WebsiqAI</p>
+            <h2>WebsiqAI hanterar allt digitalt, inte bara en webbsida. Hosting, bokningar och mer, så ni kan fokusera på er verksamhet.</h2>
+          </div>
+          <div class="values-grid">
+            {vardegrund.map((v, i) => (
+              <div class="value reveal" style={`--delay: ${i * 80}ms`}>
+                <h3>{v.titel}</h3>
+                <p>{v.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="priser" class="section">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <p class="eyebrow">Priser</p>
+            <h2>En investering som betalar sig snabbt</h2>
+            <p class="section-legal-note">En proffsig, AI-genererad webbsida är ofta det som avgör om en kund väljer er eller konkurrenten. Priset är enkelt och förutsägbart, utan dolda avgifter och utan bindningstid, och täcker hosting, domän, HTTPS/SSL, molninfrastruktur, inlogg, bokning och löpande support. Ändrar ni er om något behöver justeras är det bara att höra av sig, så fixar vi det.</p>
+          </div>
+          <div class="plans-grid">
+            {paket.map((p, i) => (
+              <div class={`plan reveal ${p.framhavd ? "plan-highlight" : ""} ${p.badge && !p.framhavd ? "plan-enterprise" : ""}`} style={`--delay: ${i * 80}ms`}>
+                {p.badge && <span class="plan-badge">{p.badge}</span>}
+                <p class="plan-name">{p.namn}</p>
+                <p class="plan-price"><span class="plan-amount">{p.pris}</span> kr/månad</p>
+                <p class="plan-perday">motsvarar ca {Math.round(Number(p.pris) / 30)} kr/dag</p>
+                <p class="plan-note">Ingen bindningstid, avsluta när som helst</p>
+                <ul class="plan-features">
+                  {p.funktioner.map((f) => <li>{f}</li>)}
+                </ul>
+                <p class="plan-legal">{p.agande}</p>
+                <a class={`btn ${p.framhavd ? "btn-primary" : "btn-ghost"} plan-btn`} href="#kontakt" data-paket={p.namn}>Köp {p.namn} och sätt igång</a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="vanliga-fragor" class="section section-alt">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <p class="eyebrow">Vanliga frågor</p>
+            <h2>Bra att veta innan ni hör av er.</h2>
+          </div>
+          <div class="faq-list">
+            {vanligaFragor.map((f, i) => (
+              <details class="faq-item reveal" style={`--delay: ${i * 60}ms`}>
+                <summary>{f.fraga}</summary>
+                <p>{f.svar}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="kontakt" class="section contact">
+        <div class="wrap contact-grid">
+          <div class="reveal">
+            <p class="eyebrow">Beställ eller fråga oss</p>
+            <h2>Välj paket, så sätter vi igång direkt</h2>
+            <p class="hero-sub">Fyll i formuläret för att beställa ert paket och komma igång direkt, eller skriv era frågor så återkommer vi så snart vi kan.</p>
+          </div>
+          <form class="contact-form reveal" style="--delay: 100ms" action="mailto:hello@websiq.example" method="POST" enctype="text/plain">
+            <div class="field">
+              <label for="name">Namn</label>
+              <input id="name" name="name" type="text" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label for="business">Företagsnamn</label>
+              <input id="business" name="business" type="text" autocomplete="organization" />
+            </div>
+            <div class="field">
+              <label for="email">E-post</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div class="field">
+              <label for="paket">Vilket paket vill ni ha?</label>
+              <select id="paket" name="paket">
+                <option value="">Jag har frågor först</option>
+                <option value="Start">Start – 79 kr/månad</option>
+                <option value="Business">Business – 149 kr/månad</option>
+                <option value="Premium">Premium – 229 kr/månad</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="message">Berätta om företaget, eller skriv er fråga</label>
+              <textarea id="message" name="message" rows="4"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">Skicka beställning</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap footer-row">
+        <a href="#top" class="logo"><span class="logo-text">Web<span class="accent">siq</span> AI</span></a>
+        <nav class="footer-nav" aria-label="Sidfot">
+          {navigering.map((item) => <a href={item.href}>{item.label}</a>)}
+        </nav>
+        <a class="footer-email" href="mailto:hello@websiq.example">hello@websiq.example</a>
+      </div>
+      <div class="wrap">
+        <p class="footer-fine">© {new Date().getFullYear()} WebsiqAI. Innehåll och design på den här sidan tillhör WebsiqAI. Vad som gäller kring ägande och tillgång för respektive paket hittar ni under Priser.</p>
+      </div>
+    </footer>
+
+    <script>
+      const menyknapp = document.getElementById("menu-toggle");
+      const mobilNav = document.getElementById("mobile-nav");
+      menyknapp?.addEventListener("click", () => {
+        const oppen = mobilNav?.classList.toggle("open");
+        menyknapp.setAttribute("aria-expanded", String(!!oppen));
+      });
+      mobilNav?.querySelectorAll("a").forEach((lank) =>
+        lank.addEventListener("click", () => {
+          mobilNav.classList.remove("open");
+          menyknapp?.setAttribute("aria-expanded", "false");
+        })
+      );
+
+      document.querySelectorAll("[data-paket]").forEach((knapp) => {
+        knapp.addEventListener("click", () => {
+          const valdPaket = document.getElementById("paket");
+          if (valdPaket) valdPaket.value = knapp.dataset.paket;
+        });
+      });
+
+      const reducerRorelse = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const skrivare = document.getElementById("typer");
+      const fraser = ["hembutik.se", "pizzaresturang.se", "frisoren.se", "dittforetag.se"];
+      if (skrivare) {
+        if (reducerRorelse) {
+          skrivare.textContent = "dittforetag.se";
+        } else {
+          let frasIndex = 0, teckenIndex = 0, raderar = false;
+          const tick = () => {
+            const nuvarande = fraser[frasIndex];
+            if (!raderar) {
+              teckenIndex++;
+              skrivare.textContent = nuvarande.slice(0, teckenIndex);
+              if (teckenIndex === nuvarande.length) { raderar = true; setTimeout(tick, 1400); return; }
+            } else {
+              teckenIndex--;
+              skrivare.textContent = nuvarande.slice(0, teckenIndex);
+              if (teckenIndex === 0) { raderar = false; frasIndex = (frasIndex + 1) % fraser.length; }
+            }
+            setTimeout(tick, raderar ? 35 : 70);
+          };
+          tick();
+        }
+      }
+
+      const synligaElement = document.querySelectorAll(".reveal");
+      if (reducerRorelse) {
+        synligaElement.forEach((el) => el.classList.add("in-view"));
+      } else {
+        const observerare = new IntersectionObserver(
+          (poster) => poster.forEach((post) => {
+            if (post.isIntersecting) { post.target.classList.add("in-view"); observerare.unobserve(post.target); }
+          }),
+          { threshold: 0.15 }
+        );
+        synligaElement.forEach((el) => observerare.observe(el));
+      }
+    </script>
+
+    <script>
+      import { createClient } from "@supabase/supabase-js";
+
+      const supabaseUrl = "https://irvboovrbphgeqzsxrlu.supabase.co";
+      const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlydmJvb3ZyYnBoZ2VxenN4cmx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjUxMTQsImV4cCI6MjEwMDIwMTExNH0.F-GrC5Q7y8NzakNOYTFlDvMvLy_tHCGMtXtjJ0-jEXw";
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      const adminPrick = document.querySelector(".admin-link-dot");
+
+      async function uppdateraAdminStatus() {
+        if (!adminPrick) return;
+        const { data } = await supabase.auth.getSession();
+        adminPrick.classList.toggle("online", !!data.session);
+      }
+
+      uppdateraAdminStatus();
+
+      supabase.auth.onAuthStateChange((_handelse, session) => {
+        adminPrick?.classList.toggle("online", !!session);
+      });
+    </script>
+  </body>
 </html>
+
+<style>
+  :root {
+    --ink: #0f1420; --ink-2: #161d2c; --ink-3: #1f273a;
+    --paper: #f3f1ea; --paper-2: #ffffff;
+    --text: #eef0f6; --ink-text: #10141c;
+    --muted: #9aa2b6; --muted-on-paper: #5c6273;
+    --blue: #4c6fff; --blue-soft: #7c93ff; --amber: #ffb238; --green: #3ecf7f;
+    --line: rgba(255, 255, 255, 0.09); --line-on-paper: rgba(15, 20, 32, 0.12);
+    --radius: 14px;
+    --font-display: "Sora", system-ui, sans-serif;
+    --font-body: "Inter", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0; background: var(--ink); color: var(--text);
+    font-family: var(--font-body); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; position: relative;
+  }
+
+  .grain {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.5;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  }
+
+  a { color: inherit; text-decoration: none; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  p { margin: 0; }
+  :focus-visible { outline: 2px solid var(--blue-soft); outline-offset: 3px; border-radius: 4px; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  .accent { color: var(--amber); }
+
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--blue-soft); margin: 0 0 14px;
+  }
+  .section-alt .eyebrow, .contact .eyebrow { color: var(--blue); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 12px 22px; border-radius: 999px; font-family: var(--font-body);
+    font-weight: 600; font-size: 0.95rem; border: 1px solid transparent; cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--amber); color: var(--ink-text); }
+  .btn-primary:hover { background: #ffbf5a; }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--line); }
+  .btn-ghost:hover { border-color: var(--blue-soft); }
+  .section-alt .btn-ghost, .contact .btn-ghost { border-color: var(--line-on-paper); }
+
+  .site-header {
+    position: sticky; top: 0; z-index: 20; background: rgba(15, 20, 32, 0.82);
+    backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+  }
+  .header-row { display: flex; align-items: center; gap: 28px; height: 72px; }
+  .logo {
+    display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display);
+    font-weight: 700; font-size: 1.15rem; margin-right: auto;
+  }
+  .logo-dots { display: inline-flex; gap: 4px; }
+  .logo-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); display: inline-block; }
+  .logo-dots i:nth-child(3) { background: var(--amber); }
+  .logo-text { white-space: nowrap; }
+
+  .site-nav { display: flex; gap: 22px; margin-left: auto; }
+  .site-nav a { font-size: 0.95rem; color: var(--muted); transition: color 0.15s ease; }
+  .site-nav a:hover { color: var(--text); }
+
+  .admin-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted);
+    border: 1px solid var(--line); padding: 8px 16px; border-radius: 999px;
+    white-space: nowrap; transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+  .admin-link:hover { color: var(--text); border-color: var(--blue-soft); background: var(--ink-2); }
+  .admin-link-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); display: inline-block; transition: background 0.2s ease; }
+  .admin-link-dot.online { background: var(--green); }
+
+  .menu-toggle {
+    display: none; flex-direction: column; justify-content: center; gap: 5px;
+    width: 38px; height: 38px; background: transparent; border: 1px solid var(--line);
+    border-radius: 8px; cursor: pointer;
+  }
+  .menu-toggle span { display: block; height: 2px; width: 16px; background: var(--text); margin: 0 auto; }
+
+  .mobile-nav { display: none; flex-direction: column; gap: 2px; padding: 8px 24px 20px; border-top: 1px solid var(--line); }
+  .mobile-nav a { padding: 12px 0; color: var(--muted); border-bottom: 1px solid var(--line); }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav.open { display: flex; }
+
+  @media (max-width: 860px) {
+    .site-nav { display: none; }
+    .admin-link { display: none; }
+    .menu-toggle { display: flex; }
+  }
+
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; transition-delay: var(--delay, 0ms); }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .reveal { transition: none; opacity: 1; transform: none; } }
+
+  .hero { padding: 76px 0 40px; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
+  .hero-copy h1 { font-size: clamp(2.1rem, 4vw, 3.15rem); line-height: 1.08; }
+  .hero-sub { color: var(--muted); font-size: 1.05rem; margin: 22px 0 30px; max-width: 46ch; }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .demo-note { margin-top: 14px; font-size: 0.85rem; color: var(--muted); font-family: var(--font-mono); }
+  .demo-note a { color: var(--blue-soft); text-decoration: underline; text-underline-offset: 2px; }
+  .demo-note a:hover { color: var(--text); }
+
+  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+
+  .browser {
+    background: var(--ink-2); border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.6);
+  }
+  .browser-chrome { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--ink-3); border-bottom: 1px solid var(--line); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .dot-a { background: #ff6a5f; }
+  .dot-b { background: var(--amber); }
+  .dot-c { background: #3ecf7f; }
+  .address-bar {
+    flex: 1; display: flex; align-items: center; gap: 8px; background: var(--ink);
+    border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px;
+    font-family: var(--font-mono); font-size: 0.82rem; color: var(--muted); min-width: 0;
+  }
+  .lock { font-size: 0.7rem; opacity: 0.6; }
+  .typer { color: var(--text); white-space: nowrap; overflow: hidden; }
+  .caret { width: 1px; height: 12px; background: var(--blue-soft); display: inline-block; animation: blink 1s step-end infinite; }
+  @media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .browser-body { padding: 22px; display: flex; flex-direction: column; gap: 20px; }
+  .skel { display: flex; flex-direction: column; gap: 8px; }
+  .skel-nav { flex-direction: row; align-items: center; gap: 8px; }
+  .skel-dot { width: 16px; height: 16px; border-radius: 5px; background: var(--amber); margin-right: 6px; }
+  .skel-pill { margin-left: auto; width: 64px; height: 20px; border-radius: 999px; background: var(--blue); }
+  .skel-line { display: block; height: 10px; border-radius: 4px; background: var(--ink-3); }
+  .skel-line.short { width: 54px; }
+  .skel-line.wide { width: 82%; }
+  .skel-line.mid { width: 60%; }
+  .skel-line.big { height: 16px; }
+  .skel-hero { padding: 10px 0; gap: 10px; }
+  .skel-cta { margin-top: 6px; width: 120px; height: 30px; border-radius: 8px; background: var(--amber); }
+  .skel-cards { flex-direction: row; gap: 12px; }
+  .skel-card { flex: 1; height: 70px; border-radius: 8px; background: var(--ink-3); border: 1px solid var(--line); }
+
+  .capabilities { margin-top: 56px; border-top: 1px solid var(--line); }
+  .capabilities-track { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 18px 0; }
+  .tab {
+    flex: none; font-family: var(--font-mono); font-size: 0.82rem; padding: 8px 16px;
+    border-radius: 10px 10px 0 0; border: 1px solid var(--line); border-bottom: none;
+    color: var(--muted); background: var(--ink-2);
+  }
+
+  .section { padding: 96px 0; }
+  .section-alt { background: var(--paper); color: var(--ink-text); }
+  .section-head { max-width: 60ch; margin-bottom: 48px; }
+  .section-head h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+  .section-legal-note { margin-top: 18px; font-size: 0.88rem; color: var(--muted); max-width: 68ch; }
+
+  .cards-grid, .niche-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--ink-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px;
+  }
+  .card-tag, .term-cmd { font-family: var(--font-mono); color: var(--amber); }
+  .card-tag { font-size: 0.8rem; }
+  .card h3 { font-size: 1.08rem; margin: 14px 0 10px; }
+  .card p, .niche p, .value p { color: var(--muted); font-size: 0.92rem; }
+
+  .terminal { background: var(--ink); border: 1px solid var(--line-on-paper); border-radius: var(--radius); overflow: hidden; box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.35); }
+  .terminal-bar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--ink-3); border-bottom: 1px solid var(--line); }
+  .terminal-title { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); margin-left: 6px; }
+  .terminal-body { list-style: none; margin: 0; padding: 6px 0; }
+  .term-line {
+    display: grid; grid-template-columns: 40px 130px 1fr; gap: 18px; align-items: baseline;
+    padding: 16px 22px; border-bottom: 1px solid var(--line); font-family: var(--font-mono);
+  }
+  .term-line:last-child { border-bottom: none; }
+  .line-no { color: var(--muted); font-size: 0.8rem; }
+  .term-cmd { font-size: 0.92rem; }
+  .term-body { color: var(--text); font-family: var(--font-body); font-size: 0.95rem; }
+
+  @media (max-width: 700px) {
+    .term-line { grid-template-columns: 26px 1fr; grid-template-areas: "no cmd" "body body"; }
+    .line-no { grid-area: no; } .term-cmd { grid-area: cmd; } .term-body { grid-area: body; margin-top: 6px; }
+  }
+
+  .niche { background: var(--ink-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+  .niche-thumb { position: relative; background: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px 16px; margin-bottom: 16px; }
+  .niche-thumb .dot { width: 6px; height: 6px; margin-right: 3px; }
+  .niche-bar { display: block; height: 8px; width: 60%; border-radius: 3px; background: var(--ink-3); margin: 12px 0 8px; }
+  .niche-block { display: block; height: 34px; border-radius: 6px; }
+  .niche-blue .niche-block { background: linear-gradient(135deg, var(--blue), var(--ink-3)); }
+  .niche-amber .niche-block { background: linear-gradient(135deg, var(--amber), var(--ink-3)); }
+  .niche h3 { font-size: 1rem; margin-bottom: 6px; }
+
+  .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .value { padding: 26px; border: 1px solid var(--line-on-paper); border-radius: var(--radius); background: var(--paper-2); }
+  .value h3 { font-size: 1.05rem; margin-bottom: 10px; }
+  .value p { color: var(--muted-on-paper); }
+
+  .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; align-items: stretch; }
+  .plan { position: relative; display: flex; flex-direction: column; background: var(--ink-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 26px; }
+  .plan-highlight { background: var(--ink-3); border-color: var(--amber); box-shadow: 0 24px 60px -28px rgba(255, 178, 56, 0.35); transform: translateY(-6px); }
+  .plan-enterprise { background: var(--ink-3); border-color: var(--blue); box-shadow: 0 24px 60px -28px rgba(76, 111, 255, 0.35); }
+  .plan-badge {
+    position: absolute; top: -13px; left: 26px; background: var(--amber); color: var(--ink-text);
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 999px;
+  }
+  .plan-enterprise .plan-badge { background: var(--blue); color: #fff; }
+  .plan-name { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; }
+  .plan-price { margin: 10px 0 2px; color: var(--muted); font-size: 0.95rem; }
+  .plan-amount { font-family: var(--font-display); font-size: 2.3rem; color: var(--text); font-weight: 700; margin-right: 4px; }
+  .plan-perday { margin: 0 0 10px; font-size: 0.78rem; color: var(--blue-soft); font-family: var(--font-mono); }
+  .plan-note { margin: 0 0 22px; font-size: 0.82rem; color: var(--green); font-family: var(--font-mono); }
+  .plan-features { list-style: none; margin: 0 0 20px; padding: 0; display: flex; flex-direction: column; gap: 11px; flex: 1; }
+  .plan-features li { font-size: 0.92rem; color: var(--muted); padding-left: 22px; position: relative; }
+  .plan-features li::before { content: "›"; position: absolute; left: 0; color: var(--blue-soft); font-family: var(--font-mono); font-weight: 700; }
+  .plan-highlight .plan-features li::before { color: var(--amber); }
+  .plan-enterprise .plan-features li::before { color: var(--blue-soft); }
+  .plan-legal { font-size: 0.78rem; line-height: 1.45; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; margin-bottom: 20px; }
+  .plan-btn { width: 100%; }
+
+  @media (max-width: 640px) { .plan-highlight { transform: none; } }
+
+  .faq-list { display: flex; flex-direction: column; gap: 14px; max-width: 760px; }
+  .faq-item {
+    background: var(--paper-2); border: 1px solid var(--line-on-paper); border-radius: var(--radius);
+    padding: 20px 24px;
+  }
+  .faq-item summary {
+    cursor: pointer; font-family: var(--font-display); font-weight: 600; font-size: 1.02rem;
+    list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: "+"; font-family: var(--font-mono); color: var(--blue); font-size: 1.2rem; flex: none; }
+  .faq-item[open] summary::after { content: "–"; }
+  .faq-item p { margin-top: 14px; color: var(--muted-on-paper); font-size: 0.95rem; }
+
+  .contact { background: var(--ink); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .contact h2 { font-size: clamp(1.6rem, 2.8vw, 2.1rem); margin: 0 0 18px; }
+  .contact-form { background: var(--ink-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 0.85rem; color: var(--muted); font-family: var(--font-mono); }
+  .field input, .field textarea, .field select {
+    background: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 11px 12px;
+    color: var(--text); font-family: var(--font-body); font-size: 0.95rem; resize: vertical;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--blue-soft); }
+  .contact-form .btn { align-self: flex-start; margin-top: 4px; }
+
+  @media (max-width: 860px) { .contact-grid { grid-template-columns: 1fr; } }
+
+  .site-footer { border-top: 1px solid var(--line); padding: 40px 0 30px; }
+  .footer-row { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; padding-bottom: 24px; }
+  .footer-nav { display: flex; gap: 18px; flex-wrap: wrap; margin-left: auto; }
+  .footer-nav a, .footer-email { color: var(--muted); font-size: 0.92rem; }
+  .footer-fine { color: var(--muted); font-size: 0.8rem; font-family: var(--font-mono); border-top: 1px solid var(--line); padding-top: 20px; max-width: 80ch; }
+
+  @media (max-width: 620px) { .footer-row { flex-direction: column; align-items: flex-start; } .footer-nav { margin-left: 0; } }
+
+  @media (max-width: 480px) {
+    .wrap { padding: 0 16px; }
+    .header-row { height: 64px; }
+    .hero { padding: 48px 0 28px; }
+    .hero-actions { flex-direction: column; align-items: stretch; }
+    .hero-actions .btn { width: 100%; }
+    .demo-note { display: flex; flex-direction: column; gap: 2px; }
+    .section { padding: 64px 0; }
+    .section-head { margin-bottom: 32px; }
+    .card, .value, .panel-card { padding: 20px; }
+    .plan { padding: 24px 20px; }
+    .plan-amount { font-size: 1.9rem; }
+    .terminal-bar, .browser-chrome { padding: 10px 12px; }
+    .term-line { padding: 14px 16px; }
+    .contact-form { padding: 20px; }
+    .faq-item { padding: 16px 18px; }
+    .btn { padding: 11px 18px; font-size: 0.9rem; }
+    .plan-btn, .login-btn { width: 100%; }
+  }
+</style>

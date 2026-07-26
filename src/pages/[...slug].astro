@@ -1,0 +1,63 @@
+---
+export const prerender = false;
+
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = "https://irvboovrbphgeqzsxrlu.supabase.co";
+const supabaseKey = "sb_publishable_Tf02evMtkz4QqO_n5Qac1Q_O0fxm3Q9";
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+console.log("====================================");
+console.log("TEST 1: ALLA RADER");
+console.log("====================================");
+
+const { data: allaRader, error: allaRaderError } = await supabase
+  .from("live_pages")
+  .select("*");
+
+console.log("Alla rader:", allaRader);
+console.log("Alla rader JSON:", JSON.stringify(allaRader, null, 2));
+console.log("Fel:", allaRaderError);
+
+console.log("====================================");
+console.log("TEST 2: HÅRDKODAD MATCHNING");
+console.log("====================================");
+
+const { data: matchning, error: matchningError } = await supabase
+  .from("live_pages")
+  .select("*")
+  .eq("domain", "abdi")
+  .eq("name", "test");
+
+console.log("Matchning:", matchning);
+console.log("Matchning JSON:", JSON.stringify(matchning, null, 2));
+console.log("Fel:", matchningError);
+
+console.log("====================================");
+console.log("TEST 3: HÅRDKODAD ENDAST DOMAIN");
+console.log("====================================");
+
+const { data: domainResultat, error: domainError } = await supabase
+  .from("live_pages")
+  .select("*")
+  .eq("domain", "abdi");
+
+console.log("Domain-resultat:", domainResultat);
+console.log("Domain-resultat JSON:", JSON.stringify(domainResultat, null, 2));
+console.log("Fel:", domainError);
+
+console.log("====================================");
+
+if (matchningError) {
+  return new Response("Databasfel", { status: 500 });
+}
+
+if (!matchning || matchning.length === 0) {
+  return new Response("Ingen matchning hittades", { status: 404 });
+}
+
+const innehåll = matchning[0].content;
+---
+
+<div set:html={innehåll}></div>
