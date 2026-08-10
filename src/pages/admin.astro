@@ -1,9 +1,7 @@
 ---
-
 ---
 
 <!doctype html>
-
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
@@ -11,1298 +9,392 @@
     <title>websiqAI - adminpanel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
-
   <body>
     <div class="grain" aria-hidden="true"></div>
 
-```
-<header class="site-header">
-  <div class="wrap header-row">
-    <a href="/" class="logo" aria-label="websiqAI hem">
-      <span class="logo-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="logo-text">web<span class="accent">siq</span> AI</span>
-    </a>
-
-    <span class="header-tag-wrap">
-      <span class="header-status-dot" id="header-status-dot" aria-hidden="true"></span>
-      <span class="header-tag" id="header-tag">Inloggning</span>
-    </span>
-  </div>
-</header>
-
-<main id="vy-inloggning" class="view">
-  <section class="login-section">
-    <div class="wrap login-grid">
-      <div class="login-copy reveal in-view">
-        <p class="eyebrow">Adminpanel</p>
-        <h1 id="login-titel">Välkommen tillbaka</h1>
-        <p class="login-sub" id="login-undertext">
-          Logga in med ditt konto för att hantera företag och personal.
-        </p>
+    <header class="site-header">
+      <div class="wrap header-row">
+        <a href="/" class="logo" aria-label="websiqAI hem">
+          <span class="logo-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="logo-text">web<span class="accent">siq</span> AI</span>
+        </a>
+        <span class="header-tag-wrap">
+          <span class="header-status-dot" id="header-status-dot" aria-hidden="true"></span>
+          <span class="header-tag" id="header-tag">Inloggning</span>
+        </span>
       </div>
+    </header>
 
-      <div class="login-card reveal in-view" id="login-card">
-        <div class="auth-tabs" role="tablist" id="auth-tabs">
-          <button
-            type="button"
-            class="auth-tab active"
-            id="tab-login"
-            role="tab"
-            aria-selected="true"
-          >
-            Logga in
-          </button>
+    <main id="vy-inloggning" class="view">
+      <section class="login-section">
+        <div class="wrap login-grid">
+          <div class="login-copy reveal in-view">
+            <p class="eyebrow">Adminpanel</p>
+            <h1 id="login-titel">Välkommen tillbaka</h1>
+            <p class="login-sub" id="login-undertext">Logga in med ditt konto för att hantera företag och personal.</p>
+          </div>
 
-          <button
-            type="button"
-            class="auth-tab"
-            id="tab-signup"
-            role="tab"
-            aria-selected="false"
-          >
-            Skapa konto
-          </button>
+          <div class="login-card reveal in-view" id="login-card">
+            <div class="auth-tabs" role="tablist" id="auth-tabs">
+              <button type="button" class="auth-tab active" id="tab-login" role="tab" aria-selected="true">Logga in</button>
+              <button type="button" class="auth-tab" id="tab-signup" role="tab" aria-selected="false">Skapa konto</button>
+            </div>
+
+            <form id="inloggningsformular">
+              <div class="field namn-falt" id="namn-falt">
+                <label for="namn">Namn</label>
+                <input id="namn" name="namn" type="text" autocomplete="name" placeholder="För- och efternamn" />
+              </div>
+
+              <div class="field">
+                <label for="epost">E-post</label>
+                <input id="epost" name="epost" type="email" autocomplete="email" placeholder="namn@företag.se" required />
+              </div>
+
+              <div class="field">
+                <label for="losenord">Lösenord</label>
+                <input id="losenord" name="losenord" type="password" autocomplete="current-password" placeholder="••••••••" required />
+                <span class="field-hint" id="losenord-hint">Minst 6 tecken</span>
+              </div>
+
+              <p class="login-status" id="login-status"></p>
+              <button class="btn btn-primary login-btn" type="submit" id="login-knapp">Logga in</button>
+            </form>
+
+            <div class="success-overlay" id="success-badge" aria-hidden="true">
+              <svg class="success-check" viewBox="0 0 52 52" aria-hidden="true">
+                <circle class="success-check-circle" cx="26" cy="26" r="24" fill="none" />
+                <path class="success-check-mark" fill="none" d="M14 27l7 7 16-16" />
+              </svg>
+              <span class="success-title" id="success-text">Välkommen!</span>
+              <span class="success-sub" id="success-sub"></span>
+            </div>
+          </div>
         </div>
+      </section>
+    </main>
 
-        <form id="inloggningsformular">
-          <div class="field namn-falt" id="namn-falt">
-            <label for="namn">Namn</label>
-            <input
-              id="namn"
-              name="namn"
-              type="text"
-              autocomplete="name"
-              placeholder="För- och efternamn"
-            />
+    <main id="vy-admin" class="view" hidden>
+      <section class="section admin-section">
+        <div class="wrap">
+          <div id="admin-hub">
+            <div class="section-head reveal in-view">
+              <p class="eyebrow">Adminpanel</p>
+              <h2 id="admin-welcome">Välkommen!</h2>
+              <p class="admin-sub" id="admin-sub"></p>
+            </div>
+
+            <div class="admin-cards reveal in-view" id="admin-cards">
+              <button class="action-card" id="card-foretag" type="button" hidden>
+                <span class="action-card-icon" aria-hidden="true">+</span>
+                <span class="action-card-title">Lägg till företag</span>
+                <span class="action-card-desc">Registrera ett nytt kundföretag i systemet.</span>
+              </button>
+
+              <button class="action-card" id="card-personal" type="button" hidden>
+                <span class="action-card-icon" aria-hidden="true">+</span>
+                <span class="action-card-title" id="card-personal-title">Lägg till personal</span>
+                <span class="action-card-desc" id="card-personal-desc">Bjud in en ny medarbetare.</span>
+              </button>
+
+              <button class="action-card" id="card-editor" type="button">
+                <span class="action-card-icon" aria-hidden="true">✎</span>
+                <span class="action-card-title" id="card-editor-title">Testa på</span>
+                <span class="action-card-desc" id="card-editor-desc">Testa den visuella editorn och bygg din webbsida visuellt.</span>
+              </button>
+            </div>
+
+            <div class="no-access reveal in-view" id="no-access-panel" hidden>
+              <p>Ditt konto har ingen adminbehörighet ännu. Hör av dig till oss så kopplar vi ditt konto till rätt företag, så är du igång inom kort.</p>
+            </div>
+
+            <button class="btn btn-ghost" id="logga-ut-btn" type="button">Logga ut</button>
           </div>
 
-          <div class="field">
-            <label for="epost">E-post</label>
-            <input
-              id="epost"
-              name="epost"
-              type="email"
-              autocomplete="email"
-              placeholder="namn@företag.se"
-              required
-            />
+          <div id="admin-forms" hidden>
+            <button class="back-btn" id="tillbaka-btn" type="button">← Tillbaka</button>
+
+            <form class="panel-card reveal in-view" id="foretag-panel" hidden>
+              <h3>Lägg till företag</h3>
+
+              <div class="field">
+                <label for="foretag-namn">Namn</label>
+                <input id="foretag-namn" name="namn" type="text" required />
+              </div>
+
+              <div class="field">
+                <label for="foretag-domain">Domän</label>
+                <input id="foretag-domain" name="domain" type="text" placeholder="dittforetag.se" required />
+              </div>
+
+              <div class="field">
+                <label for="foretag-adress">Adress</label>
+                <input id="foretag-adress" name="adress" type="text" required />
+              </div>
+
+              <div class="field">
+                <label for="foretag-epost">Kontakt-e-post</label>
+                <input id="foretag-epost" name="kontaktEpost" type="email" required />
+              </div>
+
+              <div class="field">
+                <label for="foretag-agare">Ägarens användar-ID (UUID)</label>
+                <input id="foretag-agare" name="agareUuid" type="text" placeholder="t.ex. af874aa5-883b-477a-b505-a1b471fd4091" required />
+                <span class="field-hint">Personen måste redan ha skapat ett konto i adminpanelen.</span>
+              </div>
+
+              <div class="field">
+                <label for="foretag-plan">Plan</label>
+                <select id="foretag-plan" name="plan" required>
+                  <option value="None">None</option>
+                  <option value="Start">Start</option>
+                  <option value="Business">Business</option>
+                  <option value="Premium">Premium</option>
+                  <option value="Enterprise">Enterprise</option>
+                </select>
+              </div>
+
+              <p class="panel-status" id="foretag-status"></p>
+              <button class="btn btn-primary" type="submit" id="foretag-knapp">Lägg till</button>
+            </form>
+
+            <form class="panel-card reveal in-view" id="personal-panel" hidden>
+              <h3 id="personal-panel-titel">Lägg till personal</h3>
+
+              <div class="field" id="personal-foretagsid-falt" hidden>
+                <label for="personal-foretagsid">Företags-ID</label>
+                <input id="personal-foretagsid" name="foretagsId" type="text" placeholder="ID:t för företaget i companies-tabellen" />
+              </div>
+
+              <div class="field">
+                <label for="personal-namn">Fullständigt namn</label>
+                <input id="personal-namn" name="fullstandigtNamn" type="text" required />
+              </div>
+
+              <div class="field">
+                <label for="personal-roll">Roll</label>
+                <input id="personal-roll" name="roll" type="text" required />
+              </div>
+
+              <div class="field">
+                <label for="personal-epost">E-post</label>
+                <input id="personal-epost" name="epost" type="email" required />
+              </div>
+
+              <div class="field">
+                <label for="personal-telefon">Telefon</label>
+                <input id="personal-telefon" name="telefon" type="tel" />
+              </div>
+
+              <p class="panel-status" id="personal-status"></p>
+              <button class="btn btn-primary" type="submit" id="personal-knapp">Lägg till</button>
+            </form>
           </div>
-
-          <div class="field">
-            <label for="losenord">Lösenord</label>
-            <input
-              id="losenord"
-              name="losenord"
-              type="password"
-              autocomplete="current-password"
-              placeholder="••••••••"
-              required
-            />
-            <span class="field-hint" id="losenord-hint">Minst 6 tecken</span>
-          </div>
-
-          <p class="login-status" id="login-status"></p>
-
-          <button
-            class="btn btn-primary login-btn"
-            type="submit"
-            id="login-knapp"
-          >
-            Logga in
-          </button>
-        </form>
-
-        <div
-          class="success-overlay"
-          id="success-badge"
-          aria-hidden="true"
-        >
-          <svg
-            class="success-check"
-            viewBox="0 0 52 52"
-            aria-hidden="true"
-          >
-            <circle
-              class="success-check-circle"
-              cx="26"
-              cy="26"
-              r="24"
-              fill="none"
-            />
-            <path
-              class="success-check-mark"
-              fill="none"
-              d="M14 27l7 7 16-16"
-            />
-          </svg>
-
-          <span class="success-title" id="success-text">
-            Välkommen!
-          </span>
-
-          <span class="success-sub" id="success-sub"></span>
         </div>
-      </div>
-    </div>
-  </section>
-</main>
-
-<main id="vy-admin" class="view" hidden>
-  <section class="section admin-section">
-    <div class="wrap">
-      <div id="admin-hub">
-        <div class="section-head reveal in-view">
-          <p class="eyebrow">Adminpanel</p>
-          <h2 id="admin-welcome">Välkommen!</h2>
-          <p class="admin-sub" id="admin-sub"></p>
-        </div>
-
-        <div class="admin-cards reveal in-view" id="admin-cards">
-          <button
-            class="action-card"
-            id="card-foretag"
-            type="button"
-            hidden
-          >
-            <span class="action-card-icon" aria-hidden="true">+</span>
-            <span class="action-card-title">Lägg till företag</span>
-            <span class="action-card-desc">
-              Registrera ett nytt kundföretag i systemet.
-            </span>
-          </button>
-
-          <button
-            class="action-card"
-            id="card-personal"
-            type="button"
-            hidden
-          >
-            <span class="action-card-icon" aria-hidden="true">+</span>
-            <span class="action-card-title" id="card-personal-title">
-              Lägg till personal
-            </span>
-            <span class="action-card-desc" id="card-personal-desc">
-              Bjud in en ny medarbetare.
-            </span>
-          </button>
-
-          <button
-            class="action-card"
-            id="card-editor"
-            type="button"
-          >
-            <span class="action-card-icon" aria-hidden="true">✎</span>
-            <span class="action-card-title" id="card-editor-title">
-              Testa på
-            </span>
-            <span class="action-card-desc" id="card-editor-desc">
-              Testa den visuella editorn och bygg din webbsida visuellt.
-            </span>
-          </button>
-        </div>
-
-        <div
-          class="no-access reveal in-view"
-          id="no-access-panel"
-          hidden
-        >
-          <p>
-            Ditt konto har ingen adminbehörighet ännu. Hör av dig till oss
-            så kopplar vi ditt konto till rätt företag, så är du igång inom
-            kort.
-          </p>
-        </div>
-
-        <button
-          class="btn btn-ghost"
-          id="logga-ut-btn"
-          type="button"
-        >
-          Logga ut
-        </button>
-      </div>
-
-      <div id="admin-forms" hidden>
-        <button
-          class="back-btn"
-          id="tillbaka-btn"
-          type="button"
-        >
-          ← Tillbaka
-        </button>
-
-        <form
-          class="panel-card reveal in-view"
-          id="foretag-panel"
-          hidden
-        >
-          <h3>Lägg till företag</h3>
-
-          <div class="field">
-            <label for="foretag-namn">Namn</label>
-            <input
-              id="foretag-namn"
-              name="namn"
-              type="text"
-              required
-            />
-          </div>
-
-          <div class="field">
-            <label for="foretag-domain">Domän</label>
-            <input
-              id="foretag-domain"
-              name="domain"
-              type="text"
-              placeholder="dittforetag.se"
-              required
-            />
-          </div>
-
-          <div class="field">
-            <label for="foretag-adress">Adress</label>
-            <input
-              id="foretag-adress"
-              name="adress"
-              type="text"
-              required
-            />
-          </div>
-
-          <div class="field">
-            <label for="foretag-epost">Kontakt-e-post</label>
-            <input
-              id="foretag-epost"
-              name="kontaktEpost"
-              type="email"
-              required
-            />
-          </div>
-
-          <div class="field">
-            <label for="foretag-agare">
-              Ägarens användar-ID (UUID)
-            </label>
-
-            <input
-              id="foretag-agare"
-              name="agareUuid"
-              type="text"
-              placeholder="t.ex. af874aa5-883b-477a-b505-a1b471fd4091"
-              required
-            />
-
-            <span class="field-hint">
-              Personen måste redan ha skapat ett konto i adminpanelen.
-            </span>
-          </div>
-
-          <div class="field">
-            <label for="foretag-plan">Plan</label>
-
-            <select
-              id="foretag-plan"
-              name="plan"
-              required
-            >
-              <option value="None">None</option>
-              <option value="Start">Start</option>
-              <option value="Business">Business</option>
-              <option value="Premium">Premium</option>
-              <option value="Enterprise">Enterprise</option>
-            </select>
-          </div>
-
-          <p
-            class="panel-status"
-            id="foretag-status"
-          ></p>
-
-          <button
-            class="btn btn-primary"
-            type="submit"
-            id="foretag-knapp"
-          >
-            Lägg till
-          </button>
-        </form>
-
-        <form
-          class="panel-card reveal in-view"
-          id="personal-panel"
-          hidden
-        >
-          <h3 id="personal-panel-titel">
-            Lägg till personal
-          </h3>
-
-          <div
-            class="field"
-            id="personal-foretagsid-falt"
-            hidden
-          >
-            <label for="personal-foretagsid">
-              Företags-ID
-            </label>
-
-            <input
-              id="personal-foretagsid"
-              name="foretagsId"
-              type="text"
-              placeholder="ID:t för företaget i companies-tabellen"
-            />
-          </div>
-
-          <div class="field">
-            <label for="personal-namn">
-              Fullständigt namn
-            </label>
-
-            <input
-              id="personal-namn"
-              name="fullstandigtNamn"
-              type="text"
-              required
-            />
-          </div>
-
-          <div class="field">
-            <label for="personal-roll">Roll</label>
-
-            <input
-              id="personal-roll"
-              name="roll"
-              type="text"
-              required
-            />
-          </div>
-
-          <div class="field">
-            <label for="personal-epost">E-post</label>
-
-            <input
-              id="personal-epost"
-              name="epost"
-              type="email"
-              required
-            />
-          </div>
-
-          <div class="field">
-            <label for="personal-telefon">Telefon</label>
-
-            <input
-              id="personal-telefon"
-              name="telefon"
-              type="tel"
-            />
-          </div>
-
-          <p
-            class="panel-status"
-            id="personal-status"
-          ></p>
-
-          <button
-            class="btn btn-primary"
-            type="submit"
-            id="personal-knapp"
-          >
-            Lägg till
-          </button>
-        </form>
-      </div>
-    </div>
-  </section>
-</main>
-```
-
+      </section>
+    </main>
   </body>
 </html>
 
 <style is:global>
   :root {
-    --ink: #0f1420;
-    --ink-2: #161d2c;
-    --ink-3: #1f273a;
-    --paper: #f3f1ea;
-    --paper-2: #ffffff;
-    --text: #eef0f6;
-    --ink-text: #10141c;
-    --muted: #9aa2b6;
-    --muted-on-paper: #5c6273;
-    --blue: #4c6fff;
-    --blue-soft: #7c93ff;
-    --amber: #ffb238;
-    --green: #3ecf7f;
-    --line: rgba(255, 255, 255, 0.09);
-    --line-on-paper: rgba(15, 20, 32, 0.12);
+    --ink: #0f1420; --ink-2: #161d2c; --ink-3: #1f273a; --paper: #f3f1ea; --paper-2: #ffffff;
+    --text: #eef0f6; --ink-text: #10141c; --muted: #9aa2b6; --muted-on-paper: #5c6273;
+    --blue: #4c6fff; --blue-soft: #7c93ff; --amber: #ffb238; --green: #3ecf7f;
+    --line: rgba(255, 255, 255, 0.09); --line-on-paper: rgba(15, 20, 32, 0.12);
     --radius: 14px;
     --font-display: "Sora", system-ui, sans-serif;
     --font-body: "Inter", system-ui, sans-serif;
     --font-mono: "JetBrains Mono", ui-monospace, monospace;
   }
 
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--ink); color: var(--text); font-family: var(--font-body); line-height: 1.5; -webkit-font-smoothing: antialiased; position: relative; min-height: 100vh; }
+  .grain { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.5; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%); }
+  a { color: inherit; text-decoration: none; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  p { margin: 0; }
+  :focus-visible { outline: 2px solid var(--blue-soft); outline-offset: 3px; border-radius: 4px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  .accent { color: var(--amber); }
+  .eyebrow { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue-soft); margin: 0 0 14px; }
 
-  [hidden] {
-    display: none !important;
-  }
+  .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 22px; border-radius: 999px; font-family: var(--font-body); font-weight: 600; font-size: 0.95rem; border: 1px solid transparent; cursor: pointer; transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.6; cursor: default; transform: none; }
+  .btn-primary { background: var(--amber); color: var(--ink-text); }
+  .btn-primary:hover { background: #ffbf5a; }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--line); }
+  .btn-ghost:hover { border-color: var(--blue-soft); }
 
-  body {
-    margin: 0;
-    background: var(--ink);
-    color: var(--text);
-    font-family: var(--font-body);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    position: relative;
-    min-height: 100vh;
-  }
+  .site-header { position: sticky; top: 0; z-index: 20; background: rgba(15, 20, 32, 0.82); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .header-row { display: flex; align-items: center; gap: 28px; height: 72px; }
+  .logo { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; margin-right: auto; }
+  .logo-dots { display: inline-flex; gap: 4px; }
+  .logo-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); display: inline-block; }
+  .logo-dots i:nth-child(3) { background: var(--amber); }
+  .logo-text { white-space: nowrap; }
+  .header-tag-wrap { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; }
+  .header-tag { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .header-status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); display: inline-block; transition: background 0.2s ease, box-shadow 0.2s ease; }
+  .header-status-dot.online { background: var(--green); box-shadow: 0 0 0 3px rgba(62, 207, 127, 0.18); }
 
-  .grain {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.5;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(
-      ellipse 80% 60% at 50% 0%,
-      black 40%,
-      transparent 90%
-    );
-  }
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
 
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
+  .login-section { padding: 96px 0; min-height: calc(100vh - 72px); display: flex; align-items: center; }
+  .login-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .login-copy h1 { font-size: clamp(2rem, 3.6vw, 2.7rem); line-height: 1.1; margin-top: 8px; }
+  .login-sub { color: var(--muted); font-size: 1.02rem; margin-top: 18px; max-width: 40ch; }
+  .login-card { position: relative; overflow: hidden; background: var(--ink-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 34px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.6); }
+  #inloggningsformular { position: relative; display: flex; flex-direction: column; gap: 18px; min-height: 316px; }
+  .namn-falt { position: absolute; top: 0; left: 0; right: 0; transform: translateY(-100%); opacity: 0; pointer-events: none; transition: transform 0.2s ease, opacity 0.2s ease; }
+  #inloggningsformular.signup-lage .namn-falt { position: relative; top: auto; left: auto; right: auto; transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .login-btn { width: 100%; margin-top: 6px; }
+  .login-status { min-height: 1.1em; font-size: 0.88rem; color: #ff8a7a; }
+  .auth-tabs { display: flex; gap: 6px; padding: 4px; background: var(--ink); border: 1px solid var(--line); border-radius: 10px; }
+  .auth-tab { flex: 1; padding: 9px 10px; border: none; background: transparent; color: var(--muted); font-family: var(--font-body); font-weight: 600; font-size: 0.88rem; border-radius: 7px; cursor: pointer; transition: background 0.15s ease, color 0.15s ease; }
+  .auth-tab.active { background: var(--ink-3); color: var(--text); }
+  .auth-tab:hover:not(.active) { color: var(--text); }
 
-  h1,
-  h2,
-  h3 {
-    font-family: var(--font-display);
-    font-weight: 600;
-    margin: 0;
-    letter-spacing: -0.01em;
-  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 0.85rem; color: var(--muted); font-family: var(--font-mono); }
+  .field input, .field select { background: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 11px 12px; color: var(--text); font-family: var(--font-body); font-size: 0.95rem; }
+  .field input:focus, .field select:focus { border-color: var(--blue-soft); }
+  .field-hint { font-size: 0.78rem; color: var(--muted); font-family: var(--font-mono); }
 
-  p {
-    margin: 0;
-  }
-
-  :focus-visible {
-    outline: 2px solid var(--blue-soft);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  .wrap {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 0 24px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .accent {
-    color: var(--amber);
-  }
-
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--blue-soft);
-    margin: 0 0 14px;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 22px;
-    border-radius: 999px;
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.95rem;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition:
-      transform 0.15s ease,
-      background 0.15s ease,
-      border-color 0.15s ease,
-      opacity 0.15s ease;
-  }
-
-  .btn:hover {
-    transform: translateY(-1px);
-  }
-
-  .btn:disabled {
-    opacity: 0.6;
-    cursor: default;
-    transform: none;
-  }
-
-  .btn-primary {
-    background: var(--amber);
-    color: var(--ink-text);
-  }
-
-  .btn-primary:hover {
-    background: #ffbf5a;
-  }
-
-  .btn-ghost {
-    background: transparent;
-    color: var(--text);
-    border-color: var(--line);
-  }
-
-  .btn-ghost:hover {
-    border-color: var(--blue-soft);
-  }
-
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: rgba(15, 20, 32, 0.82);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
-  }
-
-  .header-row {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    height: 72px;
-  }
-
-  .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.15rem;
-    margin-right: auto;
-  }
-
-  .logo-dots {
-    display: inline-flex;
-    gap: 4px;
-  }
-
-  .logo-dots i {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--muted);
-    display: inline-block;
-  }
-
-  .logo-dots i:nth-child(3) {
-    background: var(--amber);
-  }
-
-  .logo-text {
-    white-space: nowrap;
-  }
-
-  .header-tag-wrap {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: auto;
-  }
-
-  .header-tag {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .header-status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--muted);
-    display: inline-block;
-    transition:
-      background 0.2s ease,
-      box-shadow 0.2s ease;
-  }
-
-  .header-status-dot.online {
-    background: var(--green);
-    box-shadow: 0 0 0 3px rgba(62, 207, 127, 0.18);
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(16px);
-    transition:
-      opacity 0.6s ease,
-      transform 0.6s ease;
-  }
-
-  .reveal.in-view {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .login-section {
-    padding: 96px 0;
-    min-height: calc(100vh - 72px);
-    display: flex;
-    align-items: center;
-  }
-
-  .login-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 56px;
-    align-items: center;
-  }
-
-  .login-copy h1 {
-    font-size: clamp(2rem, 3.6vw, 2.7rem);
-    line-height: 1.1;
-    margin-top: 8px;
-  }
-
-  .login-sub {
-    color: var(--muted);
-    font-size: 1.02rem;
-    margin-top: 18px;
-    max-width: 40ch;
-  }
-
-  .login-card {
-    position: relative;
-    overflow: hidden;
-    background: var(--ink-2);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 34px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.6);
-  }
-
-  #inloggningsformular {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    min-height: 316px;
-  }
-
-  .namn-falt {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-    transition:
-      transform 0.2s ease,
-      opacity 0.2s ease;
-  }
-
-  #inloggningsformular.signup-lage .namn-falt {
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    transform: translateY(0);
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .login-btn {
-    width: 100%;
-    margin-top: 6px;
-  }
-
-  .login-status {
-    min-height: 1.1em;
-    font-size: 0.88rem;
-    color: #ff8a7a;
-  }
-
-  .auth-tabs {
-    display: flex;
-    gap: 6px;
-    padding: 4px;
-    background: var(--ink);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-  }
-
-  .auth-tab {
-    flex: 1;
-    padding: 9px 10px;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 0.88rem;
-    border-radius: 7px;
-    cursor: pointer;
-    transition:
-      background 0.15s ease,
-      color 0.15s ease;
-  }
-
-  .auth-tab.active {
-    background: var(--ink-3);
-    color: var(--text);
-  }
-
-  .auth-tab:hover:not(.active) {
-    color: var(--text);
-  }
-
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .field label {
-    font-size: 0.85rem;
-    color: var(--muted);
-    font-family: var(--font-mono);
-  }
-
-  .field input,
-  .field select {
-    background: var(--ink);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 11px 12px;
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-  }
-
-  .field input:focus,
-  .field select:focus {
-    border-color: var(--blue-soft);
-  }
-
-  .field-hint {
-    font-size: 0.78rem;
-    color: var(--muted);
-    font-family: var(--font-mono);
-  }
-
-  .success-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    background: var(--ink-2);
-    border-radius: var(--radius);
-    padding: 20px;
-    text-align: center;
-    opacity: 0;
-    transform: scale(0.97);
-    pointer-events: none;
-    transition:
-      opacity 0.3s ease,
-      transform 0.3s ease;
-  }
-
-  .success-overlay.show {
-    opacity: 1;
-    transform: scale(1);
-    pointer-events: auto;
-  }
-
-  .success-title {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1.25rem;
-    color: var(--green);
-  }
-
-  .success-sub {
-    font-size: 0.88rem;
-    color: var(--muted);
-    max-width: 30ch;
-  }
-
-  .success-check {
-    width: 58px;
-    height: 58px;
-    overflow: visible;
-  }
-
-  .success-check-circle {
-    stroke: var(--green);
-    stroke-width: 2;
-    stroke-dasharray: 151;
-    stroke-dashoffset: 151;
-    animation: successCircle 0.5s ease forwards;
-  }
-
-  .success-check-mark {
-    stroke: var(--green);
-    stroke-width: 3.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 36;
-    stroke-dashoffset: 36;
-    animation: successMark 0.3s ease 0.4s forwards;
-  }
-
-  @keyframes successCircle {
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-
-  @keyframes successMark {
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-
+  .success-overlay { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: var(--ink-2); border-radius: var(--radius); padding: 20px; text-align: center; opacity: 0; transform: scale(0.97); pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease; }
+  .success-overlay.show { opacity: 1; transform: scale(1); pointer-events: auto; }
+  .success-title { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; color: var(--green); }
+  .success-sub { font-size: 0.88rem; color: var(--muted); max-width: 30ch; }
+  .success-check { width: 58px; height: 58px; overflow: visible; }
+  .success-check-circle { stroke: var(--green); stroke-width: 2; stroke-dasharray: 151; stroke-dashoffset: 151; animation: successCircle 0.5s ease forwards; }
+  .success-check-mark { stroke: var(--green); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 36; stroke-dashoffset: 36; animation: successMark 0.3s ease 0.4s forwards; }
+  @keyframes successCircle { to { stroke-dashoffset: 0; } }
+  @keyframes successMark { to { stroke-dashoffset: 0; } }
   @media (prefers-reduced-motion: reduce) {
-    .success-check-circle,
-    .success-check-mark {
-      animation: none;
-      stroke-dashoffset: 0;
-    }
-
-    .success-overlay {
-      transition: none;
-    }
+    .success-check-circle, .success-check-mark { animation: none; stroke-dashoffset: 0; }
+    .success-overlay { transition: none; }
   }
 
-  .section {
-    padding: 80px 0;
-  }
+  .section { padding: 80px 0; }
+  .section-head { max-width: 60ch; margin-bottom: 32px; }
+  .section-head h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+  .admin-sub { color: var(--muted); font-size: 0.95rem; margin-top: 8px; }
+  .admin-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 28px; }
+  .action-card { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; background: var(--ink-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; text-align: left; cursor: pointer; color: var(--text); font-family: var(--font-body); transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease; }
+  .action-card:hover { border-color: var(--blue-soft); background: var(--ink-3); transform: translateY(-2px); }
+  .action-card-icon { width: 34px; height: 34px; border-radius: 10px; background: var(--ink-3); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--amber); font-family: var(--font-mono); }
+  .action-card-title { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; }
+  .action-card-desc { font-size: 0.85rem; color: var(--muted); }
 
-  .section-head {
-    max-width: 60ch;
-    margin-bottom: 32px;
-  }
+  .no-access { background: var(--ink-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; color: var(--muted); font-size: 0.95rem; max-width: 60ch; margin-bottom: 28px; }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: none; color: var(--muted); font-family: var(--font-mono); font-size: 0.85rem; cursor: pointer; padding: 8px 0; margin-bottom: 18px; transition: color 0.15s ease; }
+  .back-btn:hover { color: var(--text); }
+  #admin-forms { max-width: 480px; margin: 0 auto; }
+  .panel-card { background: var(--ink-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; display: flex; flex-direction: column; gap: 16px; width: 100%; }
+  .panel-card h3 { font-size: 1.1rem; margin-bottom: 4px; }
+  .panel-status { min-height: 1.1em; font-size: 0.88rem; color: var(--green); }
 
-  .section-head h2 {
-    font-size: clamp(1.5rem, 2.6vw, 2rem);
-  }
-
-  .admin-sub {
-    color: var(--muted);
-    font-size: 0.95rem;
-    margin-top: 8px;
-  }
-
-  .admin-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-    margin-bottom: 28px;
-  }
-
-  .action-card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    background: var(--ink-2);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 24px;
-    text-align: left;
-    cursor: pointer;
-    color: var(--text);
-    font-family: var(--font-body);
-    transition:
-      border-color 0.15s ease,
-      transform 0.15s ease,
-      background 0.15s ease;
-  }
-
-  .action-card:hover {
-    border-color: var(--blue-soft);
-    background: var(--ink-3);
-    transform: translateY(-2px);
-  }
-
-  .action-card-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: var(--ink-3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    color: var(--amber);
-    font-family: var(--font-mono);
-  }
-
-  .action-card-title {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1.02rem;
-  }
-
-  .action-card-desc {
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-
-  .no-access {
-    background: var(--ink-2);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 26px;
-    color: var(--muted);
-    font-size: 0.95rem;
-    max-width: 60ch;
-    margin-bottom: 28px;
-  }
-
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    cursor: pointer;
-    padding: 8px 0;
-    margin-bottom: 18px;
-    transition: color 0.15s ease;
-  }
-
-  .back-btn:hover {
-    color: var(--text);
-  }
-
-  #admin-forms {
-    max-width: 480px;
-    margin: 0 auto;
-  }
-
-  .panel-card {
-    background: var(--ink-2);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-  }
-
-  .panel-card h3 {
-    font-size: 1.1rem;
-    margin-bottom: 4px;
-  }
-
-  .panel-status {
-    min-height: 1.1em;
-    font-size: 0.88rem;
-    color: var(--green);
-  }
-
-  @media (max-width: 860px) {
-    .login-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
+  @media (max-width: 860px) { .login-grid { grid-template-columns: 1fr; } }
   @media (max-width: 480px) {
-    .wrap {
-      padding: 0 16px;
-    }
-
-    .header-row {
-      height: 64px;
-    }
-
-    .login-section {
-      padding: 56px 0;
-    }
-
-    .login-card {
-      padding: 22px;
-    }
-
-    .section {
-      padding: 56px 0;
-    }
-
-    .admin-cards {
-      grid-template-columns: 1fr;
-    }
-
-    .action-card,
-    .panel-card,
-    .no-access {
-      padding: 20px;
-    }
+    .wrap { padding: 0 16px; }
+    .header-row { height: 64px; }
+    .login-section { padding: 56px 0; }
+    .login-card { padding: 22px; }
+    .section { padding: 56px 0; }
+    .admin-cards { grid-template-columns: 1fr; }
+    .action-card, .panel-card, .no-access { padding: 20px; }
   }
 </style>
 
 <script>
   import { createClient } from "@supabase/supabase-js";
 
-  const supabaseUrl = "https://irvboovrbphgeqzsxrlu.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlydmJvb3ZyYnBoZ2VxenN4cmx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjUxMTQsImV4cCI6MjEwMDIwMTExNH0.F-GrC5Q7y8NzakNOYTFlDvMvLy_tHCGMtXtjJ0-jEXw";
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  const supabase = createClient(
+    "https://irvboovrbphgeqzsxrlu.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlydmJvb3ZyYnBoZ2VxenN4cmx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjUxMTQsImV4cCI6MjEwMDIwMTExNH0.F-GrC5Q7y8NzakNOYTFlDvMvLy_tHCGMtXtjJ0-jEXw"
+  );
 
   const AGARE_UUID = "af874aa5-883b-477a-b505-a1b471fd4091";
 
-  const vyInloggning = document.getElementById("vy-inloggning") as HTMLElement;
-  const vyAdmin = document.getElementById("vy-admin") as HTMLElement;
-  const rubrikTagg = document.getElementById("header-tag") as HTMLElement;
-  const statusPrick = document.getElementById("header-status-dot") as HTMLElement;
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
-  const loginTitel = document.getElementById("login-titel") as HTMLElement;
-  const loginUndertext = document.getElementById("login-undertext") as HTMLElement;
-
-  const inloggningsformular = document.getElementById(
-    "inloggningsformular"
-  ) as HTMLFormElement;
-
-  const loginKnapp = document.getElementById(
-    "login-knapp"
-  ) as HTMLButtonElement;
-
-  const loginStatus = document.getElementById(
-    "login-status"
-  ) as HTMLElement;
-
-  const losenordHint = document.getElementById(
-    "losenord-hint"
-  ) as HTMLElement;
-
-  const namnInput = document.getElementById(
-    "namn"
-  ) as HTMLInputElement;
-
-  const tabLogin = document.getElementById(
-    "tab-login"
-  ) as HTMLButtonElement;
-
-  const tabSignup = document.getElementById(
-    "tab-signup"
-  ) as HTMLButtonElement;
-
-  const successBadge = document.getElementById(
-    "success-badge"
-  ) as HTMLElement;
-
-  const successText = document.getElementById(
-    "success-text"
-  ) as HTMLElement;
-
-  const successSub = document.getElementById(
-    "success-sub"
-  ) as HTMLElement;
-
-  const adminHub = document.getElementById(
-    "admin-hub"
-  ) as HTMLElement;
-
-  const adminForms = document.getElementById(
-    "admin-forms"
-  ) as HTMLElement;
-
-  const adminWelcome = document.getElementById(
-    "admin-welcome"
-  ) as HTMLElement;
-
-  const adminSub = document.getElementById(
-    "admin-sub"
-  ) as HTMLElement;
-
-  const noAccessPanel = document.getElementById(
-    "no-access-panel"
-  ) as HTMLElement;
-
-  const cardForetag = document.getElementById(
-    "card-foretag"
-  ) as HTMLButtonElement;
-
-  const cardPersonal = document.getElementById(
-    "card-personal"
-  ) as HTMLButtonElement;
-
-  const cardEditor = document.getElementById(
-    "card-editor"
-  ) as HTMLButtonElement;
-
-  const cardEditorTitle = document.getElementById(
-    "card-editor-title"
-  ) as HTMLElement;
-
-  const cardEditorDesc = document.getElementById(
-    "card-editor-desc"
-  ) as HTMLElement;
-
-  const cardPersonalTitle = document.getElementById(
-    "card-personal-title"
-  ) as HTMLElement;
-
-  const cardPersonalDesc = document.getElementById(
-    "card-personal-desc"
-  ) as HTMLElement;
-
-  const personalPanelTitel = document.getElementById(
-    "personal-panel-titel"
-  ) as HTMLElement;
-
-  const personalForetagsIdFalt = document.getElementById(
-    "personal-foretagsid-falt"
-  ) as HTMLElement;
-
-  const personalForetagsIdInput = document.getElementById(
-    "personal-foretagsid"
-  ) as HTMLInputElement;
-
-  const tillbakaBtn = document.getElementById(
-    "tillbaka-btn"
-  ) as HTMLButtonElement;
-
-  const loggaUtBtn = document.getElementById(
-    "logga-ut-btn"
-  ) as HTMLButtonElement;
-
-  const foretagFormular = document.getElementById(
-    "foretag-panel"
-  ) as HTMLFormElement;
-
-  const foretagKnapp = document.getElementById(
-    "foretag-knapp"
-  ) as HTMLButtonElement;
-
-  const foretagStatus = document.getElementById(
-    "foretag-status"
-  ) as HTMLElement;
-
-  const personalFormular = document.getElementById(
-    "personal-panel"
-  ) as HTMLFormElement;
-
-  const personalKnapp = document.getElementById(
-    "personal-knapp"
-  ) as HTMLButtonElement;
-
-  const personalStatus = document.getElementById(
-    "personal-status"
-  ) as HTMLElement;
+  const vyInloggning = $<HTMLElement>("vy-inloggning");
+  const vyAdmin = $<HTMLElement>("vy-admin");
+  const rubrikTagg = $<HTMLElement>("header-tag");
+  const statusPrick = $<HTMLElement>("header-status-dot");
+  const loginTitel = $<HTMLElement>("login-titel");
+  const loginUndertext = $<HTMLElement>("login-undertext");
+  const inloggningsformular = $<HTMLFormElement>("inloggningsformular");
+  const loginKnapp = $<HTMLButtonElement>("login-knapp");
+  const loginStatus = $<HTMLElement>("login-status");
+  const losenordHint = $<HTMLElement>("losenord-hint");
+  const namnInput = $<HTMLInputElement>("namn");
+  const tabLogin = $<HTMLButtonElement>("tab-login");
+  const tabSignup = $<HTMLButtonElement>("tab-signup");
+  const successBadge = $<HTMLElement>("success-badge");
+  const successText = $<HTMLElement>("success-text");
+  const successSub = $<HTMLElement>("success-sub");
+  const adminHub = $<HTMLElement>("admin-hub");
+  const adminForms = $<HTMLElement>("admin-forms");
+  const adminWelcome = $<HTMLElement>("admin-welcome");
+  const adminSub = $<HTMLElement>("admin-sub");
+  const noAccessPanel = $<HTMLElement>("no-access-panel");
+  const cardForetag = $<HTMLButtonElement>("card-foretag");
+  const cardPersonal = $<HTMLButtonElement>("card-personal");
+  const cardEditor = $<HTMLButtonElement>("card-editor");
+  const cardEditorTitle = $<HTMLElement>("card-editor-title");
+  const cardEditorDesc = $<HTMLElement>("card-editor-desc");
+  const cardPersonalTitle = $<HTMLElement>("card-personal-title");
+  const cardPersonalDesc = $<HTMLElement>("card-personal-desc");
+  const personalPanelTitel = $<HTMLElement>("personal-panel-titel");
+  const personalForetagsIdFalt = $<HTMLElement>("personal-foretagsid-falt");
+  const personalForetagsIdInput = $<HTMLInputElement>("personal-foretagsid");
+  const tillbakaBtn = $<HTMLButtonElement>("tillbaka-btn");
+  const loggaUtBtn = $<HTMLButtonElement>("logga-ut-btn");
+  const foretagFormular = $<HTMLFormElement>("foretag-panel");
+  const foretagKnapp = $<HTMLButtonElement>("foretag-knapp");
+  const foretagStatus = $<HTMLElement>("foretag-status");
+  const personalFormular = $<HTMLFormElement>("personal-panel");
+  const personalKnapp = $<HTMLButtonElement>("personal-knapp");
+  const personalStatus = $<HTMLElement>("personal-status");
 
   type AuthLage = "login" | "signup";
-
   let authLage: AuthLage = "login";
   let arAgare = false;
   let mittForetag: { id: string; name: string } | null = null;
 
-  function hamtaVisningsnamn(
-    user:
-      | {
-          email?: string | null;
-          user_metadata?: Record<string, unknown>;
-        }
-      | null
-      | undefined
-  ): string {
-    const metadata = user?.user_metadata ?? {};
-
-    const namn =
-      (metadata.full_name as string | undefined) ||
-      (metadata.display_name as string | undefined) ||
-      (metadata.name as string | undefined);
-
-    return namn || user?.email || "";
+  function hamtaVisningsnamn(user: { email?: string | null; user_metadata?: Record<string, unknown> } | null | undefined): string {
+    const m = user?.user_metadata ?? {};
+    return (m.full_name as string) || (m.display_name as string) || (m.name as string) || user?.email || "";
   }
 
   function satAuthLage(lage: AuthLage) {
     authLage = lage;
+    const ar = lage === "login";
 
-    tabLogin.classList.toggle("active", lage === "login");
-    tabSignup.classList.toggle("active", lage === "signup");
-
-    tabLogin.setAttribute(
-      "aria-selected",
-      String(lage === "login")
-    );
-
-    tabSignup.setAttribute(
-      "aria-selected",
-      String(lage === "signup")
-    );
-
-    inloggningsformular.classList.toggle(
-      "signup-lage",
-      lage === "signup"
-    );
-
-    namnInput.required = lage === "signup";
-
-    losenordHint.classList.toggle(
-      "dold",
-      lage !== "signup"
-    );
-
-    loginKnapp.textContent =
-      lage === "login"
-        ? "Logga in"
-        : "Skapa konto";
-
-    loginTitel.textContent =
-      lage === "login"
-        ? "Välkommen tillbaka"
-        : "Välkommen! Skapa ett konto";
-
-    loginUndertext.textContent =
-      lage === "login"
-        ? "Logga in med ditt konto för att hantera företag och personal."
-        : "Registrera dig med namn, e-post och lösenord för att få tillgång till adminpanelen.";
-
+    tabLogin.classList.toggle("active", ar);
+    tabSignup.classList.toggle("active", !ar);
+    tabLogin.setAttribute("aria-selected", String(ar));
+    tabSignup.setAttribute("aria-selected", String(!ar));
+    inloggningsformular.classList.toggle("signup-lage", !ar);
+    namnInput.required = !ar;
+    losenordHint.classList.toggle("dold", ar);
+    loginKnapp.textContent = ar ? "Logga in" : "Skapa konto";
+    loginTitel.textContent = ar ? "Välkommen tillbaka" : "Välkommen! Skapa ett konto";
+    loginUndertext.textContent = ar
+      ? "Logga in med ditt konto för att hantera företag och personal."
+      : "Registrera dig med namn, e-post och lösenord för att få tillgång till adminpanelen.";
     loginStatus.textContent = "";
   }
 
   function satEditorText() {
     const harAdminTillgang = arAgare || !!mittForetag;
-
-    cardEditorTitle.textContent = harAdminTillgang
-      ? "Editor"
-      : "Testa på";
-
+    cardEditorTitle.textContent = harAdminTillgang ? "Editor" : "Testa på";
     cardEditorDesc.textContent = harAdminTillgang
       ? "Redigera webbsidans design visuellt."
       : "Testa den visuella editorn och bygg din webbsida visuellt.";
@@ -1310,75 +402,41 @@
 
   async function ladInBehorighet(userId: string) {
     arAgare = userId === AGARE_UUID;
-
-    const { data: foretag } = await supabase
-      .from("companies")
-      .select("id, name")
-      .eq("owner", userId)
-      .maybeSingle();
-
-    mittForetag = foretag ?? null;
+    const { data: foretag } = await supabase.from("companies").select("company_id, name").eq("owner", userId).maybeSingle();
+    mittForetag = foretag ? { id: foretag.company_id, name: foretag.name } : null;
   }
 
   function visaAdminHubben(visningsnamn: string) {
     adminHub.hidden = false;
     adminForms.hidden = true;
+    adminWelcome.textContent = `Välkommen, ${visningsnamn || "där"}!`;
 
-    adminWelcome.textContent =
-      `Välkommen, ${visningsnamn || "där"}!`;
-
-    if (arAgare && mittForetag) {
-      adminSub.textContent =
-        `Du är systemägare och hanterar även ${mittForetag.name}.`;
-    } else if (arAgare) {
-      adminSub.textContent =
-        "Du är systemägare för websiqAI.";
-    } else if (mittForetag) {
-      adminSub.textContent =
-        `Du hanterar ${mittForetag.name}.`;
-    } else {
-      adminSub.textContent =
-        "Du kan testa den visuella editorn även utan adminbehörighet.";
-    }
+    adminSub.textContent = arAgare && mittForetag
+      ? `Du är systemägare och hanterar även ${mittForetag.name}.`
+      : arAgare
+      ? "Du är systemägare för websiqAI."
+      : mittForetag
+      ? `Du hanterar ${mittForetag.name}.`
+      : "Du kan testa den visuella editorn även utan adminbehörighet.";
 
     cardForetag.hidden = !arAgare;
     cardPersonal.hidden = !(arAgare || mittForetag);
     cardEditor.hidden = false;
 
-    if (mittForetag) {
-      cardPersonalTitle.textContent =
-        `Lägg till personal i ${mittForetag.name}`;
-
-      cardPersonalDesc.textContent =
-        `Bjud in en ny medarbetare till ${mittForetag.name}.`;
-
-      personalPanelTitel.textContent =
-        `Lägg till personal i ${mittForetag.name}`;
-    } else {
-      cardPersonalTitle.textContent =
-        "Lägg till personal";
-
-      cardPersonalDesc.textContent =
-        arAgare
-          ? "Bjud in en ny medarbetare till valfritt företag."
-          : "Bjud in en ny medarbetare.";
-
-      personalPanelTitel.textContent =
-        "Lägg till personal";
-    }
+    const personalNamn = mittForetag ? `Lägg till personal i ${mittForetag.name}` : "Lägg till personal";
+    cardPersonalTitle.textContent = personalNamn;
+    cardPersonalDesc.textContent = mittForetag
+      ? `Bjud in en ny medarbetare till ${mittForetag.name}.`
+      : arAgare
+      ? "Bjud in en ny medarbetare till valfritt företag."
+      : "Bjud in en ny medarbetare.";
+    personalPanelTitel.textContent = personalNamn;
 
     personalForetagsIdFalt.hidden = !arAgare;
     personalForetagsIdInput.required = arAgare;
+    personalForetagsIdInput.value = arAgare && mittForetag ? mittForetag.id : "";
 
-    personalForetagsIdInput.value =
-      arAgare && mittForetag
-        ? mittForetag.id
-        : "";
-
-    const harTillgang =
-      arAgare || !!mittForetag;
-
-    noAccessPanel.hidden = harTillgang;
+    noAccessPanel.hidden = arAgare || !!mittForetag;
 
     satEditorText();
   }
@@ -1386,418 +444,210 @@
   async function visaAdminvy() {
     vyInloggning.hidden = true;
     vyAdmin.hidden = false;
-
     rubrikTagg.textContent = "Adminpanel";
     statusPrick.classList.add("online");
 
-    const { data: userData } =
-      await supabase.auth.getUser();
-
+    const { data: userData } = await supabase.auth.getUser();
     const user = userData.user;
-
     if (user) {
       await ladInBehorighet(user.id);
-      visaAdminHubben(
-        hamtaVisningsnamn(user)
-      );
+      visaAdminHubben(hamtaVisningsnamn(user));
     }
   }
 
   function visaInloggningsvy() {
     vyInloggning.hidden = false;
     vyAdmin.hidden = true;
-
     rubrikTagg.textContent = "Inloggning";
     statusPrick.classList.remove("online");
-
     satAuthLage("login");
   }
 
-  function visaInloggadAnimation(
-    titel: string,
-    subtitel: string,
-    nasta: () => void
-  ) {
+  function visaInloggadAnimation(titel: string, subtitel: string, nasta: () => void) {
     successText.textContent = titel;
     successSub.textContent = subtitel;
-
     successBadge.classList.add("show");
-    successBadge.setAttribute(
-      "aria-hidden",
-      "false"
-    );
+    successBadge.setAttribute("aria-hidden", "false");
 
     setTimeout(() => {
       successBadge.classList.remove("show");
-
-      successBadge.setAttribute(
-        "aria-hidden",
-        "true"
-      );
-
+      successBadge.setAttribute("aria-hidden", "true");
       inloggningsformular.reset();
       nasta();
     }, 1200);
   }
 
   async function kontrolleraSession() {
-    const { data } =
-      await supabase.auth.getSession();
-
-    if (data.session) {
-      await visaAdminvy();
-    } else {
-      visaInloggningsvy();
-    }
+    const { data } = await supabase.auth.getSession();
+    data.session ? await visaAdminvy() : visaInloggningsvy();
   }
 
-  tabLogin.addEventListener(
-    "click",
-    () => satAuthLage("login")
-  );
+  tabLogin.addEventListener("click", () => satAuthLage("login"));
+  tabSignup.addEventListener("click", () => satAuthLage("signup"));
 
-  tabSignup.addEventListener(
-    "click",
-    () => satAuthLage("signup")
-  );
+  inloggningsformular.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    loginKnapp.disabled = true;
+    loginKnapp.textContent = authLage === "login" ? "Loggar in..." : "Skapar konto...";
+    loginStatus.style.color = "#ff8a7a";
+    loginStatus.textContent = "";
 
-  inloggningsformular.addEventListener(
-    "submit",
-    async (handelse) => {
-      handelse.preventDefault();
+    const epost = $<HTMLInputElement>("epost").value;
+    const losenord = $<HTMLInputElement>("losenord").value;
 
-      loginKnapp.disabled = true;
-
-      loginKnapp.textContent =
-        authLage === "login"
-          ? "Loggar in..."
-          : "Skapar konto...";
-
-      loginStatus.style.color =
-        "#ff8a7a";
-
-      loginStatus.textContent = "";
-
-      const emailInput =
-        document.getElementById(
-          "epost"
-        ) as HTMLInputElement;
-
-      const passwordInput =
-        document.getElementById(
-          "losenord"
-        ) as HTMLInputElement;
-
-      try {
-        if (authLage === "signup") {
-          const { data, error } =
-            await supabase.auth.signUp({
-              email: emailInput.value,
-              password: passwordInput.value,
-              options: {
-                data: {
-                  full_name: namnInput.value,
-                },
-              },
-            });
-
-          if (error) {
-            loginStatus.textContent =
-              "Kunde inte skapa kontot: " +
-              error.message;
-
-            return;
-          }
-
-          if (!data.session) {
-            loginStatus.style.color =
-              "var(--blue-soft)";
-
-            loginStatus.textContent =
-              `Välkommen, ${namnInput.value}! Kontot är skapat — kolla din e-post och bekräfta adressen innan du loggar in.`;
-
-            inloggningsformular.reset();
-            satAuthLage("login");
-
-            return;
-          }
-
-          const visningsnamn =
-            hamtaVisningsnamn(data.user) ||
-            namnInput.value;
-
-          visaInloggadAnimation(
-            "Välkommen!",
-            `Kontot är skapat för ${visningsnamn}.`,
-            visaAdminvy
-          );
-        } else {
-          const { data, error } =
-            await supabase.auth.signInWithPassword({
-              email: emailInput.value,
-              password: passwordInput.value,
-            });
-
-          if (error) {
-            loginStatus.textContent =
-              "Inloggningen misslyckades: " +
-              error.message;
-
-            return;
-          }
-
-          const visningsnamn =
-            hamtaVisningsnamn(data.user);
-
-          visaInloggadAnimation(
-            "Välkommen!",
-            visningsnamn
-              ? `Inloggad som ${visningsnamn}`
-              : "Inloggningen lyckades",
-            visaAdminvy
-          );
-        }
-      } catch {
-        loginStatus.textContent =
-          "Kunde inte nå servern. Kontrollera din internetanslutning.";
-      } finally {
-        loginKnapp.disabled = false;
-
-        loginKnapp.textContent =
-          authLage === "login"
-            ? "Logga in"
-            : "Skapa konto";
-      }
-    }
-  );
-
-  loggaUtBtn.addEventListener(
-    "click",
-    async () => {
-      await supabase.auth.signOut();
-
-      arAgare = false;
-      mittForetag = null;
-
-      visaInloggningsvy();
-    }
-  );
-
-  cardForetag.addEventListener(
-    "click",
-    () => {
-      if (!arAgare) return;
-
-      adminHub.hidden = true;
-      adminForms.hidden = false;
-
-      foretagFormular.hidden = false;
-      personalFormular.hidden = true;
-    }
-  );
-
-  cardPersonal.addEventListener(
-    "click",
-    () => {
-      if (!arAgare && !mittForetag) return;
-
-      adminHub.hidden = true;
-      adminForms.hidden = false;
-
-      personalFormular.hidden = false;
-      foretagFormular.hidden = true;
-    }
-  );
-
-  cardEditor.addEventListener(
-    "click",
-    () => {
-      window.location.href = "/editor";
-    }
-  );
-
-  tillbakaBtn.addEventListener(
-    "click",
-    () => {
-      adminForms.hidden = true;
-      adminHub.hidden = false;
-    }
-  );
-
-  foretagFormular.addEventListener(
-    "submit",
-    async (handelse) => {
-      handelse.preventDefault();
-
-      if (!arAgare) return;
-
-      foretagKnapp.disabled = true;
-      foretagKnapp.textContent = "Lägger till...";
-      foretagStatus.textContent = "";
-
-      const namnInputForetag =
-        document.getElementById(
-          "foretag-namn"
-        ) as HTMLInputElement;
-
-      const domainInput =
-        document.getElementById(
-          "foretag-domain"
-        ) as HTMLInputElement;
-
-      const adressInput =
-        document.getElementById(
-          "foretag-adress"
-        ) as HTMLInputElement;
-
-      const epostInput =
-        document.getElementById(
-          "foretag-epost"
-        ) as HTMLInputElement;
-
-      const agareInput =
-        document.getElementById(
-          "foretag-agare"
-        ) as HTMLInputElement;
-
-      const planInput =
-        document.getElementById(
-          "foretag-plan"
-        ) as HTMLSelectElement;
-
-      try {
-        const { error } =
-          await supabase
-            .from("companies")
-            .insert({
-              name: namnInputForetag.value,
-              domain: domainInput.value,
-              address: adressInput.value,
-              contact_email: epostInput.value,
-              owner: agareInput.value,
-              subscription: planInput.value,
-            });
+    try {
+      if (authLage === "signup") {
+        const { data, error } = await supabase.auth.signUp({
+          email: epost,
+          password: losenord,
+          options: { data: { full_name: namnInput.value } },
+        });
 
         if (error) {
-          foretagStatus.style.color =
-            "#ff8a7a";
-
-          foretagStatus.textContent =
-            "Något gick fel: " +
-            error.message;
-
+          loginStatus.textContent = "Kunde inte skapa kontot: " + error.message;
           return;
         }
 
-        foretagStatus.style.color =
-          "var(--green)";
+        if (!data.session) {
+          loginStatus.style.color = "var(--blue-soft)";
+          loginStatus.textContent = `Välkommen, ${namnInput.value}! Kontot är skapat — kolla din e-post och bekräfta adressen innan du loggar in.`;
+          inloggningsformular.reset();
+          satAuthLage("login");
+          return;
+        }
 
-        foretagStatus.textContent =
-          "Företaget har lagts till.";
+        const visningsnamn = hamtaVisningsnamn(data.user) || namnInput.value;
+        visaInloggadAnimation("Välkommen!", `Kontot är skapat för ${visningsnamn}.`, visaAdminvy);
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({ email: epost, password: losenord });
 
-        foretagFormular.reset();
-      } catch {
-        foretagStatus.style.color =
-          "#ff8a7a";
+        if (error) {
+          loginStatus.textContent = "Inloggningen misslyckades: " + error.message;
+          return;
+        }
 
-        foretagStatus.textContent =
-          "Kunde inte nå servern. Kontrollera din internetanslutning.";
-      } finally {
-        foretagKnapp.disabled = false;
-        foretagKnapp.textContent = "Lägg till";
+        const visningsnamn = hamtaVisningsnamn(data.user);
+        visaInloggadAnimation("Välkommen!", visningsnamn ? `Inloggad som ${visningsnamn}` : "Inloggningen lyckades", visaAdminvy);
       }
+    } catch {
+      loginStatus.textContent = "Kunde inte nå servern. Kontrollera din internetanslutning.";
+    } finally {
+      loginKnapp.disabled = false;
+      loginKnapp.textContent = authLage === "login" ? "Logga in" : "Skapa konto";
     }
-  );
+  });
 
-  personalFormular.addEventListener(
-    "submit",
-    async (handelse) => {
-      handelse.preventDefault();
+  loggaUtBtn.addEventListener("click", async () => {
+    await supabase.auth.signOut();
+    arAgare = false;
+    mittForetag = null;
+    visaInloggningsvy();
+  });
 
-      const foretagsId =
-        arAgare
-          ? personalForetagsIdInput.value
-          : mittForetag?.id;
+  cardForetag.addEventListener("click", () => {
+    if (!arAgare) return;
+    adminHub.hidden = true;
+    adminForms.hidden = false;
+    foretagFormular.hidden = false;
+    personalFormular.hidden = true;
+  });
 
-      if (!foretagsId) {
-        personalStatus.style.color =
-          "#ff8a7a";
+  cardPersonal.addEventListener("click", () => {
+    if (!arAgare && !mittForetag) return;
+    adminHub.hidden = true;
+    adminForms.hidden = false;
+    personalFormular.hidden = false;
+    foretagFormular.hidden = true;
+  });
 
-        personalStatus.textContent =
-          arAgare
-            ? "Ange vilket företags-ID personalen ska läggas till på."
-            : "Vi hittar inget företag kopplat till ditt konto.";
+  cardEditor.addEventListener("click", () => {
+    window.location.href = "/editor";
+  });
 
+  tillbakaBtn.addEventListener("click", () => {
+    adminForms.hidden = true;
+    adminHub.hidden = false;
+  });
+
+  foretagFormular.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!arAgare) return;
+
+    foretagKnapp.disabled = true;
+    foretagKnapp.textContent = "Lägger till...";
+    foretagStatus.textContent = "";
+
+    try {
+      const { error } = await supabase.from("companies").insert({
+        name: $<HTMLInputElement>("foretag-namn").value,
+        domain: $<HTMLInputElement>("foretag-domain").value,
+        address: $<HTMLInputElement>("foretag-adress").value,
+        contact_email: $<HTMLInputElement>("foretag-epost").value,
+        owner: $<HTMLInputElement>("foretag-agare").value,
+        subscription: $<HTMLSelectElement>("foretag-plan").value,
+      });
+
+      if (error) {
+        foretagStatus.style.color = "#ff8a7a";
+        foretagStatus.textContent = "Något gick fel: " + error.message;
         return;
       }
 
-      personalKnapp.disabled = true;
-      personalKnapp.textContent = "Lägger till...";
-      personalStatus.textContent = "";
-
-      const namnInputPersonal =
-        document.getElementById(
-          "personal-namn"
-        ) as HTMLInputElement;
-
-      const rollInput =
-        document.getElementById(
-          "personal-roll"
-        ) as HTMLInputElement;
-
-      const epostInput =
-        document.getElementById(
-          "personal-epost"
-        ) as HTMLInputElement;
-
-      const telefonInput =
-        document.getElementById(
-          "personal-telefon"
-        ) as HTMLInputElement;
-
-      try {
-        const { error } =
-          await supabase.rpc(
-            "add_staff_member",
-            {
-              company_id_input: foretagsId,
-              email_input: epostInput.value,
-              name_input: namnInputPersonal.value,
-              role_input: rollInput.value,
-              phone_input: telefonInput.value,
-            }
-          );
-
-        if (error) {
-          personalStatus.style.color =
-            "#ff8a7a";
-
-          personalStatus.textContent =
-            "Något gick fel: " +
-            error.message;
-
-          return;
-        }
-
-        personalStatus.style.color =
-          "var(--green)";
-
-        personalStatus.textContent =
-          "Personalen har lagts till.";
-
-        personalFormular.reset();
-      } catch {
-        personalStatus.style.color =
-          "#ff8a7a";
-
-        personalStatus.textContent =
-          "Kunde inte nå servern. Kontrollera din internetanslutning.";
-      } finally {
-        personalKnapp.disabled = false;
-        personalKnapp.textContent = "Lägg till";
-      }
+      foretagStatus.style.color = "var(--green)";
+      foretagStatus.textContent = "Företaget har lagts till.";
+      foretagFormular.reset();
+    } catch {
+      foretagStatus.style.color = "#ff8a7a";
+      foretagStatus.textContent = "Kunde inte nå servern. Kontrollera din internetanslutning.";
+    } finally {
+      foretagKnapp.disabled = false;
+      foretagKnapp.textContent = "Lägg till";
     }
-  );
+  });
+
+  personalFormular.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const foretagsId = arAgare ? personalForetagsIdInput.value : mittForetag?.id;
+
+    if (!foretagsId) {
+      personalStatus.style.color = "#ff8a7a";
+      personalStatus.textContent = arAgare
+        ? "Ange vilket företags-ID personalen ska läggas till på."
+        : "Vi hittar inget företag kopplat till ditt konto.";
+      return;
+    }
+
+    personalKnapp.disabled = true;
+    personalKnapp.textContent = "Lägger till...";
+    personalStatus.textContent = "";
+
+    try {
+      const { error } = await supabase.rpc("add_staff_member", {
+        company_id_input: foretagsId,
+        email_input: $<HTMLInputElement>("personal-epost").value,
+        name_input: $<HTMLInputElement>("personal-namn").value,
+        role_input: $<HTMLInputElement>("personal-roll").value,
+        phone_input: $<HTMLInputElement>("personal-telefon").value,
+      });
+
+      if (error) {
+        personalStatus.style.color = "#ff8a7a";
+        personalStatus.textContent = "Något gick fel: " + error.message;
+        return;
+      }
+
+      personalStatus.style.color = "var(--green)";
+      personalStatus.textContent = "Personalen har lagts till.";
+      personalFormular.reset();
+    } catch {
+      personalStatus.style.color = "#ff8a7a";
+      personalStatus.textContent = "Kunde inte nå servern. Kontrollera din internetanslutning.";
+    } finally {
+      personalKnapp.disabled = false;
+      personalKnapp.textContent = "Lägg till";
+    }
+  });
 
   kontrolleraSession();
 </script>

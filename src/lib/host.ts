@@ -1,8 +1,10 @@
 export function getDomain(hostname: string): string | null {
-  const host = hostname.split(":")[0];
+  const host = hostname.split(":")[0].toLowerCase();
 
   if (host.endsWith(".localhost")) {
-    return host.replace(".localhost", "");
+    const subdomain = host.slice(0, -".localhost".length);
+
+    return subdomain || null;
   }
 
   const delar = host.split(".");
@@ -15,11 +17,11 @@ export function getDomain(hostname: string): string | null {
 }
 
 export function getPageName(pathname: string): string {
-  const sökväg = pathname.replace(/^\/+|\/+$/g, "");
+  const path = pathname.replace(/^\/+|\/+$/g, "");
 
-  if (!sökväg) {
+  if (!path) {
     return "index";
   }
 
-  return sökväg;
+  return path.split("/")[0];
 }

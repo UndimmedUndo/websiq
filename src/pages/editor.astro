@@ -204,6 +204,17 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
     </div>
 
     <script>
+      import { createClient } from "@supabase/supabase-js";
+
+      const supabase = createClient(
+        "https://irvboovrbphgeqzsxrlu.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlydmJvb3ZyYnBoZ2VxenN4cmx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ2MjUxMTQsImV4cCI6MjEwMDIwMTExNH0.F-GrC5Q7y8NzakNOYTFlDvMvLy_tHCGMtXtjJ0-jEXw"
+      );
+
+      // Tabellnamn + vilken version av sidorna som alltid ska läsas/skrivas (int2-kolumnen "version").
+      const TABELL_SIDOR = "project_pages";
+      const SID_VERSION = 1;
+
       interface ManuellElement {
         id: string;
         typ: "box" | "text" | "bild" | "knapp" | "scroll" | "grid" | "input";
@@ -275,6 +286,13 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
 
       let aktivPlan: Plan = Plan.None;
 
+      function mappaPlan(sub: string | null | undefined): Plan {
+        if (sub === "Start") return Plan.Start;
+        if (sub === "Business") return Plan.Pro;
+        if (sub === "Premium" || sub === "Enterprise") return Plan.Premium;
+        return Plan.None;
+      }
+
       function maxTillatnaSidor(): number {
         return PLAN_MAX_SIDOR[aktivPlan];
       }
@@ -317,21 +335,24 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         return el;
       }
 
-      function mallFunktioner(): ManuellElement[] {
+      function mallTreKolumner(rubrik: string, poster: [string, string][], hojdKort: number): ManuellElement[] {
         const el: ManuellElement[] = [];
-        el.push(skapaTextEl("Rubrik", 48, 24, 400, 32, "Vad du får"));
-        const data: [string, string][] = [
+        el.push(skapaTextEl("Rubrik", 48, 24, 400, 32, rubrik));
+        poster.forEach(([titel, text], i) => {
+          const x = 48 + i * 272;
+          el.push(skapaBoxEl(`Kort ${i + 1}`, x, 72, 252, hojdKort, "#ffffff"));
+          el.push(skapaTextEl(`Kort ${i + 1} titel`, x + 16, 88, 220, 26, titel));
+          el.push(skapaTextEl(`Kort ${i + 1} text`, x + 16, 118, 220, hojdKort - 62, text));
+        });
+        return el;
+      }
+
+      function mallFunktioner(): ManuellElement[] {
+        return mallTreKolumner("Vad du får", [
           ["Snabb rendering", "Sidor byggs statiskt och laddas direkt."],
           ["Komponenter", "Återanvänd byggblock över hela sajten."],
           ["Noll konfiguration", "Kom igång utan komplicerad uppsättning."],
-        ];
-        data.forEach(([titel, text], i) => {
-          const x = 48 + i * 272;
-          el.push(skapaBoxEl(`Kort ${i + 1}`, x, 72, 252, 150, "#ffffff"));
-          el.push(skapaTextEl(`Kort ${i + 1} titel`, x + 16, 88, 220, 26, titel));
-          el.push(skapaTextEl(`Kort ${i + 1} text`, x + 16, 118, 220, 90, text));
-        });
-        return el;
+        ], 150);
       }
 
       function mallPriser(): ManuellElement[] {
@@ -424,27 +445,45 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         return celler;
       }
 
+      function beraknaSkuggaCss(el: ManuellElement): string {
+        return el.skugga
+          ? `${el.skuggaX ?? 0}px ${el.skuggaY ?? 14}px ${el.skuggaBlur ?? 24}px ${el.skuggaSpridning ?? -6}px ${el.skuggaFarg || "rgba(0,0,0,0.55)"}`
+          : "none";
+      }
+
+      function bakgrundVarde(el: ManuellElement, farg: string | undefined, fallback: string): string {
+        return el.gradient
+          ? `linear-gradient(${el.gradientVinkel ?? 135}deg, ${farg || fallback}, ${el.gradientFarg2 || "#7c93ff"})`
+          : farg || fallback;
+      }
+
+      function baseStilObjekt(el: ManuellElement): Record<string, string> {
+        return {
+          left: `${el.x}px`,
+          top: `${el.y}px`,
+          width: `${el.bredd}px`,
+          height: `${el.hojd}px`,
+          transform: `rotate(${el.rotation ?? 0}deg)`,
+          borderRadius: `${el.radie ?? 0}px`,
+          opacity: String((el.opacitet ?? 100) / 100),
+          zIndex: String(el.zIndex ?? 1),
+          mixBlendMode: el.blandningslage || "normal",
+          cursor: el.cursor || "default",
+        };
+      }
+
+      function stilTillCssRad(stil: Record<string, string>): string {
+        return Object.entries(stil)
+          .map(([k, v]) => `${k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase())}:${v};`)
+          .join("");
+      }
+
       function renderaElementHtml(el: ManuellElement): string {
-        const rotation = el.rotation ?? 0;
-        const radie = el.radie ?? 0;
-        const opacitet = (el.opacitet ?? 100) / 100;
-        const zIndex = el.zIndex ?? 1;
-        const blandning = el.blandningslage || "normal";
-        const cursorVarde = el.cursor || "default";
+        const skuggaCss = `box-shadow:${beraknaSkuggaCss(el)};`;
         const overflow = el.overflowDold ? "hidden" : "visible";
-        const skuggaCss = el.skugga
-          ? `box-shadow:${el.skuggaX ?? 0}px ${el.skuggaY ?? 14}px ${el.skuggaBlur ?? 24}px ${el.skuggaSpridning ?? -6}px ${el.skuggaFarg || "rgba(0,0,0,0.55)"};`
-          : "";
         const glasCss = el.glasEffekt ? `backdrop-filter:blur(${el.glasStyrka ?? 10}px);-webkit-backdrop-filter:blur(${el.glasStyrka ?? 10}px);` : "";
         const kantstil = el.kantstil || "solid";
-        const bas = `position:absolute;left:${el.x}px;top:${el.y}px;width:${el.bredd}px;height:${el.hojd}px;transform:rotate(${rotation}deg);border-radius:${radie}px;opacity:${opacitet};z-index:${zIndex};mix-blend-mode:${blandning};overflow:${overflow};${glasCss}`;
-
-        function bakgrundCss(farg: string | undefined, fallback: string): string {
-          if (el.gradient) {
-            return `background:linear-gradient(${el.gradientVinkel ?? 135}deg, ${farg || fallback}, ${el.gradientFarg2 || "#7c93ff"});`;
-          }
-          return `background:${farg || fallback};`;
-        }
+        const bas = `position:absolute;${stilTillCssRad(baseStilObjekt(el))}overflow:${overflow};${glasCss}`;
 
         if (el.typ === "text") {
           const farg = el.textFarg || "#10141c";
@@ -458,7 +497,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
           const understruken = el.understruken ? "underline" : "none";
           const textskuggaCss = el.textskugga ? "text-shadow:0 3px 10px rgba(0,0,0,0.4);" : "";
           const skaladTextAttr = el.skaladText ? ` data-skalad-text="1"` : "";
-          return `<div data-el-id="${el.id}"${skaladTextAttr} style="${bas}background:${bakgrund};font-family:'Inter',sans-serif;font-size:${storlek}px;font-weight:${vikt};color:${farg};text-align:${justering};letter-spacing:${bokstavsMellanrum}px;line-height:${radavstand};text-decoration:${understruken};${textskuggaCss}display:flex;align-items:center;justify-content:${justeringFlex};padding:0 6px;cursor:${cursorVarde};-webkit-user-select:none;user-select:none;">${escapeHtml(el.text || "")}</div>`;
+          return `<div data-el-id="${el.id}"${skaladTextAttr} style="${bas}background:${bakgrund};font-family:'Inter',sans-serif;font-size:${storlek}px;font-weight:${vikt};color:${farg};text-align:${justering};letter-spacing:${bokstavsMellanrum}px;line-height:${radavstand};text-decoration:${understruken};${textskuggaCss}display:flex;align-items:center;justify-content:${justeringFlex};padding:0 6px;-webkit-user-select:none;user-select:none;">${escapeHtml(el.text || "")}</div>`;
         }
 
         if (el.typ === "bild") {
@@ -466,7 +505,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
           const fit = el.bildFit || "cover";
           const kantbredd = el.kantbredd ?? 0;
           const kantfarg = el.kantfarg || "transparent";
-          return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}border:${kantbredd}px ${kantstil} ${kantfarg};cursor:${cursorVarde};-webkit-user-select:none;user-select:none;"><img src="${escapeHtml(bildUrl)}" alt="" draggable="false" style="width:100%;height:100%;object-fit:${fit};display:block;pointer-events:none;" /></div>`;
+          return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}border:${kantbredd}px ${kantstil} ${kantfarg};-webkit-user-select:none;user-select:none;"><img src="${escapeHtml(bildUrl)}" alt="" draggable="false" style="width:100%;height:100%;object-fit:${fit};display:block;pointer-events:none;" /></div>`;
         }
 
         if (el.typ === "knapp") {
@@ -476,14 +515,14 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
           const bokstavsMellanrum = el.bokstavsMellanrum ?? 0;
           const understruken = el.understruken ? "underline" : "none";
           const lankAttr = el.lank ? ` data-lank-sida="${escapeHtml(el.lank)}"` : "";
-          return `<div data-el-id="${el.id}"${lankAttr} style="${bas}${skuggaCss}${bakgrundCss(el.bakgrund, "#ffb238")}font-family:'Inter',sans-serif;font-size:${storlek}px;font-weight:${vikt};color:${farg};letter-spacing:${bokstavsMellanrum}px;text-decoration:${understruken};display:flex;align-items:center;justify-content:center;cursor:${cursorVarde};-webkit-user-select:none;user-select:none;">${escapeHtml(el.text || "Knapp")}</div>`;
+          return `<div data-el-id="${el.id}"${lankAttr} style="${bas}${skuggaCss}background:${bakgrundVarde(el, el.bakgrund, "#ffb238")};font-family:'Inter',sans-serif;font-size:${storlek}px;font-weight:${vikt};color:${farg};letter-spacing:${bokstavsMellanrum}px;text-decoration:${understruken};display:flex;align-items:center;justify-content:center;-webkit-user-select:none;user-select:none;">${escapeHtml(el.text || "Knapp")}</div>`;
         }
 
         if (el.typ === "scroll") {
           const bakgrund = el.bakgrund || "#f3f1ea";
           const kantbredd = el.kantbredd ?? 1;
           const kantfarg = el.kantfarg || "#e4e0d4";
-          return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}background:${bakgrund};border:${kantbredd}px ${kantstil} ${kantfarg};overflow-y:auto;scrollbar-width:thin;cursor:${cursorVarde};"><div style="padding:14px;">${renderaScrollInnehall(el)}</div></div>`;
+          return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}background:${bakgrund};border:${kantbredd}px ${kantstil} ${kantfarg};overflow-y:auto;scrollbar-width:thin;"><div style="padding:14px;">${renderaScrollInnehall(el)}</div></div>`;
         }
 
         if (el.typ === "grid") {
@@ -491,7 +530,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
           const rader = Math.max(1, el.gridRader ?? 2);
           const mellanrum = el.gridMellanrum ?? 12;
           const cellHojd = el.gridCellHojd ? `grid-auto-rows:${el.gridCellHojd}px;` : "";
-          return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}${bakgrundCss(el.bakgrund, "transparent")}display:grid;grid-template-columns:repeat(${kolumner}, 1fr);grid-template-rows:repeat(${rader}, 1fr);${cellHojd}gap:${mellanrum}px;cursor:${cursorVarde};">${renderaGridCeller(el)}</div>`;
+          return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}background:${bakgrundVarde(el, el.bakgrund, "transparent")};display:grid;grid-template-columns:repeat(${kolumner}, 1fr);grid-template-rows:repeat(${rader}, 1fr);${cellHojd}gap:${mellanrum}px;">${renderaGridCeller(el)}</div>`;
         }
 
         if (el.typ === "input") {
@@ -501,13 +540,13 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
           const kantbredd = el.kantbredd ?? 1;
           const kantfarg = el.kantfarg || "#d8d4c8";
           return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}">
-            <input type="text" placeholder="${escapeHtml(el.platshallareText || "Skriv något …")}" style="width:100%;height:100%;box-sizing:border-box;background:${bakgrund};color:${farg};font-family:'Inter',sans-serif;font-size:${storlek}px;border:${kantbredd}px ${kantstil} ${kantfarg};border-radius:${radie}px;padding:0 12px;outline:none;" />
+            <input type="text" placeholder="${escapeHtml(el.platshallareText || "Skriv något …")}" style="width:100%;height:100%;box-sizing:border-box;background:${bakgrund};color:${farg};font-family:'Inter',sans-serif;font-size:${storlek}px;border:${kantbredd}px ${kantstil} ${kantfarg};border-radius:${el.radie ?? 0}px;padding:0 12px;outline:none;" />
           </div>`;
         }
 
         const kantbredd = el.kantbredd ?? 0;
         const kantfarg = el.kantfarg || "transparent";
-        return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}${bakgrundCss(el.bakgrund, "#f3f1ea")}border:${kantbredd}px ${kantstil} ${kantfarg};cursor:${cursorVarde};-webkit-user-select:none;user-select:none;"></div>`;
+        return `<div data-el-id="${el.id}" style="${bas}${skuggaCss}background:${bakgrundVarde(el, el.bakgrund, "#f3f1ea")};border:${kantbredd}px ${kantstil} ${kantfarg};-webkit-user-select:none;user-select:none;"></div>`;
       }
 
       function byggHoverStilar(element: ManuellElement[]): string {
@@ -535,6 +574,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         const innehall = element.length ? element.map(renderaElementHtml).join("") : tomSidaHtml();
         const valtIdJson = valtElementId ? JSON.stringify(valtElementId) : "null";
         const hoverStilar = byggHoverStilar(element);
+        const behovdHojd = element.reduce((max, el) => Math.max(max, el.y + el.hojd), 0) + 80;
         return `<!doctype html>
 <html lang="sv">
 <head>
@@ -544,7 +584,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; font-family: 'Inter', system-ui, sans-serif; color: #10141c; background: #f3f1ea; }
-  .ws-yta { position: relative; min-height: 100vh; }
+  .ws-yta { position: relative; min-height: max(100vh, ${behovdHojd}px); }
   [data-el-id]:hover { outline: 1px dashed rgba(76, 111, 255, 0.45); outline-offset: 2px; }
   .tom-sida {
     min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -827,6 +867,214 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         namn: string;
         element: ManuellElement[];
         laast?: boolean;
+        rawHtml?: string;
+      }
+
+      async function vantaPaInnehall(iframe: HTMLIFrameElement, maxForsok = 30): Promise<void> {
+        for (let i = 0; i < maxForsok; i++) {
+          const doc = iframe.contentDocument;
+          const klart = !!doc && doc.readyState === "complete" && !!doc.body && doc.body.children.length > 0;
+          if (i === 0 || i % 5 === 0 || klart) {
+            console.log("[DEBUG] väntar på mät-iframe, försök", i, {
+              readyState: doc?.readyState,
+              url: doc?.URL,
+              antalBodyBarn: doc?.body?.children.length ?? -1,
+            });
+          }
+          if (klart) {
+            console.log("[DEBUG] mät-iframe har verkligt innehåll efter", i, "försök");
+            return;
+          }
+          await new Promise((r) => window.setTimeout(r, 100));
+        }
+        console.log("[DEBUG] mät-iframe: gav upp efter", maxForsok, "försök, fortsätter ändå");
+      }
+
+      async function vantaPaIframeLaddad(iframe: HTMLIFrameElement): Promise<void> {
+        await new Promise<void>((resolve) => {
+          let klar = false;
+          const avsluta = () => {
+            if (klar) return;
+            klar = true;
+            resolve();
+          };
+          iframe.addEventListener("load", avsluta, { once: true });
+          // Säkerhetsnät ifall "load"-eventet av någon anledning aldrig triggas.
+          window.setTimeout(avsluta, 4000);
+        });
+        // "load" säger bara att iframen är monterad – vänta även in att body faktiskt renderat innehåll.
+        await vantaPaInnehall(iframe);
+      }
+
+      function fargEllerUndefined(varde: string | undefined): string | undefined {
+        if (!varde) return undefined;
+        if (varde === "rgba(0, 0, 0, 0)" || varde === "transparent") return undefined;
+        return varde;
+      }
+
+      function avslojaDoldaElement(doc: Document) {
+        const stilTag = doc.createElement("style");
+        stilTag.setAttribute("data-ws-avslojare", "1");
+        stilTag.textContent = `
+          *, *::before, *::after {
+            animation: none !important;
+            animation-delay: 0s !important;
+            transition: none !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            scroll-behavior: auto !important;
+          }
+        `;
+        doc.head?.appendChild(stilTag);
+
+        let antalTvingadeSynliga = 0;
+        Array.from(doc.body.querySelectorAll<HTMLElement>("*")).forEach((n) => {
+          const stil = doc.defaultView?.getComputedStyle(n);
+          if (stil && stil.display === "none") {
+            n.style.setProperty("display", "block", "important");
+            antalTvingadeSynliga++;
+          }
+          if (n.hasAttribute("hidden")) {
+            n.removeAttribute("hidden");
+            antalTvingadeSynliga++;
+          }
+        });
+        console.log("[DEBUG] avslöjade dolda element (display:none/[hidden] -> synliga):", antalTvingadeSynliga);
+      }
+
+      function konverteraNodTillElement(node: HTMLElement, ramVanster: number, ramTopp: number, z: number): ManuellElement | null {
+        const rect = node.getBoundingClientRect();
+        const x = Math.max(0, Math.round(rect.left - ramVanster));
+        const y = Math.max(0, Math.round(rect.top - ramTopp));
+        const bredd = Math.round(rect.width);
+        const hojd = Math.round(rect.height);
+        if (bredd < 3 || hojd < 3) return null;
+
+        const fonster = node.ownerDocument?.defaultView;
+        if (!fonster) return null;
+        const stil = fonster.getComputedStyle(node);
+        const tag = node.tagName;
+        const id = skapaId();
+        const text = (node.textContent || "").replace(/\s+/g, " ").trim();
+
+        if (tag === "IMG") {
+          return {
+            id, typ: "bild", namn: "Bild (importerad)",
+            x, y, bredd, hojd, zIndex: z,
+            bildUrl: (node as HTMLImageElement).src,
+            bildFit: "cover",
+          };
+        }
+        if (tag.toLowerCase() === "svg") {
+          const svgMarkup = node.outerHTML;
+          const svgDataUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svgMarkup);
+          return {
+            id, typ: "bild", namn: "Ikon (importerad, SVG)",
+            x, y, bredd, hojd, zIndex: z,
+            bildUrl: svgDataUrl,
+            bildFit: "contain",
+          };
+        }
+        if (tag === "INPUT" || tag === "TEXTAREA") {
+          return {
+            id, typ: "input", namn: "Inmatningsfält (importerad)",
+            x, y, bredd, hojd, zIndex: z,
+            platshallareText: (node as HTMLInputElement).placeholder || "",
+            bakgrund: fargEllerUndefined(stil.backgroundColor) || "#ffffff",
+            textFarg: fargEllerUndefined(stil.color) || "#10141c",
+            kantbredd: parseFloat(stil.borderWidth) || 0,
+            kantfarg: fargEllerUndefined(stil.borderColor),
+          };
+        }
+        if (tag === "BUTTON" || (tag === "A" && text)) {
+          return {
+            id, typ: "knapp", namn: text ? `Knapp: ${text.slice(0, 20)}` : "Knapp (importerad)",
+            x, y, bredd, hojd, zIndex: z,
+            text,
+            bakgrund: fargEllerUndefined(stil.backgroundColor) || "#ffb238",
+            textFarg: fargEllerUndefined(stil.color) || "#10141c",
+            fontStorlek: parseFloat(stil.fontSize) || 16,
+            fontVikt: stil.fontWeight || "600",
+            radie: parseFloat(stil.borderRadius) || 0,
+            lank: node.getAttribute("href") || undefined,
+          };
+        }
+        if (text) {
+          return {
+            id, typ: "text", namn: text.slice(0, 24) || "Text (importerad)",
+            x, y, bredd, hojd, zIndex: z,
+            text,
+            textFarg: fargEllerUndefined(stil.color) || "#10141c",
+            fontStorlek: parseFloat(stil.fontSize) || 16,
+            fontVikt: stil.fontWeight || "400",
+            textAlign: (["left", "center", "right"].includes(stil.textAlign) ? stil.textAlign : "left") as "left" | "center" | "right",
+            bakgrund: fargEllerUndefined(stil.backgroundColor),
+          };
+        }
+        return {
+          id, typ: "box", namn: "Box (importerad)",
+          x, y, bredd, hojd, zIndex: z,
+          bakgrund: fargEllerUndefined(stil.backgroundColor) || "transparent",
+          radie: parseFloat(stil.borderRadius) || 0,
+          kantfarg: fargEllerUndefined(stil.borderColor),
+          kantbredd: parseFloat(stil.borderWidth) || 0,
+        };
+      }
+
+      async function konverteraRawHtmlTillElement(html: string): Promise<ManuellElement[]> {
+        console.log("[DEBUG] startar konvertering, HTML-längd:", html.length);
+        const matIframe = document.createElement("iframe");
+        matIframe.style.cssText = "position:absolute;left:-9999px;top:0;width:1280px;height:1600px;border:none;visibility:hidden;";
+        const laddad = vantaPaIframeLaddad(matIframe);
+        document.body.appendChild(matIframe);
+        matIframe.srcdoc = html;
+        await laddad;
+
+        const resultat: ManuellElement[] = [];
+        try {
+          const doc = matIframe.contentDocument;
+          console.log("[DEBUG] contentDocument tillgängligt:", !!doc, "body tillgängligt:", !!doc?.body);
+          if (doc && doc.body) {
+            avslojaDoldaElement(doc);
+            // Ge layouten en tick att omflöda efter att vi tvingat fram display/opacity.
+            await new Promise((r) => window.setTimeout(r, 50));
+
+            const ram = doc.body.getBoundingClientRect();
+            console.log("[DEBUG] body-ram:", { left: ram.left, top: ram.top, bredd: ram.width, hojd: ram.height });
+
+            const alla = Array.from(doc.body.querySelectorAll<HTMLElement>("*"));
+            console.log("[DEBUG] totalt antal DOM-noder i body:", alla.length);
+
+            const loven = alla.filter((n) => {
+              if (["SCRIPT", "STYLE", "NOSCRIPT", "HEAD", "META", "LINK", "TITLE"].includes(n.tagName)) return false;
+              const innanforSvg = n.closest("svg") !== null && n.tagName !== "svg" && n.tagName !== "SVG";
+              if (innanforSvg) return false;
+              if (n.tagName === "svg" || n.tagName === "SVG") return true;
+              const harElementBarn = Array.from(n.children).some(
+                (c) => !["SCRIPT", "STYLE"].includes(c.tagName)
+              );
+              return !harElementBarn;
+            });
+            console.log("[DEBUG] antal löv-kandidater efter filtrering:", loven.length);
+
+            let z = 1;
+            let hoppadeOverStorlek = 0;
+            loven.forEach((n) => {
+              const el = konverteraNodTillElement(n, ram.left, ram.top, z);
+              if (el) { resultat.push(el); z++; }
+              else hoppadeOverStorlek++;
+            });
+            console.log("[DEBUG] element skapade:", resultat.length, "hoppade över (för små):", hoppadeOverStorlek);
+            console.log("[DEBUG] genererade element (förhandsvisning):", resultat.slice(0, 10));
+          } else {
+            console.log("[DEBUG] kunde inte läsa contentDocument/body i mät-iframen (troligen blockerad eller ej laddad)");
+          }
+        } catch (e) {
+          console.error("[DEBUG] Fel vid konvertering av rå HTML:", e);
+        }
+        document.body.removeChild(matIframe);
+        console.log("[DEBUG] konvertering klar, totalt antal element:", resultat.length);
+        return resultat;
       }
 
       let sidor: Sida[] = [{ id: skapaId(), namn: "index.astro", element: [], laast: true }];
@@ -834,10 +1082,41 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
       let aktivtVerktyg: "ai" | "element" | "egenskaper" | "sidor" | "workspace" | "services" | "positionera" | "molnbackuper" | "installningar" = "ai";
       let valtElementId: string | null = null;
       let harOsparadeAndringar = false;
+      let aktivtForetagId: string | null = null;
+      let aktivtForetagNamn = "";
       const AI_TOKENS_TOTALT = 800000;
+      const sidorSomKonverterar = new Set<string>();
 
       function hittaAktivSida(): Sida {
         return sidor.find((s) => s.id === aktivSidaId) || sidor[0];
+      }
+
+      async function konverteraOchUppdateraSida(sida: Sida, tystUppdatering = false): Promise<void> {
+        if (!sida.rawHtml || sidorSomKonverterar.has(sida.id)) return;
+        sidorSomKonverterar.add(sida.id);
+        if (!tystUppdatering) renderaWorkspace();
+
+        try {
+          const konverterade = await konverteraRawHtmlTillElement(sida.rawHtml);
+          if (konverterade.length) {
+            sida.element = konverterade;
+            sida.rawHtml = undefined;
+            markeraOsparat();
+          } else {
+            console.log("[DEBUG] konvertering gav 0 element för", sida.namn);
+            if (!tystUppdatering) window.alert("Hittade inga synliga element på sidan. Prova igen, eller lägg till element manuellt via Element-verktyget.");
+          }
+        } catch (e) {
+          console.error("[DEBUG] Kunde inte konvertera sidan till redigerbara element:", sida.namn, e);
+          if (!tystUppdatering) window.alert("Något gick fel vid konverteringen. Prova igen.");
+        } finally {
+          sidorSomKonverterar.delete(sida.id);
+          if (sida.id === aktivSidaId) {
+            renderaForhandsvisning();
+            renderaWorkspace();
+            if (aktivtVerktyg === "egenskaper") renderaEgenskaper();
+          }
+        }
       }
 
       const promptFalt = document.getElementById("ai-prompt") as HTMLTextAreaElement;
@@ -867,6 +1146,13 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
 
       function renderaForhandsvisning() {
         const sida = hittaAktivSida();
+        console.log("[DEBUG] renderaForhandsvisning:", sida.namn, "element:", sida.element.length, "harRawHtml:", !!sida.rawHtml);
+        if (sida.element.length === 0 && sida.rawHtml) {
+          console.log("[DEBUG] -> visar rawHtml direkt (ej redigerbar)");
+          previewIframe.srcdoc = sida.rawHtml;
+          return;
+        }
+        console.log("[DEBUG] -> visar elementbaserad rendering, antal element:", sida.element.length);
         previewIframe.srcdoc = byggForhandsvisningsDokument(sida.element, valtElementId);
       }
 
@@ -878,7 +1164,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         }
       }
 
-      function hittaLiveFonster(): (Window & { wsValj?: (id: string) => void; wsAvmarkera?: () => void }) | null {
+      function hittaLiveFonster(): (Window & { wsValj?: (id: string) => void; wsAvmarkera?: () => void; wsSkalaText?: (node: HTMLElement) => void }) | null {
         try {
           return (previewIframe.contentWindow as any) || null;
         } catch {
@@ -896,6 +1182,15 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         stilTag.textContent = byggHoverStilar(sida.element);
       }
 
+      function uppdateraSidHojdLive() {
+        const doc = hittaLiveDokument();
+        const yta = doc?.querySelector(".ws-yta") as HTMLElement | null;
+        if (!yta) return;
+        const sida = hittaAktivSida();
+        const behovdHojd = sida.element.reduce((max, el) => Math.max(max, el.y + el.hojd), 0) + 80;
+        yta.style.minHeight = `max(100vh, ${behovdHojd}px)`;
+      }
+
       function paivitaElementLive(el: ManuellElement) {
         let node = liveElementCache?.id === el.id ? liveElementCache.node : null;
         if (!node || !node.isConnected) {
@@ -905,33 +1200,15 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         }
         if (!node) { renderaForhandsvisning(); return; }
 
-        const rotation = el.rotation ?? 0;
-        const radie = el.radie ?? 0;
-        const opacitet = (el.opacitet ?? 100) / 100;
-        const zIndex = el.zIndex ?? 1;
-        const skuggaCss = el.skugga
-          ? `${el.skuggaX ?? 0}px ${el.skuggaY ?? 14}px ${el.skuggaBlur ?? 24}px ${el.skuggaSpridning ?? -6}px ${el.skuggaFarg || "rgba(0,0,0,0.55)"}`
-          : "none";
-        const kantstil = el.kantstil || "solid";
-        const bakgrundVarde = (farg: string | undefined, fallback: string) =>
-          el.gradient ? `linear-gradient(${el.gradientVinkel ?? 135}deg, ${farg || fallback}, ${el.gradientFarg2 || "#7c93ff"})` : (farg || fallback);
-
-        node.style.left = `${el.x}px`;
-        node.style.top = `${el.y}px`;
-        node.style.width = `${el.bredd}px`;
-        node.style.height = `${el.hojd}px`;
-        node.style.transform = `rotate(${rotation}deg)`;
-        node.style.borderRadius = `${radie}px`;
-        node.style.opacity = String(opacitet);
-        node.style.zIndex = String(zIndex);
-        node.style.mixBlendMode = el.blandningslage || "normal";
+        Object.assign(node.style, baseStilObjekt(el));
         node.style.overflow = el.typ === "scroll" ? "auto" : (el.overflowDold ? "hidden" : "visible");
-        node.style.cursor = el.cursor || "default";
-        node.style.boxShadow = skuggaCss;
+        node.style.boxShadow = beraknaSkuggaCss(el);
         (node.style as any).backdropFilter = el.glasEffekt ? `blur(${el.glasStyrka ?? 10}px)` : "none";
         (node.style as any).webkitBackdropFilter = el.glasEffekt ? `blur(${el.glasStyrka ?? 10}px)` : "none";
         if (el.lank) node.setAttribute("data-lank-sida", el.lank);
         else node.removeAttribute("data-lank-sida");
+
+        const kantstil = el.kantstil || "solid";
 
         if (el.typ === "text") {
           node.textContent = el.text || "";
@@ -946,7 +1223,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
           if (el.skaladText) {
             node.setAttribute("data-skalad-text", "1");
             const fonster = hittaLiveFonster();
-            (fonster as any)?.skalaTextTillBox?.(node);
+            fonster?.wsSkalaText?.(node);
             node.style.lineHeight = node.style.lineHeight || `${el.hojd}px`;
           } else {
             node.removeAttribute("data-skalad-text");
@@ -955,7 +1232,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
           }
         } else if (el.typ === "knapp") {
           node.textContent = el.text || "Knapp";
-          node.style.background = bakgrundVarde(el.bakgrund, "#ffb238");
+          node.style.background = bakgrundVarde(el, el.bakgrund, "#ffb238");
           node.style.color = el.textFarg || "#10141c";
           node.style.fontSize = `${el.fontStorlek ?? 16}px`;
           node.style.fontWeight = el.fontVikt || "600";
@@ -979,7 +1256,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
           node.style.gridTemplateRows = `repeat(${Math.max(1, el.gridRader ?? 2)}, 1fr)`;
           (node.style as any).gridAutoRows = el.gridCellHojd ? `${el.gridCellHojd}px` : "";
           node.style.gap = `${el.gridMellanrum ?? 12}px`;
-          node.style.background = bakgrundVarde(el.bakgrund, "transparent");
+          node.style.background = bakgrundVarde(el, el.bakgrund, "transparent");
           node.innerHTML = renderaGridCeller(el);
         } else if (el.typ === "input") {
           const input = node.querySelector("input") as HTMLInputElement | null;
@@ -989,15 +1266,16 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
             input.style.color = el.textFarg || "#10141c";
             input.style.fontSize = `${el.fontStorlek ?? 15}px`;
             input.style.border = `${el.kantbredd ?? 1}px ${kantstil} ${el.kantfarg || "#d8d4c8"}`;
-            input.style.borderRadius = `${radie}px`;
+            input.style.borderRadius = `${el.radie ?? 0}px`;
           }
         } else {
-          node.style.background = bakgrundVarde(el.bakgrund, "#f3f1ea");
+          node.style.background = bakgrundVarde(el, el.bakgrund, "#f3f1ea");
           node.style.border = `${el.kantbredd ?? 0}px ${kantstil} ${el.kantfarg || "transparent"}`;
         }
 
         uppdateraHoverStilarLive();
         reposMarkeringOmVald(el);
+        uppdateraSidHojdLive();
       }
 
       function reposMarkeringOmVald(el: ManuellElement) {
@@ -1065,6 +1343,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
           if (typeof data.bredd === "number") el.bredd = data.bredd;
           if (typeof data.hojd === "number") el.hojd = data.hojd;
           uppdateraGeometriFalt();
+          uppdateraSidHojdLive();
           markeraOsparat();
         } else if (data.type === "delete") {
           const idx = sida.element.findIndex((x) => x.id === data.id);
@@ -1089,13 +1368,14 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         if (aktivtVerktyg === "workspace") renderaWorkspace();
       }
 
-      function raderaSida(id: string) {
+      async function raderaSida(id: string) {
         const sida = sidor.find((s) => s.id === id);
         if (!sida || sidor.length <= 1 || sida.laast) return;
         if (!window.confirm(`Ta bort "${sida.namn}"? Detta går inte att ångra.`)) return;
 
         const index = sidor.findIndex((s) => s.id === id);
         sidor = sidor.filter((s) => s.id !== id);
+        if (aktivtForetagId) await supabase.from(TABELL_SIDOR).delete().eq("id", id);
         if (aktivSidaId === id) {
           aktivSidaId = sidor[Math.max(0, index - 1)].id;
           valtElementId = null;
@@ -1124,7 +1404,10 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
 
         const commit = () => {
           const nyBas = input.value.trim().replace(/\.astro$/, "");
-          if (nyBas && normaliseraSidnamn(nyBas) !== "index") sida.namn = nyBas + ".astro";
+          if (nyBas && normaliseraSidnamn(nyBas) !== "index") {
+            sida.namn = nyBas + ".astro";
+            if (aktivtForetagId) void supabase.from(TABELL_SIDOR).update({ name: sida.namn }).eq("id", sida.id);
+          }
           renderaSidor();
           markeraOsparat();
         };
@@ -1198,12 +1481,21 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         if (laggTillBtn) laggTillBtn.disabled = sidor.length >= maxTillatnaSidor();
       }
 
-      sidorLaggTillBtn.addEventListener("click", () => {
+      sidorLaggTillBtn.addEventListener("click", async () => {
         if (sidor.length >= maxTillatnaSidor()) {
           window.alert(`Din plan tillåter max ${maxTillatnaSidor()} sidor. Uppgradera för att lägga till fler.`);
           return;
         }
-        const nySida: Sida = { id: skapaId(), namn: `sida-${sidor.length + 1}.astro`, element: [] };
+        const namn = `sida-${sidor.length + 1}.astro`;
+        const nySida: Sida = { id: skapaId(), namn, element: [] };
+        if (aktivtForetagId) {
+          const { data: infogad } = await supabase
+            .from(TABELL_SIDOR)
+            .insert({ company_id: aktivtForetagId, name: namn, content: JSON.stringify([]), version: SID_VERSION })
+            .select("id")
+            .maybeSingle();
+          if (infogad?.id) nySida.id = infogad.id;
+        }
         sidor.push(nySida);
         aktivSidaId = nySida.id;
         valtElementId = null;
@@ -1851,10 +2143,28 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         });
 
         if (!container.children.length) {
-          const tom = document.createElement("p");
-          tom.className = "panel-info";
-          tom.textContent = "Inga element än. Lägg till via Element-verktyget eller be AI:n bygga en sida.";
-          container.appendChild(tom);
+          if (sida.rawHtml) {
+            const konverterarNu = sidorSomKonverterar.has(sida.id);
+            const info = document.createElement("p");
+            info.className = "panel-info";
+            info.textContent = konverterarNu
+              ? "Konverterar sidans HTML till redigerbara element …"
+              : "Den här sidan har färdig HTML-kod som ännu inte är uppdelad i redigerbara element.";
+            container.appendChild(info);
+
+            const knapp = document.createElement("button");
+            knapp.type = "button";
+            knapp.className = "element-knapp";
+            knapp.disabled = konverterarNu;
+            knapp.innerHTML = `<span class="ikon">⇄</span>${konverterarNu ? "Konverterar …" : "Konvertera till redigerbara element"}`;
+            knapp.addEventListener("click", () => konverteraOchUppdateraSida(sida));
+            container.appendChild(knapp);
+          } else {
+            const tom = document.createElement("p");
+            tom.className = "panel-info";
+            tom.textContent = "Inga element än. Lägg till via Element-verktyget eller be AI:n bygga en sida.";
+            container.appendChild(tom);
+          }
         }
       }
 
@@ -1884,6 +2194,11 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
       }
 
       urlOvalCog.addEventListener("click", startaDomanRedigering);
+
+      function settDomanText(varde: string) {
+        const span = document.getElementById("url-oval-text");
+        if (span) span.textContent = varde;
+      }
 
       function byggAstroExport(): string {
         const rader: string[] = [];
@@ -1966,6 +2281,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         namnFalt.innerHTML = `<span>Webbplatsnamn</span>`;
         const namnInput = document.createElement("input");
         namnInput.type = "text";
+        namnInput.value = aktivtForetagNamn;
         namnInput.placeholder = "t.ex. Mitt Företag AB";
         namnFalt.appendChild(namnInput);
         container.appendChild(namnFalt);
@@ -1978,19 +2294,10 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         beskrivningFalt.appendChild(beskrivningInput);
         container.appendChild(beskrivningFalt);
 
-        skapaVal(
-          container,
-          "Plan",
-          aktivPlan,
-          [
-            [Plan.None, "Ingen plan"],
-            [Plan.Start, "Start (max 5 sidor)"],
-            [Plan.Pro, "Pro (max 15 sidor)"],
-            [Plan.Premium, "Premium (max 25 sidor)"],
-          ],
-          (v) => { aktivPlan = v as Plan; renderaSidor(); },
-          () => {}
-        );
+        const planRad = document.createElement("div");
+        planRad.className = "insp-falt insp-falt-kompakt";
+        planRad.innerHTML = `<span>Plan</span><span class="insp-vardevisning">${aktivPlan} (max ${maxTillatnaSidor()} sidor)</span>`;
+        container.appendChild(planRad);
 
         const exportBtn = document.createElement("button");
         exportBtn.type = "button";
@@ -2015,26 +2322,6 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         });
       });
 
-      const DB_NAMN = "websiq-astro-db";
-      const STORE_NAMN = "projekt";
-
-      function oppnaDb(): Promise<IDBDatabase> {
-        return new Promise((resolve, reject) => {
-          const request = indexedDB.open(DB_NAMN, 2);
-          request.onupgradeneeded = () => {
-            const db = request.result;
-            if (!db.objectStoreNames.contains(STORE_NAMN)) db.createObjectStore(STORE_NAMN);
-          };
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(request.error);
-        });
-      }
-
-      interface SparatProjekt {
-        sidor: Sida[];
-        aktivSidaId: string;
-      }
-
       function uppdateraSparaKnappStatus() {
         if (harOsparadeAndringar) {
           sparaBtn.disabled = false;
@@ -2056,7 +2343,7 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         sparaBtn.disabled = true;
         sparaStatus.textContent = "Sparar…";
         try {
-          await sparaProjekt();
+          await sparaAllaSidor();
           harOsparadeAndringar = false;
           sparaStatus.textContent = "Sparat ✓";
         } catch {
@@ -2069,50 +2356,121 @@ const sidTitel = "Webbsida redigerare - WesbiqAI";
         }, 1600);
       }
 
-      function sparaProjekt(): Promise<void> {
-        return oppnaDb().then(
-          (db) =>
-            new Promise<void>((resolve, reject) => {
-              const tx = db.transaction(STORE_NAMN, "readwrite");
-              tx.objectStore(STORE_NAMN).put({ sidor, aktivSidaId }, "projekt");
-              tx.oncomplete = () => resolve();
-              tx.onerror = () => reject(tx.error);
-            })
+      async function sparaAllaSidor(): Promise<void> {
+        if (!aktivtForetagId) return;
+        const resultat = await Promise.all(
+          sidor.map((s) => {
+            const contentVarde =
+              s.element.length > 0
+                ? JSON.stringify(s.element)
+                : s.rawHtml !== undefined
+                  ? s.rawHtml
+                  : JSON.stringify([]);
+            return supabase.from(TABELL_SIDOR).upsert({
+              id: s.id,
+              company_id: aktivtForetagId,
+              name: s.namn,
+              content: contentVarde,
+              version: SID_VERSION,
+            });
+          })
         );
+        console.log("[DEBUG] project_pages upsert (spara):", resultat);
       }
 
-      function laddaProjekt(): Promise<SparatProjekt | null> {
-        return oppnaDb().then(
-          (db) =>
-            new Promise<SparatProjekt | null>((resolve, reject) => {
-              const tx = db.transaction(STORE_NAMN, "readonly");
-              const req = tx.objectStore(STORE_NAMN).get("projekt");
-              req.onsuccess = () => resolve((req.result as SparatProjekt) ?? null);
-              req.onerror = () => reject(req.error);
-            })
-        );
+      async function hamtaSidor(): Promise<Sida[]> {
+        if (!aktivtForetagId) return [{ id: skapaId(), namn: "index.astro", element: [], laast: true }];
+
+        const { data, error } = await supabase
+          .from(TABELL_SIDOR)
+          .select("id, name, content")
+          .eq("company_id", aktivtForetagId)
+          .eq("version", SID_VERSION);
+
+        console.log("[DEBUG] project_pages svar:", {
+          company_id: aktivtForetagId,
+          version: SID_VERSION,
+          data,
+          error,
+        });
+
+        if (!error && data && data.length) {
+          return data.map((rad: any) => {
+            let element: ManuellElement[] = [];
+            let rawHtml: string | undefined;
+            const radInnehall = rad.content;
+            if (Array.isArray(radInnehall)) {
+              element = radInnehall;
+            } else if (typeof radInnehall === "string" && radInnehall.trim()) {
+              try {
+                const tolkat = JSON.parse(radInnehall);
+                if (Array.isArray(tolkat)) element = tolkat;
+                else rawHtml = radInnehall;
+              } catch {
+                rawHtml = radInnehall;
+              }
+            }
+            return {
+              id: rad.id,
+              namn: rad.name,
+              element,
+              rawHtml,
+              laast: rad.name === "index.astro" || rad.name === "index",
+            };
+          });
+        }
+
+        const ny: Sida = { id: skapaId(), namn: "index.astro", element: [], laast: true };
+        const { data: infogad, error: infogadError } = await supabase
+          .from(TABELL_SIDOR)
+          .insert({ company_id: aktivtForetagId, name: ny.namn, content: JSON.stringify([]), version: SID_VERSION })
+          .select("id")
+          .maybeSingle();
+        console.log("[DEBUG] project_pages insert (ingen befintlig rad hittades):", { infogad, infogadError });
+        if (infogad?.id) ny.id = infogad.id;
+        return [ny];
       }
 
       sparaBtn.addEventListener("click", () => sparaOchVisa(false));
       window.setInterval(() => sparaOchVisa(true), 60 * 1000);
 
       async function initiera() {
-        let sparat: SparatProjekt | null = null;
-        try {
-          sparat = await laddaProjekt();
-        } catch {
-          sparat = null;
+        const { data: sessionData } = await supabase.auth.getSession();
+        const user = sessionData.session?.user;
+        console.log("[DEBUG] auth session:", sessionData, "user:", user);
+
+        if (user) {
+          const { data: foretag, error: foretagError } = await supabase
+            .from("companies")
+            .select("company_id, name, domain, subscription")
+            .eq("owner", user.id)
+            .maybeSingle();
+          console.log("[DEBUG] companies svar:", { foretag, foretagError });
+          if (foretag) {
+            aktivtForetagId = foretag.company_id;
+            aktivtForetagNamn = foretag.name || "";
+            aktivPlan = mappaPlan(foretag.subscription);
+            if (foretag.domain) settDomanText(foretag.domain);
+          }
         }
 
-        if (sparat && sparat.sidor && sparat.sidor.length) {
-          sidor = sparat.sidor;
-          sidor.forEach((s) => {
-            if (!s.element) s.element = [];
-          });
-          const indexSida = sidor.find((s) => s.namn === "index.astro");
-          if (indexSida) indexSida.laast = true;
-          aktivSidaId = sparat.aktivSidaId;
+        const hamtade = await hamtaSidor();
+        if (hamtade.length) {
+          sidor = hamtade;
+          aktivSidaId = sidor[0].id;
         }
+
+        console.log("[DEBUG] sidor efter hamtaSidor:", sidor.map((s) => ({ namn: s.namn, antalElement: s.element.length, harRawHtml: !!s.rawHtml })));
+
+        for (const sida of sidor) {
+          if (sida.rawHtml && sida.element.length === 0) {
+            console.log("[DEBUG] konverterar sida till redigerbara element:", sida.namn);
+            await konverteraOchUppdateraSida(sida, true);
+            console.log("[DEBUG] konvertering klar för", sida.namn, "-> antal element:", sida.element.length, "harRawHtml:", !!sida.rawHtml);
+          }
+        }
+
+        console.log("[DEBUG] sidor efter konvertering:", sidor.map((s) => ({ namn: s.namn, antalElement: s.element.length, harRawHtml: !!s.rawHtml })));
 
         renderaSidor();
         renderaForhandsvisning();
